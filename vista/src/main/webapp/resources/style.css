@@ -1,10 +1,168 @@
-/*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-
-.body{
-    background: black;
+/*GENERAL*/
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+body {
+    background-color: #262F8D;
+    color: white;
+    font-family: Tahoma, Verdana, Arial, sans-serif;
 }
 
+.header {
+    display: flex;
+    align-items: center;
+    height: 15%;
+    justify-content: space-between;
+    background: #F7FF00;
+    color: #262F8D;
+    padding: 0 20px;
+    margin: 0;
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.headerprin {
+    display: flex;
+    align-items: center;
+    height: 15%;
+    justify-content: space-between;
+    background: #262F8D;
+    color: white;
+    padding: 0 20px;
+    margin: 0;
+    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.header span {
+    flex-grow: 0;
+    text-align: center;
+}
+
+.headerprin span {
+    flex-grow: 0;
+    text-align: center;
+}
+
+.back i {
+    margin-right: 5px;
+}
+
+/*LOGIN*/
+
+div.login{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 35%;
+    width: 25%;
+    padding: 25px;
+    margin: auto;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/*PRINCIPAL*/
+
+.nav-links {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.link-btn {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.link-btn i {
+    margin-right: 5px;
+}
+
+.link-btn:hover {
+    opacity: 0.85;
+    text-decoration: underline;
+}
+
+/*MENUS DE GESTION*/
+
+.cuerpo-gestores {
+    margin: 5%;
+    padding: 3%;
+    background-color: white;
+    color: #262F8D;
+    border-radius: 25px;
+}
+
+/* Panel del menú */
+.menu-panel {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 15%;
+    background: yellow;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding-top: 0;
+    margin: 0;
+    z-index: 999;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+    gap: 25px;
+}
+
+/* Selecciona específicamente el botón del menú */
+.menu.ui-button {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: yellow !important; /* Cambia este color al que quieras */
+}
+
+/* Si el botón tiene ícono (como el pi-bars), ajustamos el color del ícono */
+.menu .ui-icon,
+.menu .pi {
+    color: #262F8D !important; /* Color del ícono */
+}
+
+/* Al pasar el mouse */
+.menu.ui-button:hover {
+    background: rgba(0,0,0,0.05) !important; /* ligero efecto hover opcional */
+    transform: scale(1.05);
+    transition: 0.2s ease;
+}
+
+/* Selecciona específicamente el botón del menú */
+.menuin.ui-button {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: yellow !important; /* Cambia este color al que quieras */
+}
+
+/* Si el botón tiene ícono (como el pi-bars), ajustamos el color del ícono */
+.menuin .ui-icon,
+.menuin .pi {
+    color: white !important; /* Color del ícono */
+}
+
+/* Al pasar el mouse */
+.menuin.ui-button:hover {
+    background: rgba(0,0,0,0.05) !important; /* ligero efecto hover opcional */
+    transform: scale(1.05);
+    transition: 0.2s ease;
+}

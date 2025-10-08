@@ -7,7 +7,7 @@
 
 <h:head>
     <link href="resources/style.css" rel="stylesheet"/>
-    <script src="resourcer/funct.js"></script>
+    <script src="resources/funct.js"></script>
     <title>Facelet Title</title>
 </h:head>
 
@@ -29,7 +29,7 @@
         <span>Cotizaciones El Letrero Signshop</span>
 
         <!-- Botón de menú -->
-        <p:commandButton class="menuin" icon="pi pi-bars"
+        <p:commandButton class="menu" icon="pi pi-bars"
                          onclick="toggleMenu(); return false;" />
     </div>
 
@@ -62,18 +62,6 @@
             <i class="pi pi-file"></i> Consulta Cotizaciones
         </h:link>
     </div>
-
-    <script>
-        // Función para mostrar/ocultar el menú
-        function toggleMenu() {
-            let menu = document.getElementById('menuPanel');
-            if (menu.style.display === 'none' || menu.style.display === '') {
-                menu.style.display = 'flex';
-            } else {
-                menu.style.display = 'none';
-            }
-        }
-    </script>
 </h:body>
 
 </html>

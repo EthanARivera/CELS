@@ -6,6 +6,7 @@ import imf.cels.integration.ServiceLocator;
 import java.util.List;
 
 public class DelegateUsuario {
+
     public Usuario login(String password, String correo){
         Usuario usuario = new Usuario();
         List<Usuario> usuarios = ServiceLocator.getInstanceUsuarioDAO().findAll();
@@ -20,6 +21,18 @@ public class DelegateUsuario {
 
     public void saveUsario(Usuario usuario){
         ServiceLocator.getInstanceUsuarioDAO().save(usuario);
+    }
+
+    public List<Usuario> obtenerUsuarios() {
+        return ServiceLocator.getInstanceUsuarioDAO().findAll();
+    }
+    
+    public Usuario obtenerPorId(Integer id) {
+        return ServiceLocator.getInstanceUsuarioDAO().findById(id);
+    }
+
+    public List<Usuario> obtenerPorNombre(String nombre) {
+        return ServiceLocator.getInstanceUsuarioDAO().findByName(nombre);
     }
 
 }

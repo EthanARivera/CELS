@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>-->
+    <link href="resources/style.css" rel="stylesheet"/>
+    <!--<style>
+        body {
+            background-color: #262F8D;
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 🔹 Header bar */
+        .header-bar {
+            margin-top: 25px;
+            background-color: #F7FF00;
+            color: #262F8D;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 25px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .header-button {
+            background: none;
+            border: none;
+            color: #262F8D;
+            font-size: 26px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* 🔹 Larger, centered form panel */
+        .form-container {
+            width: 80%; /* wider panel */
+            max-width: 95%;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px 50px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            font-size: 22px;
+            color: #333;
+        }
+
+        /* 🔹 Label + input layout */
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .form-row label {
+            width: 240px;
+            font-weight: bold;
+            color: #333;
+            text-align: right;
+            margin-right: 15px;
+            font-size: 15px;
+        }
+
+        .form-row .form-control {
+            flex: 1;
+            font-size: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Special case: three name inputs in one row */
+        .name-group {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .name-group .form-control {
+            flex: 1;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .btn-primary {
+            background-color: #262F8D;
+            border: none;
+            color: #fff;
+            padding: 10px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .btn-danger {
+            background-color: #999;
+            border: none;
+            color: #fff;
+            padding: 10px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d266e;
+        }
+    </style>-->
+</h:head>
+
+<h:body>
+
+    <!-- 🔹 HEADER -->
+    <div class="header-bar">
+
+        <h:link outcome="index.xhtml" styleClass="header-button">&#x276E;</h:link>
+        <span>Agregar Usuario</span>
+        <a href="#" class="header-button" onclick="return false;">&#x2630;</a>
+    </div>
+
+    <!-- 🔹 REGISTRATION FORM -->
+    <h:form id="formRegistro">
+        <div class="form-container">
+            <div class="form-title">Datos del Usuario</div>
+
+            <!-- Nombres -->
+            <div class="form-row">
+                <label>Nombre:</label>
+                <div class="name-group">
+                    <p:inputText styleClass="form-control" placeholder="Nombres"
+                                 value="#{registroUI.usuario.nombre}" required="true"
+                                 requiredMessage="El nombre es obligatorio"/>
+                    <p:inputText styleClass="form-control" placeholder="Apellido Paterno"
+                                 value="#{registroUI.usuario.apellidoPrim}" required="true"
+                                 requiredMessage="El apellido paterno es obligatorio"/>
+                    <p:inputText styleClass="form-control" placeholder="Apellido Materno"
+                                 value="#{registroUI.usuario.apellidoSeg}"/>
+                </div>
+            </div>
+
+            <!-- Fecha -->
+            <div class="form-row">
+                <label>Fecha de Nacimiento:</label>
+                <p:calendar styleClass="form-control" placeholder="dd/MM/yyyy"
+                            value="#{registroUI.usuario.fechaNacimiento}" pattern="dd/MM/yyyy"
+                            required="true" requiredMessage="La fecha de nacimiento es obligatoria"/>
+            </div>
+
+            <!-- RFC -->
+            <div class="form-row">
+                <label>RFC:</label>
+                <p:inputText styleClass="form-control" placeholder="XXXXXXXXXXXXX"
+                             value="#{registroUI.usuario.rfc}" required="true"
+                             requiredMessage="El RFC es obligatorio"/>
+            </div>
+
+            <!-- Correo -->
+            <div class="form-row">
+                <label>Correo Electrónico:</label>
+                <p:inputText styleClass="form-control" placeholder="usuario@gmail.com"
+                             value="#{registroUI.usuario.email}" required="true"
+                             requiredMessage="El correo es obligatorio"/>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="form-row">
+                <label>Contraseña:</label>
+                <p:password styleClass="form-control" placeholder="Contraseña"
+                            value="#{registroUI.usuario.psswd}" required="true"
+                            requiredMessage="La contraseña es obligatoria"/>
+            </div>
+
+            <!-- Botones -->
+            <div class="btn-group">
+                <p:commandButton value="Agregar" styleClass="btn btn-primary"
+                                 process="@form" actionListener="#{registroUI.confirmarRegistro}"
+                                 update="messages"/>
+                <p:commandButton value="Cancelar" styleClass="btn btn-danger" type="reset"/>
+            </div>
+
+            <p:messages id="messages" showDetail="true" closable="true"/>
+        </div>
+    </h:form>
+
+</h:body>
+</html>

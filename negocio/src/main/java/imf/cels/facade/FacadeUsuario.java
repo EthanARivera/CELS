@@ -3,6 +3,8 @@ package imf.cels.facade;
 import imf.cels.delegate.DelegateUsuario;
 import imf.cels.entity.Usuario;
 
+import java.util.List;
+
 public class FacadeUsuario {
 
     private final DelegateUsuario delegateUsuario;
@@ -17,6 +19,18 @@ public class FacadeUsuario {
 
     public void saveUsario(Usuario usuario){
         delegateUsuario.saveUsario(usuario);
+    }
+
+    public List<Usuario> obtenerUsuarios() {
+        return delegateUsuario.obtenerUsuarios();
+    }
+
+    public List<Usuario> obtenerPorNombre(String nombre){
+        return delegateUsuario.obtenerPorNombre(nombre);
+    }
+
+    public Usuario obtenerPorId(Integer id){
+        return delegateUsuario.obtenerPorId(id);
     }
 
 }

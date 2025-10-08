@@ -12,12 +12,19 @@
 </h:head>
 
 <h:body>
+    <!-- Etiqueta que ejecutará antes de que cargue el index -->
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"></f:event>
+    </f:metadata>
+
     <!-- Encabezado con botones -->
     <div class="headerprin">
         <!-- Link para regresar -->
-        <h:link class="link-btn" outcome="login.xhtml">
-            <i class="pi pi-sign-out"></i>
-        </h:link>
+        <h:form>
+            <h:commandLink styleClass="link-btn" action="#{loginUI.logout}">
+                <i class="pi pi-sign-out"></i>
+            </h:commandLink>
+        </h:form>
 
         <span>Cotizaciones El Letrero Signshop</span>
 

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Gestor de Usuarios</title>
+    <h:outputStylesheet name="style.css"/>
+    <script src="resources/funct.js"></script>
+</h:head>
+<h:body>
+    <!-- Encabezado con botones -->
+    <div class="header">
+        <!-- Link para regresar -->
+        <h:link outcome="index.xhtml" styleClass="back ui-button-success">
+            <i class="pi pi-arrow-left"></i>
+        </h:link>
+
+        <span>Gestor de usuarios</span>
+
+        <!-- Botón de menú -->
+        <p:commandButton class="menu" icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;" />
+    </div>
+
+    <!-- Menú superior oculto -->
+    <div id="menuPanel" class="menu-panel">
+        <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
+            <i class="pi pi-box"></i> Consulta Materiales
+        </h:link>
+
+        <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
+            <i class="pi pi-users"></i> Consulta Usuarios
+        </h:link>
+
+        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Consulta Cotizaciones
+        </h:link>
+    </div>
+
+    <h:form id="formUsuarios" styleClass="cuerpo-gestores">
+
+        <!-- Panel principal del catálogo -->
+        <p:panel styleClass="catalogo-panel">
+            <br/>
+            <!-- Barra de búsqueda -->
+            <div class="searchbar">
+                <i class="pi pi-search">    </i>
+
+                <p:inputText id="nombreBusqueda"
+                             value="#{usuarioBean.nombreBusqueda}"
+                             placeholder="Buscar por nombre"
+                             styleClass="search-input">
+                    <p:ajax event="keyup"
+                            process="@form"
+                            listener="#{usuarioBean.aplicarFiltro}"
+                            update="tablaUsuarios"
+                            delay="500"/>
+                </p:inputText>
+
+                <i class="pi pi-search">    </i>
+                <p:inputText id="idBusqueda"
+                             value="#{usuarioBean.idBusqueda}"
+                             placeholder="Buscar por ID"
+                             styleClass="search-input"
+                             style="margin-left:10px;">
+                    <p:ajax event="keyup"
+                            process="@form"
+                            listener="#{usuarioBean.aplicarFiltro}"
+                            update="tablaUsuarios"
+                            delay="100"/>
+                </p:inputText>
+
+                <br/><br/>
+
+                <p:commandButton value="Mostrar todos"
+                                 icon="pi pi-refresh"
+                                 actionListener="#{usuarioBean.recargarUsuarios}"
+                                 update="tablaUsuarios"
+                                 styleClass="btn-azul-iconoblanco btn-refresh"/>
+            </div>
+
+            <br/><br/>
+
+            <!-- Tabla de usuarios -->
+            <p:dataTable id="tablaUsuarios"
+                         value="#{usuarioBean.listaFiltrada}"
+                         var="usuario"
+                         responsiveLayout="scroll"
+                         emptyMessage="Sin usuarios registrados"
+                         rowHover="true"
+                         paginator="false"
+                         styleClass="ua-table custom-table-skin">
+
+                <p:column headerText="ID" style="width:80px;">
+                    <h:outputText value="#{usuario.id}" />
+                </p:column>
+
+                <p:column headerText="Nombre Usuario">
+                    <h:outputText value="#{usuario.nombre}" />
+                </p:column>
+
+                <p:column headerText="Apellidos">
+                    <h:outputText value="#{usuario.apellidoPrim} #{usuario.apellidoSeg}" />
+                </p:column>
+
+                <p:column headerText="RFC">
+                    <h:outputText value="#{usuario.rfc}" />
+                </p:column>
+
+                <p:column headerText="Correo Electrónico">
+                    <h:outputText value="#{usuario.email}" />
+                </p:column>
+
+                <p:column headerText="Acciones"
+                          style="width:100px; text-align:center;">
+                    <div class="action-buttons">
+                        <p:commandButton icon="pi pi-pencil"
+                                         title="Editar"
+                                         styleClass="ui-button-flat pencil-icon"/>
+                        <p:commandButton icon="pi pi-trash"
+                                         title="Eliminar"
+                                         styleClass="ui-button-flat delete-icon"/>
+                    </div>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+    </h:form>
+
+
+</h:body>
+
+</html>

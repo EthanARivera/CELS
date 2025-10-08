@@ -1,137 +1,440 @@
-/*GENERAL*/
-html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-}
-body {
-    background-color: #262F8D;
-    color: white;
-    font-family: Tahoma, Verdana, Arial, sans-serif;
-}
+    /*GENERAL*/
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+    body {
+        background-color: #262F8D;
+        color: white;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
 
-.header {
-    display: flex;
-    align-items: center;
-    height: 15%;
-    justify-content: space-between;
-    background: #F7FF00;
-    color: #262F8D;
-    padding: 0 20px;
-    margin: 0;
-    position: relative;
-    font-size: 18px;
-    font-weight: bold;
-}
+    .header {
+        display: flex;
+        align-items: center;
+        height: 15%;
+        justify-content: space-between;
+        background: #F7FF00;
+        color: #262F8D;
+        padding: 0 20px;
+        margin: 0;
+        position: relative;
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-.headerprin {
-    display: flex;
-    align-items: center;
-    height: 15%;
-    justify-content: space-between;
-    background: #262F8D;
-    color: white;
-    padding: 0 20px;
-    margin: 0;
-    position: relative;
-    font-size: 18px;
-    font-weight: bold;
-}
+    .headerprin {
+        display: flex;
+        align-items: center;
+        height: 15%;
+        justify-content: space-between;
+        background: #262F8D;
+        color: white;
+        padding: 0 20px;
+        margin: 0;
+        position: relative;
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-.header span {
-    flex-grow: 0;
-    text-align: center;
-}
+    .header span {
+        flex-grow: 0;
+        text-align: center;
+    }
 
-.headerprin span {
-    flex-grow: 0;
-    text-align: center;
-}
+    .headerprin span {
+        flex-grow: 0;
+        text-align: center;
+    }
 
-.back i {
-    margin-right: 5px;
-}
+    .back i {
+        margin-right: 5px;
+    }
 
-/*LOGIN*/
+    /*LOGIN*/
 
-div.login{
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 35%;
-    width: 25%;
-    padding: 25px;
-    margin: auto;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
+    div.login{
+        position: absolute;
+        top:0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 35%;
+        width: 25%;
+        padding: 25px;
+        margin: auto;
+        background: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
 
-/*PRINCIPAL*/
+    /*PRINCIPAL*/
 
-.nav-links {
-    margin-top: 20px;
-    text-align: center;
-}
+    .nav-links {
+        margin-top: 20px;
+        text-align: center;
+    }
 
-.link-btn {
-    display: inline-block;
-    padding: 10px 15px;
-    margin: 5px;
-    border-radius: 4px;
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    transition: all 0.3s ease;
-}
+    .link-btn {
+        display: inline-block;
+        padding: 10px 15px;
+        margin: 5px;
+        border-radius: 4px;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
 
-.link-btn i {
-    margin-right: 5px;
-}
+    .link-btn i {
+        margin-right: 5px;
+    }
 
-.link-btn:hover {
-    opacity: 0.85;
-    text-decoration: underline;
-}
+    .link-btn:hover {
+        opacity: 0.85;
+        text-decoration: underline;
+    }
 
-/*MENUS DE GESTION*/
+    /*MENUS DE GESTION*/
 
-.cuerpo-gestores {
-    margin: 5%;
-    padding: 3%;
-    background-color: white;
-    color: #262F8D;
-    border-radius: 25px;
-}
+    .cuerpo-gestores {
+        margin: 5%;
+        background-color: rgba(0,0,0,0);
+        color: #262F8D;
+        border-radius: 25px;
+    }
 
-/* Panel del menú */
-.menu-panel {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 15%;
-    background: yellow;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding-top: 0;
-    margin: 0;
-    z-index: 999;
-    justify-content: center;
-    transition: opacity 0.3s ease;
-    gap: 25px;
-}
+    /* === Tabla personalizada === */
+    .custom-table-skin .user-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-family: 'Segoe UI', sans-serif !important;
+        border: 2px solid #262F8D !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        background-color: #f8f9fa !important;
+    }
 
-/* Selecciona específicamente el botón del menú */
-.menu.ui-button {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: yellow !important; /* Cambia este color al que quieras */
-}
+    /* === Cabecera de la tabla === */
+    body .custom-table-skin .user-table .p-datatable-thead > tr > th {
+        background-color: #262F8D !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        font-weight: bold !important;
+        padding: 10px !important;
+        border: none !important;
+    }
+
+    /* === Cuerpo de la tabla === */
+    body .custom-table-skin .user-table .p-datatable-tbody > tr > td {
+        background-color: #f8f9fa !important;
+        color: #262F8D !important;
+        text-align: center !important;
+        padding: 8px !important;
+        border-bottom: 1px solid #d0d0d0 !important;
+    }
+
+    /* === Alternancia de filas === */
+    body .custom-table-skin .user-table .p-datatable-tbody > tr:nth-child(even) > td {
+        background-color: #e9ecf6 !important;
+    }
+
+    /* === Hover en fila === */
+    body .custom-table-skin .user-table .p-datatable-tbody > tr:hover > td {
+        background-color: #dce2fa !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    /* === Botones de acción === */
+    body .custom-table-skin .user-table .action-buttons .p-button {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* === Iconos de acción === */
+    body .custom-table-skin .user-table .pencil-icon {
+        color: #0062ff !important;
+
+    }
+
+    body .custom-table-skin .user-table .delete-icon {
+        color: #d32f2f !important;
+    }
+
+    /* === Alineación de columnas === */
+    body .custom-table-skin .user-table .p-column {
+        text-align: center !important;
+    }
+
+    /* Panel del menú */
+    .menu-panel {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 15%;
+        background: yellow;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding-top: 0;
+        margin: 0;
+        z-index: 999;
+        justify-content: center;
+        transition: opacity 0.3s ease;
+        gap: 25px;
+    }
+
+    .menu-panel {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 15%;
+        background: yellow;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding-top: 0;
+        margin: 0;
+        z-index: 999;
+        justify-content: center;
+        transition: opacity 0.3s ease;
+        gap: 25px;
+    }
+
+    .menu.ui-button {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: yellow !important;
+    }
+
+    .menu .ui-icon,
+    .menu .pi {
+        color: #262F8D !important;
+    }
+
+    .header .menu .ui-icon,
+    .menu .pi {
+        color: #262F8D !important;
+    }
+
+    .headerprin .menu .ui-icon,
+    .menu .pi {
+        color: white !important;
+    }
+
+    .menu.ui-button:hover {
+        background: rgba(0,0,0,0.05) !important;
+        transform: scale(1.05);
+        transition: 0.2s ease;
+    }
+
+    .menu.ui-button {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: yellow !important;
+    }
+
+    .menuin.ui-button:hover {
+        background: rgba(0,0,0,0.05) !important;
+        transform: scale(1.05);
+        transition: 0.2s ease;
+    }
+
+    /* PERSONALIZACIÓN TEMA PRIMEFACES "SOUTH-STREET"
+    Color de la Empresa: #262F8D (azul)*/
+
+    /*BOTONES*/
+    body .ui-button,
+    body .p-button {
+        background: #262F8D !important;
+        border: 1px solid #1f2575 !important;
+        color: #ffffff !important;
+        font-weight: bold !important;
+        text-shadow: none !important;
+        border-radius: 6px !important;
+    }
+
+    body .ui-button:hover,
+    body .p-button:hover {
+        background: #1f2575 !important;
+        border-color: #151b5f !important;
+        color: #ffffff !important;
+        transform: scale(1.02);
+        transition: 0.2s ease;
+    }
+
+    /*Botones secundarios o planos*/
+    .btn-azul-iconoblanco {
+        background-color: #262F8D !important;
+        border: none !important;
+        color: white !important;
+    }
+
+    /*Asegura que el ícono también sea blanco*/
+    .btn-azul-iconoblanco .pi {
+        color: white !important;
+    }
+
+    /*Efecto hover opcional*/
+    .btn-azul-iconoblanco:hover {
+        background-color: #1e2474 !important;
+    }
+
+    body .ui-button.ui-button-flat,
+    body .p-button.p-button-text {
+        background: transparent !important;
+        color: #262F8D !important;
+        border: none !important;
+    }
+
+    body .ui-button.ui-button-flat:hover,
+    body .p-button.p-button-text:hover {
+        background: rgba(38,47,141,0.1) !important;
+        color: #1f2575 !important;
+    }
+
+    /*TABLAS*/
+    body .ui-datatable thead th,
+    body .p-datatable thead th {
+        background: #262F8D !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        font-weight: bold !important;
+        border: 2px solid #1f2575 !important;
+    }
+
+    body .ui-datatable,
+    body .p-datatable {
+        border: 2px solid #262F8D !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+    }
+
+    body .ui-datatable tbody td,
+    body .p-datatable tbody td {
+        color: #262F8D !important;
+        background-color: #f8f9fa !important;
+        text-align: center !important;
+        border-bottom: 1px solid #d0d0d0 !important;
+    }
+
+    body .ui-datatable tbody tr:nth-child(even) td,
+    body .p-datatable tbody tr:nth-child(even) td {
+        background-color: #e9ecf6 !important;
+    }
+
+    body .ui-datatable tbody tr:hover td,
+    body .p-datatable tbody tr:hover td {
+        background-color: #dce2fa !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    /*INPUTS, SELECTS, TEXTAREAS*/
+    body .ui-inputfield,
+    body .p-inputtext,
+    body input,
+    body textarea,
+    body select {
+        border: 1px solid #262F8D !important;
+        border-radius: 5px !important;
+        color: #262F8D !important;
+        background-color: #ffffff !important;
+        padding: 5px 8px !important;
+    }
+
+    body .ui-inputfield:focus,
+    body .p-inputtext:focus {
+        border-color: #1f2575 !important;
+        box-shadow: 0 0 6px rgba(38,47,141,0.4) !important;
+        outline: none !important;
+    }
+
+    /*PANEL TITLES / HEADERS*/
+    body .ui-panel .ui-panel-titlebar,
+    body .p-panel .p-panel-header {
+        background: #262F8D !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    /*LINKS*/
+    body a,
+    body .ui-link {
+        color: white !important;
+        text-decoration: none !important;
+    }
+
+    body a:hover,
+    body .ui-link:hover {
+        color: yellow !important;
+    }
+
+    .headerprin .link-btn .pi {
+        color: white !important;
+    }
+
+    /*MENÚS, POPOVERS, DIALOGS*/
+    body .ui-menu,
+    body .p-menu,
+    body .ui-dialog,
+    body .p-dialog {
+        border: 2px solid #262F8D !important;
+    }
+
+    body .ui-menuitem-link,
+    body .p-menuitem-link {
+        color: #262F8D !important;
+    }
+
+    body .ui-menuitem-link:hover,
+    body .p-menuitem-link:hover {
+        background: rgba(38,47,141,0.1) !important;
+        color: #1f2575 !important;
+    }
+
+    /*CHECKBOXES, RADIOBUTTONS, TOGGLES*/
+    body .ui-chkbox .ui-chkbox-box.ui-state-active,
+    body .p-checkbox .p-checkbox-box.p-highlight,
+    body .ui-radiobutton .ui-radiobutton-box.ui-state-active,
+    body .p-radiobutton .p-radiobutton-box.p-highlight {
+        border-color: #262F8D !important;
+        background: #262F8D !important;
+    }
+
+    body .ui-chkbox .ui-chkbox-box.ui-state-active:hover,
+    body .p-checkbox .p-checkbox-box.p-highlight:hover {
+        background: #1f2575 !important;
+    }
+
+    /*Paginación de tablas*/
+    body .ui-paginator,
+    body .p-paginator {
+        background: #f8f9fa !important;
+        border: 1px solid #262F8D !important;
+        border-radius: 0 0 10px 10px !important;
+    }
+
+    body .ui-paginator-page.ui-state-active,
+    body .p-paginator-page.p-highlight {
+        background: #262F8D !important;
+        color: #fff !important;
+    }
+
+    body .ui-paginator-page:hover,
+    body .p-paginator-page:hover {
+        background: #1f2575 !important;
+        color: #fff !important;
+    }
+
+    /*ÍCONOS GENERALES*/
+    body .pi {
+        color: #262F8D !important;
+    }
 
 /* Si el botón tiene ícono (como el pi-bars), ajustamos el color del ícono */
 .menu .ui-icon,

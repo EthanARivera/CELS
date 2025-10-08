@@ -44,6 +44,18 @@ public class DelegateUsuario {
         ServiceLocator.getInstanceUsuarioDAO().save(usuario);
     }
 
+    public List<Usuario> obtenerUsuarios() {
+        return ServiceLocator.getInstanceUsuarioDAO().findAll();
+    }
+
+    public Usuario obtenerPorId(Integer id) {
+        return ServiceLocator.getInstanceUsuarioDAO().findById(id);
+    }
+
+    public List<Usuario> obtenerPorNombre(String nombre) {
+        return ServiceLocator.getInstanceUsuarioDAO().findByName(nombre);
+    }
+
 
 
 

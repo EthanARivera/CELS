@@ -1,21 +1,15 @@
--- =====================================================
--- CREAR BASE DE DATOS
--- =====================================================
 CREATE DATABASE CELS
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_general_ci;
 
 USE CELS;
 
--- =====================================================
--- TABLA: usuario
--- =====================================================
 CREATE TABLE usuario (
     id_usuario INT(5) AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     apellido_prim VARCHAR(50) NOT NULL,
     apellido_seg VARCHAR(50),
-    rfc CHAR(13) NOT NULL,
+    rfc VARCHAR(13) NOT NULL,
     email VARCHAR(254) NOT NULL UNIQUE,
     psswd VARCHAR(64) NOT NULL,
     fecha_nacimiento DATE NOT NULL,
@@ -23,9 +17,6 @@ CREATE TABLE usuario (
     CONSTRAINT chk_rfc_length CHECK (CHAR_LENGTH(rfc) = 13)
 );
 
--- =====================================================
--- TABLA: cotizacion
--- =====================================================
 CREATE TABLE cotizacion (
     id_folio INT(8) AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT(5) NOT NULL,
@@ -49,9 +40,6 @@ CREATE TABLE cotizacion (
         ON DELETE RESTRICT
 );
 
--- =====================================================
--- TABLA: material
--- =====================================================
 CREATE TABLE material (
     id_material INT(5) AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(128) NOT NULL,
@@ -60,9 +48,6 @@ CREATE TABLE material (
     tipo_unidad ENUM('lts', 'm²', 'kgs', 'pzas', 'mts', 'otro') NOT NULL
 );
 
--- =====================================================
--- TABLA: cotizacion_material (relación N:M)
--- =====================================================
 CREATE TABLE cotizacion_material (
     id_folio INT(8) NOT NULL,
     id_material INT(5) NOT NULL,
@@ -77,9 +62,6 @@ CREATE TABLE cotizacion_material (
         ON DELETE CASCADE
 );
 
--- =====================================================
--- TABLA: cotizacion_mano_de_obra (relación N:M)
--- =====================================================
 CREATE TABLE cotizacion_mano_de_obra (
     id_folio INT(8) NOT NULL,
     num_responsable INT(5) NOT NULL,

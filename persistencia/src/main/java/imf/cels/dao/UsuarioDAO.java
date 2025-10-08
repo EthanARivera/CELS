@@ -10,15 +10,30 @@ import java.util.List;
 public class UsuarioDAO extends AbstractDAO<Usuario> {
     private final EntityManager entityManager;
 
-    public UsuarioDAO(EntityManager em) {
+    public UsuarioDAO(EntityManager entityManager) {
         super(Usuario.class);
-        this.entityManager = em;
+        this.entityManager = entityManager;
     }
 
     public List<Usuario> obtenerTodos(){
         return entityManager
                 .createQuery("SELECT a FROM Usuario a", Usuario.class)
                 .getResultList();
+    }
+
+    public Usuario findById(int id) {
+        return entityManager.find(Usuario.class, id);
+    }
+
+    public List<Usuario> findByName(String name) {
+        try {
+            return entityManager.createQuery(
+                            "SELECT u FROM Usuario u WHERE u.nombre = :nombre", Usuario.class)
+                    .setParameter("nombre", name)
+                    .getResultList();
+        } catch (jakarta.persistence.NoResultException e) {
+            return null; // No se encontró el usuario
+        }
     }
 
     @Override

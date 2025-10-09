@@ -7,29 +7,22 @@
 
 <h:head>
     <link href="resources/style.css" rel="stylesheet"/>
-    <script src="resources/funct.js"></script>
+    <script src="resourcer/funct.js"></script>
     <title>Facelet Title</title>
 </h:head>
 
 <h:body>
-    <!-- Etiqueta que ejecutará antes de que cargue el index -->
-    <f:metadata>
-        <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"></f:event>
-    </f:metadata>
-
     <!-- Encabezado con botones -->
     <div class="headerprin">
         <!-- Link para regresar -->
-        <h:form>
-            <h:commandLink styleClass="link-btn" action="#{loginUI.logout}">
-                <i class="pi pi-sign-out"></i>
-            </h:commandLink>
-        </h:form>
+        <h:link class="link-btn" outcome="login.xhtml">
+            <i class="pi pi-sign-out"></i>
+        </h:link>
 
         <span>Cotizaciones El Letrero Signshop</span>
 
         <!-- Botón de menú -->
-        <p:commandButton class="menu" icon="pi pi-bars"
+        <p:commandButton class="menuin" icon="pi pi-bars"
                          onclick="toggleMenu(); return false;" />
     </div>
 
@@ -62,6 +55,18 @@
             <i class="pi pi-file"></i> Consulta Cotizaciones
         </h:link>
     </div>
+
+    <script>
+        // Función para mostrar/ocultar el menú
+        function toggleMenu() {
+            let menu = document.getElementById('menuPanel');
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'flex';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
+    </script>
 </h:body>
 
 </html>

@@ -21,6 +21,10 @@ public class FacadeUsuario {
         delegateUsuario.saveUsario(usuario);
     }
 
+    //Registro de Usuario -
+    public void registrarUsuario(Usuario usuario){ delegateUsuario.registrarUsuario(usuario);
+    }
+
     public List<Usuario> obtenerUsuarios() {
         return delegateUsuario.obtenerUsuarios();
     }

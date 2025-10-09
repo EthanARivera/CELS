@@ -41,6 +41,7 @@ public class UsuarioDAO extends AbstractDAO<Usuario> {
         return entityManager;
     }
 
+    // Verifica si un correo electrónico ya existe en la base de datos
     public boolean existeCorreo(String correo) {
         List<Usuario> result = entityManager.createQuery(
                         "SELECT u FROM Usuario u WHERE u.email = :correo", Usuario.class)
@@ -48,6 +49,4 @@ public class UsuarioDAO extends AbstractDAO<Usuario> {
                 .getResultList();
         return !result.isEmpty();
     }
-
-
 }

@@ -10,7 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 
-
 public class DelegateUsuario {
     private final UsuarioNegocio negocio = new imf.cels.negocio.UsuarioNegocio();
 
@@ -55,8 +54,6 @@ public class DelegateUsuario {
     public List<Usuario> obtenerPorNombre(String nombre) {
         return ServiceLocator.getInstanceUsuarioDAO().findByName(nombre);
     }
-
-
 
 
     // Format y validacion de registro de usuario

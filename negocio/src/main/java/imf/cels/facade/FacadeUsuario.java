@@ -21,7 +21,7 @@ public class FacadeUsuario {
         delegateUsuario.saveUsario(usuario);
     }
 
-    //Registro de Usuario
+    //Registro de Usuario -
     public void registrarUsuario(Usuario usuario){ delegateUsuario.registrarUsuario(usuario);
     }
 

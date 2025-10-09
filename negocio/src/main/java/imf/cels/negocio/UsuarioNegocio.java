@@ -19,7 +19,7 @@ public class UsuarioNegocio {
         return Pattern.matches(regex, correo.toLowerCase());
     }
 
-    /** Genera el RFC de manera simplificada **/
+    // Genera el RFC de manera simplificada
     public String generarRFC(Usuario u) {
         String ap1 = u.getApellidoPrim().toUpperCase();
         String ap2 = (u.getApellidoSeg() != null) ? u.getApellidoSeg().toUpperCase() : "";
@@ -35,7 +35,7 @@ public class UsuarioNegocio {
         return rfc.toUpperCase();
     }
 
-    /** Valida que el RFC del usuario coincida con el generado **/
+    // Valida que el RFC del usuario coincida con el generado
     public boolean validarRFC(Usuario u) {
         if (u.getRfc() == null || u.getFechaNacimiento() == null) return false;
         String esperado = generarRFC(u);

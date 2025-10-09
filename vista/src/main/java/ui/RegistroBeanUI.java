@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class RegistroBeanUI implements Serializable {
 
     private Usuario usuario = new Usuario();
-
+    //feedback
     public void confirmarRegistro() {
         FacesContext context = FacesContext.getCurrentInstance();
 
@@ -45,7 +45,6 @@ public class RegistroBeanUI implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error interno", "No se pudo registrar el usuario."));
         }
     }
-
 
     // Getter y Setter
     public Usuario getUsuario() { return usuario; }

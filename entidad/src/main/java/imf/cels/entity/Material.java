@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "material")
+
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,7 @@ public class Material {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_unidad", nullable = false, length = 16)
+    @Column(name = "tipo_unidad", nullable = false, length = 30)
     private TipoUnidad tipoUnidad;
 
     @OneToMany(mappedBy = "idMaterial")
@@ -84,5 +85,4 @@ public class Material {
     public void setCotizacionMaterials(Set<CotizacionMaterial> cotizacionMaterials) {
         this.cotizacionMaterials = cotizacionMaterials;
     }
-
 }

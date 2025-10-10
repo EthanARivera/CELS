@@ -1,12 +1,12 @@
 package imf.cels.entity;
 
 public enum TipoUnidad {
-    LITROS("lts"),
-    METROS_CUADRADOS("m²"),
-    KILOGRAMOS("kgs"),
-    PIEZAS("pzas"),
-    METROS("mts"),
-    OTRO("otro");
+    lts("lts"),
+    m2("m²"),       // Guardará "m2" en BD pero mostrará "m²" al usuario
+    kgs("kgs"),
+    pzas("pzas"),
+    mts("mts"),
+    otro("otro");
 
     private final String label;
 
@@ -24,12 +24,14 @@ public enum TipoUnidad {
     }
 
     /**
-     * Convierte un string de la BD al enum correspondiente.
+     * Convierte un string (guardado en la BD) al enum correspondiente.
      */
     public static TipoUnidad fromLabel(String label) {
-        for (TipoUnidad t : values()) {
-            if (t.label.equalsIgnoreCase(label)) {
-                return t;
+        if (label == null) return null;
+        for (TipoUnidad u : values()) {
+            // 👇 "m2" de la BD se convierte a TipoUnidad.m2
+            if (u.name().equalsIgnoreCase(label) || u.label.equalsIgnoreCase(label)) {
+                return u;
             }
         }
         throw new IllegalArgumentException("Unidad desconocida: " + label);

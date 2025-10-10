@@ -18,21 +18,31 @@ import imf.cels.persistence.HibernateUtil;
 public class ServiceLocator {
 
     private static UsuarioDAO usuarioDAO;
+    private static MaterialDAO materialDAO;
 
-    private static EntityManager getEntityManager(){
+    private static EntityManager getEntityManager() {
         return HibernateUtil.getEntityManager();
     }
 
-    /**
-     * se crea la instancia de usuarioDAO si esta no existe
-     */
-    public static UsuarioDAO getInstanceUsuarioDAO(){
-        if(usuarioDAO == null){
+
+    public static UsuarioDAO getInstanceUsuarioDAO() {
+        if (usuarioDAO == null) {
             usuarioDAO = new UsuarioDAO(getEntityManager());
             return usuarioDAO;
-        } else{
+        } else {
             return usuarioDAO;
         }
     }
 
+    /**
+     * se crea la instancia de materialDAO si esta no existe
+     */
+    public static MaterialDAO getInstanceMaterialDAO() {
+        if (materialDAO == null) {
+            materialDAO = new MaterialDAO(getEntityManager());
+            return materialDAO;
+        } else {
+            return materialDAO;
+        }
+    }
 }

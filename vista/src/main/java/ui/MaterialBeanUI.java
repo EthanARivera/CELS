@@ -61,6 +61,10 @@ public class MaterialBeanUI implements Serializable {
         }
     }
 
+    public void limpiarFormulario() {
+        material = new Material(); // reinicia el objeto del formulario
+    }
+
 
     // Getters y setters
     public Material getMaterial() {

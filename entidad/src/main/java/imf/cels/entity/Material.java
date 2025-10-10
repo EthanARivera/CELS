@@ -30,8 +30,8 @@ public class Material {
     private BigDecimal costo;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_unidad", nullable = false, length = 16)
+    @Column(name = "tipo_unidad", nullable = false, columnDefinition = "ENUM('mts','kgs','lts','pzas','m²','otro')")
+    @Convert(converter = TipoUnidadConverter.class)
     private TipoUnidad tipoUnidad;
 
     @OneToMany(mappedBy = "idMaterial")

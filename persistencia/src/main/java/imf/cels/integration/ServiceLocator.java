@@ -18,6 +18,7 @@ import imf.cels.persistence.HibernateUtil;
 public class ServiceLocator {
 
     private static UsuarioDAO usuarioDAO;
+    private static MaterialDAO materialDAO;
 
     private static EntityManager getEntityManager(){
         return HibernateUtil.getEntityManager();
@@ -32,6 +33,15 @@ public class ServiceLocator {
             return usuarioDAO;
         } else{
             return usuarioDAO;
+        }
+    }
+
+    public static MaterialDAO getInstanceMaterialDAO(){
+        if(materialDAO == null){
+            materialDAO = new MaterialDAO(getEntityManager());
+            return materialDAO;
+        } else{
+            return materialDAO;
         }
     }
 

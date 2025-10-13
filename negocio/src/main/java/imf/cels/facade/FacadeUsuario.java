@@ -2,6 +2,7 @@ package imf.cels.facade;
 
 import imf.cels.delegate.DelegateUsuario;
 import imf.cels.entity.Usuario;
+import imf.cels.integration.ServiceLocator;
 
 import java.util.List;
 
@@ -18,7 +19,10 @@ public class FacadeUsuario {
     }
 
     public void saveUsario(Usuario usuario){
-        delegateUsuario.saveUsario(usuario);
+        if (usuario.getPsswd() == null || usuario.getPsswd().isEmpty() || usuario.getPsswd().equals("1")) {
+            throw new IllegalArgumentException("Contraseña inválida: no se puede guardar valor vacío o '1'");
+        }
+        ServiceLocator.getInstanceUsuarioDAO().save(usuario);
     }
 
     //Registro de Usuario -

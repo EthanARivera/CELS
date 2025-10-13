@@ -35,19 +35,23 @@ public class LoginBeanUI implements Serializable{
         usuario= new Usuario();
     }
 
-     public void login() throws IOException{
+    public String login() {
         String appURL = "/index.xhtml";
-        // los atributos de usuario vienen del xhtml 
-        Usuario us= new Usuario();
-        us.setId(0);
-        us = loginHelper.Login(usuario.getEmail(), usuario.getPsswd());
-          if(us != null && us.getId()!=null){
-            // asigno el usuario encontrado al usuario de esta clase para que 
-            // se muestre correctamente en la pagina de informacion
-            usuario=us;
-            FacesContext.getCurrentInstance().getExternalContext().redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + appURL);
-        }else{
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Usuario o contraseña incorrecta:", "Intente de nuevo"));
+
+        Usuario us = loginHelper.Login(usuario.getEmail(), usuario.getPsswd());
+        if (us != null && us.getId() != null) {
+            usuario = us;
+            try {
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + appURL);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null; // ya hiciste redirect manual
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Usuario o contraseña incorrecta:", "Intente de nuevo"));
+            return null; // quédate en la misma página para mostrar mensaje
         }
     }
 
@@ -64,6 +68,14 @@ public class LoginBeanUI implements Serializable{
             context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath()+"/login.xhtml");
         }
     }
+
+    public void redirigirSiLogueado() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (usuario != null && usuario.getEmail() != null) {
+            context.getExternalContext()
+                    .redirect(context.getExternalContext().getRequestContextPath() + "/index.xhtml");
+        }
+    }
     
     /* getters y setters */
 
@@ -74,16 +86,5 @@ public class LoginBeanUI implements Serializable{
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-    
-    
-    
-    
-    
-    
-    
-    
 
-    
-
-    
 }

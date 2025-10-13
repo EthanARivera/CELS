@@ -90,9 +90,11 @@
     </h:head>
 
     <h:body>
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{loginUI.redirigirSiLogueado}" />
+        </f:metadata>
             <h:form>
                 <p:messages id="messages" showDetail="true" closable="true">
-
                 </p:messages>
                 <div class="panel-header">
                     <p:outputLabel styleClass="logo" value="CELS"/>
@@ -108,7 +110,7 @@
                             <label>Contraseña: </label>
                             <p:password class ="form-control" value="#{loginUI.usuario.psswd}" />
                         </div>
-                        <p:commandButton update="messages" class = "btn btn-success" value ="Iniciar sesion" actionListener ="#{loginUI.login()}"/>
+                        <p:commandButton update="messages" class = "btn btn-success" value ="Iniciar sesion" actionListener ="#{loginUI.login()}" ajax="false"/>
 
                     </div>
                 </div>

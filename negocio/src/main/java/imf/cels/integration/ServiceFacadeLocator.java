@@ -1,12 +1,14 @@
 package imf.cels.integration;
 
 import imf.cels.facade.FacadeMaterial;
+import imf.cels.facade.FacadeCotizacion;
 import imf.cels.facade.FacadeUsuario;
 
 public class ServiceFacadeLocator {
 
     private static FacadeUsuario facadeUsuario;
     private static FacadeMaterial facadeMaterial;
+    private static FacadeCotizacion facadeCotizacion;
 
     public static FacadeUsuario getInstanceFacadeUsuario() {
         if (facadeUsuario == null) {
@@ -24,5 +26,12 @@ public class ServiceFacadeLocator {
         } else {
             return facadeMaterial;
         }
+    }
+
+    public static FacadeCotizacion getInstanceFacadeCotizacion() {
+        if (facadeCotizacion == null) {
+            facadeCotizacion = new FacadeCotizacion();
+        }
+        return facadeCotizacion;
     }
 }

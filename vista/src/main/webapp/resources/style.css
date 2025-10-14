@@ -55,20 +55,6 @@
 
     /*LOGIN*/
 
-    div.login{
-        position: absolute;
-        top:0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 35%;
-        width: 25%;
-        padding: 25px;
-        margin: auto;
-        background: white;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    }
 
     /*PRINCIPAL*/
 
@@ -434,4 +420,19 @@
     /*ÍCONOS GENERALES*/
     body .pi {
         color: #262F8D !important;
+    }
+
+
+    /*Menu de edición*/
+
+    .label-column {
+        text-align: right;
+        font-weight: bold;
+        padding-right: 10px;
+        width: 150px;
+    }
+
+    .input-column {
+
+        width: 100%;
     }

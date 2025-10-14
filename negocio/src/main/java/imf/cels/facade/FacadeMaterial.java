@@ -29,4 +29,7 @@ public class FacadeMaterial {
         return delegateMaterial.obtenerPorId(id);
     }
 
+    public void modificarMaterial(Material material){
+        delegateMaterial.actualizarMaterial(material);
+    }
 }

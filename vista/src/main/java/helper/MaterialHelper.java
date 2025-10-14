@@ -17,4 +17,8 @@ public class MaterialHelper {
     public Material obtenerPorId(Integer id){
         return ServiceFacadeLocator.getInstanceFacadeMaterial().obtenerPorId(id);
     }
+
+    public void modificar(Material material){
+        ServiceFacadeLocator.getInstanceFacadeMaterial().modificarMaterial(material);
+    }
 }

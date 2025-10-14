@@ -3,6 +3,8 @@ package ui;
 import helper.MaterialHelper;
 import imf.cels.entity.Material;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -84,6 +86,21 @@ public class MaterialBeanUI implements Serializable {
         listaFiltrada = new ArrayList<>(materiales);
         nombreBusqueda = "";
         idBusqueda = null;
+    }
+
+    public void prepararEdicion(Material material){
+        this.materialSeleccionado = material;
+    }
+
+    public void guardarCambios(){
+        try{
+            helper.modificar(materialSeleccionado);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Modificación exitosa", "El material fue modificado correctamente"));
+            recargarMateriales();
+        }catch(Exception e){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Modificación fallida", "El material no fue modificado"));
+
+        }
     }
 
     // --- Getters y Setters ---

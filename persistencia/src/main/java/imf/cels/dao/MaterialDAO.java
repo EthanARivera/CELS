@@ -3,6 +3,7 @@ package imf.cels.dao;
 import imf.cels.entity.Material;
 import jakarta.persistence.EntityManager;
 import imf.cels.persistence.AbstractDAO;
+import jakarta.persistence.EntityTransaction;
 
 import java.util.List;
 
@@ -33,6 +34,23 @@ public class MaterialDAO extends AbstractDAO<Material> {
                     .getResultList();
         } catch (jakarta.persistence.NoResultException e) {
             return null; // No se encontró el material
+        }
+    }
+
+    public void update(Material material) {
+        EntityTransaction transaction = null;
+        try{
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            entityManager.merge(material); //Se actualiza el material
+
+                transaction.commit(); //Guarda los cambios en la base de datos
+        } catch(Exception e){
+            if(transaction != null && transaction.isActive()){
+                transaction.rollback(); //Revierte el cambio
+            }
+            throw e;
         }
     }
 

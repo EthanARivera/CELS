@@ -21,6 +21,6 @@
     </session-timeout>
   </session-config>
   <welcome-file-list>
-    <welcome-file>material.xhtml</welcome-file> <!--Lo cambie a altas de materiales-->
+    <welcome-file>registroMaterial.xhtml</welcome-file> <!--Lo cambie a altas de materiales-->
   </welcome-file-list>
 </web-app>

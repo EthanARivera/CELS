@@ -3,7 +3,6 @@ package ui;
 import helper.MaterialHelper;
 import imf.cels.entity.Material;
 import imf.cels.entity.TipoUnidad;
-import imf.cels.integration.ServiceFacadeLocator;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -11,14 +10,14 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Named("materialFormBean")
+@Named("materialUI")
 @SessionScoped
-public class MaterialBeanUI implements Serializable {
+public class MaterialUI implements Serializable {
     private final MaterialHelper helper = new MaterialHelper();
 
     private Material material = new Material();
 
-    public MaterialBeanUI() {}
+    public MaterialUI() {}
 
     // Devuelve todas las opciones del enum para el menú
     public TipoUnidad[] getTiposUnidad() {

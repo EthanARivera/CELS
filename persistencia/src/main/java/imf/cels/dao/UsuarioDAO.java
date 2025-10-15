@@ -49,4 +49,17 @@ public class UsuarioDAO extends AbstractDAO<Usuario> {
                 .getResultList();
         return !result.isEmpty();
     }
+
+    // Update solo los campos de correo y contraseña
+    public void actualizarCorreoYContrasena(Integer id, String correo, String password) {
+        execute(em -> {
+            Usuario usuario = em.find(Usuario.class, id);
+            if (usuario != null) {
+                usuario.setEmail(correo);
+                usuario.setPsswd(password);
+                em.merge(usuario);
+            }
+            return null;
+        });
+    }
 }

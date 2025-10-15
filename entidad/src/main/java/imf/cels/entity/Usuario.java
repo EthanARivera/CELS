@@ -54,7 +54,7 @@ public class Usuario {
     @ColumnDefault("1")
     @Column(name = "estado", nullable = false)
     //private Boolean estado = false;
-    private Boolean estado = true;
+    private Boolean estado = true; // activated automatically
 
     @OneToMany(mappedBy = "idUsuario")
     private Set<Cotizacion> cotizacions = new LinkedHashSet<>();

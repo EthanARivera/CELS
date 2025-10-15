@@ -73,6 +73,9 @@ public class DelegateUsuario {
         // Encripcion de contraseña antes de guardar
         usuario.setPsswd(encryptPassword(usuario.getPsswd()));
 
+        // Activate usuario automaticamente
+        usuario.setEstado(true);
+
         // Validacion
         if(!negocio.validarCorreo(usuario.getEmail()))
             throw new IllegalArgumentException("Correo Inválido");

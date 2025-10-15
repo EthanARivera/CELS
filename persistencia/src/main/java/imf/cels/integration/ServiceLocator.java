@@ -20,6 +20,7 @@ public class ServiceLocator {
     private static UsuarioDAO usuarioDAO;
     private static MaterialDAO materialDAO;
 
+    private static CotizacionDAO cotizacionDAO;
     private static EntityManager getEntityManager() {
         return HibernateUtil.getEntityManager();
     }
@@ -37,13 +38,20 @@ public class ServiceLocator {
     /**
      * se crea la instancia de materialDAO si esta no existe
      */
-    //
-    public static MaterialDAO getInstanceMaterialDAO() {
-        if (materialDAO == null) {
+
+    public static MaterialDAO getInstanceMaterialDAO(){
+        if(materialDAO == null){
             materialDAO = new MaterialDAO(getEntityManager());
             return materialDAO;
-        } else {
+        } else{
             return materialDAO;
         }
+    }
+
+    public static CotizacionDAO getInstanceCotizacionDAO(){
+        if(cotizacionDAO == null){
+            cotizacionDAO = new CotizacionDAO(getEntityManager());
+        }
+        return cotizacionDAO;
     }
 }

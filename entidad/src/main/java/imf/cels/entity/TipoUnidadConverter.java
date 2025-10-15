@@ -22,11 +22,10 @@ public class TipoUnidadConverter implements AttributeConverter<TipoUnidad, Strin
     public String convertToDatabaseColumn(TipoUnidad tipoUnidad) {
         // Si el enum no es nulo, devuelve su etiqueta (label), de lo contrario null.
         return tipoUnidad != null ? tipoUnidad.getLabel() : null;
-
     }
 
-    /**Convierte el valor en texto leido desde la BD
-     * correspondiente alor del enum "TipoUnidad"*/
+/**Convierte el valor en texto leido desde la BD
+ * correspondiente alor del enum "TipoUnidad"*/
     @Override
     public TipoUnidad convertToEntityAttribute(String label) {
         // Si la cadena no es nula, busca el enum correspondiente mediante fromLabel().

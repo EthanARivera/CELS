@@ -6,73 +6,121 @@
       xmlns:p="http://primefaces.org/ui">
 
     <h:head>
+        <title>CELS - Inicio de Sesión</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-        <link href="style.css" rel="stylesheet" type="text/css"/>
+        <link href="resources/style.css" rel="stylesheet"/>
         <style>
-            
             *{
                 text-align: center;
             }
-            .center{
-                float: none;
-                margin: 0 auto;
-                
-            }
-            
-           
-            div.login{
-                position: absolute;
-                top:0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 35%;
-                width: 25%;
-                padding: 25px;
-                margin: auto;
-                background: white;
-                border-radius: 5px;
-                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            }
+
             .logo{
-                width: 150px;
+                display:block;
+                font-weight: bold;
+                font-size: 70px;
+                letter-spacing: 3px;
+                margin-top: 50px;
             }
+            .logoSignificado{
+                display:block;
+                font-size: 15px;
+                margin-bottom: 40px;
+            }
+            .derechos{
+                display: block;
+                font-size: 10px;
+            }
+
+            .login{
+                width: 420px;
+                margin: 0 auto;
+                text-align: left;
+            }
+
+            .form-group-horizontal{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 25px;
+            }
+
+            .form-group-horizontal label{
+                font-size: 18px;
+                font-weight: normal;
+                width: 130px;
+                text-align: right;
+                margin-right: 10px;
+            }
+
+            .form-control{
+                width: 230px;
+                height: 35px;
+                border: none;
+                border-bottom: 2px solid #ccc;
+                border-radius: 0;
+                background-color: transparent;
+                color: white;
+                transition: border-color 0.3s ease;
+            }
+
             .form-control:focus{
-                border-color:#007738;
+                border-bottom: 2px solid yellow;
+                outline: none;
+                box-shadow: none;
             }
             .btn-success{
                 text-shadow: none;
+                background-color: yellow;
+                color: #262F8D;
+                font-weight: bold;
+            }
+            .btn-success:hover{
+                background-color: #D9D930;
+                color: #262F8D;
+                font-weight: bold;
+            }
+
+            .footer{
+                position: absolute;
+                bottom: 20px;
+                width: 100%;
+                text-align: center;
             }
         </style>
     </h:head>
 
     <h:body>
-        <div class = "row">
-           
+        <f:metadata>
+            <f:event type="preRenderView" listener="#{loginUI.redirigirSiLogueado}" />
+        </f:metadata>
             <h:form>
-               
                 <p:messages id="messages" showDetail="true" closable="true">
-                     
                 </p:messages>
+                <div class="panel-header">
+                    <p:outputLabel styleClass="logo" value="CELS"/>
+                    <p:outputLabel styleClass="logoSignificado" value="Cotizaciones El Letrero Signshop"/>
+                </div>
                 <div class="login">
-                    <div class="panel-header">
-                        <p:graphicImage url="resources/uabcl.png" class="logo" />
-                    </div>
                     <div class="panel-body">
-                        <div class=" form-group">
-                            <p:inputText class ="form-control" placeholder ="Correo:" autocomplete="false" value ="#{loginUI.usuario.email}" />
+                        <div class=" form-group-horizontal">
+                            <label>Correo: </label>
+                            <p:inputText class ="form-control" autocomplete="false" value ="#{loginUI.usuario.email}" />
                         </div>
-                        <div class="form-group">
-                            <p:password class ="form-control" placeholder="Contraseña: " value="#{loginUI.usuario.psswd}" />
+                        <div class="form-group-horizontal">
+                            <label>Contraseña: </label>
+                            <p:password class ="form-control" value="#{loginUI.usuario.psswd}" />
                         </div>
-                        <p:commandButton update="messages" class = "btn btn-success" value ="Iniciar sesion" actionListener ="#{loginUI.login()}" />
+                        <p:commandButton update="messages" class = "btn btn-success" value ="Iniciar sesion" actionListener ="#{loginUI.login()}" ajax="false"/>
 
                     </div>
                 </div>
-                
+
             </h:form>
-            
+
+        <div class="footer">
+            <p:outputLabel styleClass="derechos" value="Desarrollado por IMF"/>
+            <p:outputLabel styleClass="derechos" value="Para el Letrero Signshop"/>
+            <p:outputLabel styleClass="derechos" value="Logos e imágenes son propiedad intelectual de la empresa El Letrero Signshop"/>
         </div>
-            
     </h:body>
 </html>

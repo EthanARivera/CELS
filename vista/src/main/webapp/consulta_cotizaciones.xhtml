@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Gestor de Cotizaciones</title>
+    <link href="resources/style.css" rel="stylesheet"/>
+    <script src="resources/funct.js"></script>
+</h:head>
+<h:body>
+    <!-- Encabezado con botones -->
+    <div class="header">
+        <!-- Link para regresar -->
+        <h:link outcome="index.xhtml" styleClass="back ui-button-success">
+            <i class="pi pi-arrow-left"></i>
+        </h:link>
+
+        <span>Gestor de Cotizaciones</span>
+
+        <!-- Botón de menú -->
+        <p:commandButton class="menu" icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;" />
+    </div>
+
+    <!-- Menú superior oculto -->
+    <div id="menuPanel" class="menu-panel">
+        <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
+            <i class="pi pi-box"></i> Consulta Materiales
+        </h:link>
+
+        <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
+            <i class="pi pi-users"></i> Consulta Usuarios
+        </h:link>
+
+        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Consulta Cotizaciones
+        </h:link>
+    </div>
+
+    <h:form id="formCotizaciones" styleClass="cuerpo-gestores">
+
+        <!-- Panel principal del catálogo -->
+        <p:panel styleClass="catalogo-panel">
+            <br/>
+            <!-- Barra de búsqueda -->
+            <h:link outcome="registroCotizacion.xhtml" styleClass="menu-option">
+                <i class="pi pi-box"></i> Agregar Cotización
+            </h:link>
+            <div class="searchbar">
+                <i class="pi pi-search">    </i>
+
+                <p:inputText id="idBusqueda"
+                             value="#{cotizacionBeanUI.idBusqueda}"
+                             placeholder="Buscar cotización por id"
+                             styleClass="search-input">
+                    <p:ajax event="keyup"
+                            process="@form"
+                            listener="#{cotizacionBeanUI.buscarPorId}"
+                            update="tablaCotizaciones"
+                            delay="500"/>
+                </p:inputText>
+
+                <br/><br/>
+            </div>
+            <br/>
+
+            <!-- Filtros -->
+            <div class="filter-bar" style="display:flex; flex-direction: column; gap:12px;">
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                    <p:commandButton value="Ordenar por fecha"
+                                    icon="pi pi-calendar"
+                                     actionListener="#{cotizacionBeanUI.consultarPorFecha}"
+                                     update="tablaCotizaciones"
+                                     styleClass="btn-azul-iconoblanco"/>
+
+                    <p:commandButton value="Ordenar por folio"
+                                     icon="pi pi-sort-numeric-up"
+                                     actionListener="#{cotizacionBeanUI.consultarPorFolio}"
+                                     update="tablaCotizaciones"
+                                     styleClass="btn-azul-iconoblanco"/>
+
+                    <p:commandButton value="Ordenar por vendedor"
+                                     icon="pi pi-user"
+                                     actionListener="#{cotizacionBeanUI.consultarPorVendedor}"
+                                     update="tablaCotizaciones"
+                                     styleClass="btn-azul-iconoblanco"/>
+                </div>
+
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:8px;">
+                    <p:selectOneMenu id="anioFiltro" value="#{cotizacionBeanUI.anioFiltro}" style="width:120px;">
+                        <f:selectItem itemLabel="Año" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{cotizacionBeanUI.aniosDisponibles}" var="anio"
+                                       itemValue="#{anio}" itemLabel="#{anio}"/>
+                    </p:selectOneMenu>
+
+                    <p:commandButton value="Filtrar por año"
+                                     icon="pi pi-filter"
+                                     actionListener="#{cotizacionBeanUI.obtenerPorAnio}"
+                                     update="tablaCotizaciones"
+                                     styleClass="btn-azul-iconoblanco"/>
+
+                    <p:selectOneMenu id="mesFiltro" value="#{cotizacionBeanUI.mesFiltro}" style="width:120px;">
+                        <f:selectItem itemLabel="Mes" itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{cotizacionBeanUI.mesesDisponibles}" var="mes"
+                                       itemValue="#{mes}" itemLabel="#{cotizacionBeanUI.obtenerNombreMes(mes)}"/>
+                    </p:selectOneMenu>
+
+                    <p:commandButton value="Filtrar por mes"
+                                     icon="pi pi-filter"
+                                     actionListener="#{cotizacionBeanUI.obtenerPorMes}"
+                                     update="tablaCotizaciones"
+                                     styleClass="btn-azul-iconoblanco"/>
+                </div>
+            </div>
+            <br/>
+
+            <!-- Tabla de cotizaciones -->
+            <p:dataTable id="tablaCotizaciones"
+                         value="#{cotizacionBeanUI.cotizaciones}"
+                         var="c"
+                         responsiveLayout="scroll"
+                         emptyMessage="Sin cotizaciones registradas"
+                         rowHover="true"
+                         paginator="false"
+                         styleClass="ua-table custom-table-skin">
+
+                <p:column headerText="ID Folio" style="width:80px;">
+                    <h:outputText value="#{c.id}" />
+                </p:column>
+
+                <p:column headerText="Cliente">
+                    <h:outputText value="#{c.cliente}" />
+                </p:column>
+
+                <p:column headerText="Tipo del Proyecto">
+                    <h:outputText value="#{c.tipoProyecto}" />
+                </p:column>
+
+                <p:column headerText="Fecha">
+                    <h:outputText value="#{c.fecha}">
+                        <f:convertDateTime type="localDate" pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Vendedor">
+                    <h:outputText value="#{c.idUsuario.nombre}"/>
+                </p:column>
+
+                <p:column headerText="Acciones"
+                          style="width:100px; text-align:center;">
+                    <div class="action-buttons">
+                        <p:commandButton icon="pi pi-pencil"
+                                         title="Editar"
+                                         styleClass="ui-button-flat pencil-icon"/>
+                        <p:commandButton icon="pi pi-trash"
+                                         title="Eliminar"
+                                         styleClass="ui-button-flat delete-icon"/>
+                    </div>
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+    </h:form>
+
+</h:body>
+
+</html>

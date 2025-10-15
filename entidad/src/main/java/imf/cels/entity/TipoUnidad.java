@@ -1,10 +1,10 @@
 package imf.cels.entity;
 
+
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 public enum TipoUnidad{
-
     LITROS("lts"),
     METROS_CUADRADOS("m²"),
     KILOGRAMOS("kgs"),
@@ -36,6 +36,4 @@ public enum TipoUnidad{
         }
         throw new IllegalArgumentException("Unidad desconocida: " + label);
     }
-    //
-
 }

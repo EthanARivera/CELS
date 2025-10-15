@@ -137,5 +137,4 @@ public class Usuario {
     public void setCotizacions(Set<Cotizacion> cotizacions) {
         this.cotizacions = cotizacions;
     }
-
 }

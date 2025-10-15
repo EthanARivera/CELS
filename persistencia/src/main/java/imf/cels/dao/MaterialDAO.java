@@ -9,6 +9,7 @@ public class MaterialDAO extends AbstractDAO<Material> {
 
     private final EntityManager entityManager;
 
+    //
     public MaterialDAO(EntityManager entityManager) {
         super(Material.class);
         this.entityManager = entityManager;

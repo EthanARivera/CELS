@@ -16,7 +16,7 @@ public class MaterialHelper implements Serializable {
         m.setCosto(costo);
         m.setTipoUnidad(unidad);
 
-        // Llamada a la capa de negocio (facade)
+        // Llamada a la capa de negocio facade
         ServiceFacadeLocator.getInstanceFacadeMaterial().saveMaterial(m);
     }
 

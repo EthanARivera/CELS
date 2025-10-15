@@ -12,12 +12,12 @@ import java.math.BigDecimal;
 
 @Named("materialUI")
 @SessionScoped
-public class MaterialUI implements Serializable {
+public class MaterialBeanUI implements Serializable {
     private final MaterialHelper helper = new MaterialHelper();
 
     private Material material = new Material();
 
-    public MaterialUI() {}
+    public MaterialBeanUI() {}
 
     // Devuelve todas las opciones del enum para el menú
     public TipoUnidad[] getTiposUnidad() {

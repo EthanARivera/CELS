@@ -32,7 +32,7 @@ public class Material {
 
     @NotNull //No puede ser nulo
     @Column(name = "tipo_unidad", nullable = false, columnDefinition = "ENUM('mts','kgs','lts','pzas','m²','otro')")
-    @Convert(converter = TipoUnidadConverter.class)  // Usa el convertidor para mapear entre el enum y el texto almacenado en la BD.
+    @Convert(converter = TipoUnidadConverter.class)  // Usa el convertidor para mapear entre el enum y el texto almacenado en la base.
     private TipoUnidad tipoUnidad;
 
 

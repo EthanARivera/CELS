@@ -17,7 +17,7 @@ public class TipoUnidadConverter implements AttributeConverter<TipoUnidad, Strin
 
     /**
      * Convierte un valor del enum "TipoUnidad" a su representación en texto
-     * antes de ser almacenado en la base de datos.*/
+     * antes de ser almacenado en la base de datos..*/
     @Override
     public String convertToDatabaseColumn(TipoUnidad tipoUnidad) {
         // Si el enum no es nulo, devuelve su etiqueta (label), de lo contrario null.

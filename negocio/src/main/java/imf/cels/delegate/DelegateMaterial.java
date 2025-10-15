@@ -8,5 +8,6 @@ public class DelegateMaterial {
     public void saveMaterial(Material material) {
         ServiceLocator.getInstanceMaterialDAO().save(material);
     }
+    //
 
 }

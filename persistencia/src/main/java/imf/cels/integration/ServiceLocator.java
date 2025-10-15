@@ -37,6 +37,7 @@ public class ServiceLocator {
     /**
      * se crea la instancia de materialDAO si esta no existe
      */
+    //
     public static MaterialDAO getInstanceMaterialDAO() {
         if (materialDAO == null) {
             materialDAO = new MaterialDAO(getEntityManager());

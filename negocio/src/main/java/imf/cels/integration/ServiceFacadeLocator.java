@@ -17,7 +17,7 @@ public class ServiceFacadeLocator {
             return facadeUsuario;
         }
     }
-
+    //Material
     public static FacadeMaterial getInstanceFacadeMaterial() {
         if (facadeMaterial == null) {
             facadeMaterial = new FacadeMaterial();

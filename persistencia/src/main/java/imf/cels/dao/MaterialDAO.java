@@ -54,6 +54,25 @@ public class MaterialDAO extends AbstractDAO<Material> {
         }
     }
 
+    public void eliminar(int id){
+        EntityTransaction transaction = null;
+        try{
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
+            Material material = entityManager.find(Material.class, id);
+            if(material != null){
+                entityManager.remove(material);
+            }
+            transaction.commit();
+        }catch(Exception e){
+            if(transaction != null && transaction.isActive()){
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
     @Override
     public EntityManager getEntityManager() {
         return entityManager;

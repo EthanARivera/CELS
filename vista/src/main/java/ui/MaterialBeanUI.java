@@ -138,4 +138,15 @@ public class MaterialBeanUI implements Serializable {
     public void setIdBusqueda(Integer idBusqueda) {
         this.idBusqueda = idBusqueda;
     }
+
+    public void eliminarMaterial(Material material){
+        try{
+            helper.eliminar(material.getId());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Eliminación exitosa", "El material fue elimnado correctamente"));
+            recargarMateriales();
+        }catch(Exception e){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Eliminación fallida", "El material no fue elimnado"));
+
+        }
+    }
 }

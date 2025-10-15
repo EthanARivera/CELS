@@ -128,12 +128,28 @@
                                          />
                         <p:commandButton icon="pi pi-trash"
                                          title="Eliminar"
-                                         styleClass="ui-button-flat delete-icon"/>
+                                         styleClass="ui-button-flat delete-icon"
+                                         actionListener="#{materialBean.eliminarMaterial(material)}"
+                                         update=":formMateriales:tablaMateriales growl">
+                            <p:confirm header = "Confirmar eliminación"
+                                       message="¿Estás seguro de eliminar el material '#{material.nombre}'?"
+                                       icon ="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
                     </div>
                 </p:column>
             </p:dataTable>
 
         </p:panel>
+
+        <!-- Mensajes para eliminación de materiales-->
+        <p:growl id="growl" showDetail="true" life="4000" />
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="350" columnClasses="label-column, input-column">
+            <div style="display: flex; justify-content: center; gap: 10px;">
+            <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </div>
+        </p:confirmDialog>
 
     </h:form>
     <!--Ventana para editar el material-->
@@ -182,6 +198,8 @@
                                  styleClass="btn-rojo-iconoblanco"/>
 
             </div>
+
+
         </h:form>
     </p:dialog>
 

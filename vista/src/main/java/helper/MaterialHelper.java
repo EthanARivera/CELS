@@ -21,4 +21,8 @@ public class MaterialHelper {
     public void modificar(Material material){
         ServiceFacadeLocator.getInstanceFacadeMaterial().modificarMaterial(material);
     }
+
+    public void eliminar(Integer id){
+        ServiceFacadeLocator.getInstanceFacadeMaterial().eliminarMaterial(id);
+    }
 }

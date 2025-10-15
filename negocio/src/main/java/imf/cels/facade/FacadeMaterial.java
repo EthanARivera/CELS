@@ -32,4 +32,8 @@ public class FacadeMaterial {
     public void modificarMaterial(Material material){
         delegateMaterial.actualizarMaterial(material);
     }
+
+    public void eliminarMaterial(Integer id){
+        delegateMaterial.eliminarMaterial(id);
+    }
 }

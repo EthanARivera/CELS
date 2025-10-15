@@ -133,7 +133,7 @@
             padding-left: 10px !important;
         }
 
-        /* Quita el asterisco visual automático de campos requeridos */
+        /* Quita un asterisco visual automático de campos requeridos */
         .ui-outputlabel-rfi {
             display: none !important;
         }
@@ -156,20 +156,20 @@
 
                 <!-- Nombre del Material -->
                 <p:outputLabel for="nombre" value="Nombre del Material: " />
-                <p:inputText id="nombre" value="#{materialUI.material.nombre}"
+                <p:inputText id="nombre" value="#{materialFormBean.material.nombre}"
                              required="true" requiredMessage="El nombre es obligatorio"
                              placeholder="Ej. Vinil adhesivo" />
 
                 <!-- Tipo de Material -->
                 <p:outputLabel for="tipo" value="Tipo de Material: " />
-                <p:inputText id="tipo" value="#{materialUI.material.tipoMaterial}"
+                <p:inputText id="tipo" value="#{materialFormBean.material.tipoMaterial}"
                              required="true" requiredMessage="El tipo de material es obligatorio"
                              placeholder="Ej. Lona, Acrílico, Vinil, etc." />
 
                 <!-- Costo -->
                 <p:outputLabel for="costo" value="Costo por Unidad:" />
                 <p:inputText id="costo"
-                             value="#{materialUI.material.costo}"
+                             value="#{materialFormBean.material.costo}"
                              required="true"
                              requiredMessage="El costo es obligatorio"
                              converterMessage="El costo debe ser un número decimal válido"
@@ -180,19 +180,20 @@
 
                 <!-- Tipo de Unidad -->
                 <p:outputLabel for="unidad" value="Tipo de Unidad: " />
-                <p:selectOneMenu id="unidad" value="#{materialUI.material.tipoUnidad}" required="true"
-                                 requiredMessage="Debe seleccionar un tipo de unidad" style="width:100%;">
+                <p:selectOneMenu id="unidad" value="#{materialFormBean.material.tipoUnidad}"
+                                 required="true" requiredMessage="Debe seleccionar un tipo de unidad" style="width:100%;">
                     <f:selectItem itemLabel="Seleccione una unidad" itemValue="#{null}" noSelectionOption="true" />
-                    <f:selectItems value="#{materialUI.tiposUnidad}" var="u"
+                    <f:selectItems value="#{materialFormBean.tiposUnidad}" var="u"
                                    itemLabel="#{u.label}" itemValue="#{u}" />
                 </p:selectOneMenu>
+
             </div>
 
             <!-- Botones -->
             <div class="btn-container">
-                <p:commandButton value="Agregar" actionListener="#{materialUI.guardar}" update="@form msgs" styleClass="btn-blue" />
+                <p:commandButton value="Agregar" actionListener="#{materialFormBean.guardar}" update="@form msgs" styleClass="btn-blue" />
                 <p:commandButton value="Cancelar"
-                                 actionListener="#{materialUI.limpiarFormulario}"
+                                 actionListener="#{materialFormBean.limpiarFormulario}"
                                  update="@form"
                                  styleClass="btn-blue"
                                  process="@this"

@@ -11,11 +11,8 @@ public class FacadeMaterial {
         this.delegateMaterial = new DelegateMaterial();
     }
 
-    public void guardarMaterial(Material material) {
-        delegateMaterial.guardarMaterial(material);
+    public void saveMaterial(Material material) {
+        delegateMaterial.saveMaterial(material);
     }
 
-    public List<Material> listarMateriales() {
-        return delegateMaterial.listarMateriales();
-    }
 }

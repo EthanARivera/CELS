@@ -9,30 +9,15 @@ public class MaterialDAO extends AbstractDAO<Material> {
 
     private final EntityManager entityManager;
 
-    public MaterialDAO(EntityManager em) {
+    public MaterialDAO(EntityManager entityManager) {
         super(Material.class);
-        this.entityManager = em;
+        this.entityManager = entityManager;
     }
 
+
     @Override
-    protected EntityManager getEntityManager() {
+    public EntityManager getEntityManager() {
         return entityManager;
     }
 
-    public List<Material> obtenerTodos() {
-        return entityManager
-                .createQuery("SELECT m FROM Material m", Material.class)
-                .getResultList();
-    }
-
-    public Material buscarPorNombre(String nombre) {
-        try {
-            return entityManager
-                    .createQuery("SELECT m FROM Material m WHERE m.nombre = :nombre", Material.class)
-                    .setParameter("nombre", nombre)
-                    .getSingleResult();
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package ui;
 
+import helper.MaterialHelper;
 import imf.cels.entity.Material;
 import imf.cels.entity.TipoUnidad;
 import imf.cels.integration.ServiceFacadeLocator;
@@ -10,9 +11,10 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Named("materialUI")
+@Named("materialFormBean")
 @SessionScoped
 public class MaterialBeanUI implements Serializable {
+    private final MaterialHelper helper = new MaterialHelper();
 
     private Material material = new Material();
 
@@ -24,40 +26,35 @@ public class MaterialBeanUI implements Serializable {
     }
 
     public void guardar() {
-        // Validaciones
-        if (material.getNombre() == null || material.getNombre().isBlank() ||
-                material.getTipoMaterial() == null || material.getTipoMaterial().isBlank() ||
-                material.getCosto() == null || material.getCosto().compareTo(BigDecimal.ZERO) <= 0 ||
-                material.getTipoUnidad() == null) {
+        try{
+            // Validaciones
+            if (material.getNombre() == null || material.getNombre().isBlank() ||
+                    material.getTipoMaterial() == null || material.getTipoMaterial().isBlank() ||
+                    material.getCosto() == null || material.getCosto().compareTo(BigDecimal.ZERO) <= 0 ||
+                    material.getTipoUnidad() == null) {
 
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Datos inválidos",
-                            "Por favor complete todos los campos correctamente."));
-            return;
-        }
-
-        try {
-            // 💡 Conversión manual usando el metodo del enum
-            TipoUnidad tipo = material.getTipoUnidad();
-            material.setTipoUnidad(TipoUnidad.fromLabel(tipo.getLabel()));
-
-            // Guardar con la capa de negocio
-            ServiceFacadeLocator.getInstanceFacadeMaterial().guardarMaterial(material);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "Datos inválidos",
+                                "Por favor complete todos los campos correctamente."));
+                return;
+            }
+        // Guarda correctamente usando el Converter
+        helper.saveMaterial(material.getNombre(), material.getTipoMaterial(),
+                material.getCosto(), material.getTipoUnidad());
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "Éxito",
                             "Material guardado correctamente."));
 
-            // Limpiar el formulario
+            // Limpia el formulario
             material = new Material();
 
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "Error al guardar",
-                            e.getMessage()));
+                            "Error al guardar", e.getMessage()));
         }
     }
 

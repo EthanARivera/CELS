@@ -30,10 +30,11 @@ public class Material {
     @Column(name = "costo", nullable = false, precision = 10, scale = 2)
     private BigDecimal costo;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tipo_unidad", nullable = false, length = 30)
+    @NotNull //No puede ser nulo
+    @Column(name = "tipo_unidad", nullable = false, columnDefinition = "ENUM('mts','kgs','lts','pzas','m²','otro')")
+    @Convert(converter = TipoUnidadConverter.class)  // Usa el convertidor para mapear entre el enum y el texto almacenado en la BD.
     private TipoUnidad tipoUnidad;
+
 
     @OneToMany(mappedBy = "idMaterial")
     private Set<CotizacionMaterial> cotizacionMaterials = new LinkedHashSet<>();

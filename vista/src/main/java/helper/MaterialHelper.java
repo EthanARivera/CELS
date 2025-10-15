@@ -9,17 +9,16 @@ import java.util.List;
 
 public class MaterialHelper implements Serializable {
 
-    public void guardarMaterial(String nombre, String tipo, BigDecimal costo, TipoUnidad unidad) {
+    public void saveMaterial(String nombre, String tipo, BigDecimal costo, TipoUnidad unidad) {
         Material m = new Material();
         m.setNombre(nombre);
         m.setTipoMaterial(tipo);
         m.setCosto(costo);
         m.setTipoUnidad(unidad);
 
-        ServiceFacadeLocator.getInstanceFacadeMaterial().guardarMaterial(m);
+        // Llamada a la capa de negocio (facade)
+        ServiceFacadeLocator.getInstanceFacadeMaterial().saveMaterial(m);
     }
 
-    public List<Material> listarMateriales() {
-        return ServiceFacadeLocator.getInstanceFacadeMaterial().listarMateriales();
-    }
+
 }

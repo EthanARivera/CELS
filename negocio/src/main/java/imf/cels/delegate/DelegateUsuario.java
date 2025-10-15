@@ -131,4 +131,17 @@ public class DelegateUsuario {
             throw new RuntimeException("Error encrypting password", e);
         }
     }
+
+    // modificacion de correo y contraseña
+    public void modificarCorreoYContrasena(Usuario usuario){
+        if (!negocio.validarCorreo(usuario.getEmail())) {
+            throw new IllegalArgumentException("Correo invalido");
+        }
+
+        // Encriptar nueva contraseña
+        usuario.setPsswd(encryptPassword(usuario.getPsswd()));
+
+        // Guardar cambios
+        ServiceLocator.getInstanceUsuarioDAO().actualizarCorreoYContrasena(usuario.getId(), usuario.getEmail(), usuario.getPsswd());
+    }
 }

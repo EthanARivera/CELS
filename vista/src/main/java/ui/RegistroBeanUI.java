@@ -22,7 +22,7 @@ public class RegistroBeanUI implements Serializable {
 
             String msg = String.format(
                     "Usuario registrado correctamente.%n" +  // new line after message
-                            "ID: %d%n" +
+                            "ID: %03d%n" +
                             "Nombre completo: %s %s %s%n" +
                             "RFC: %s%n" +
                             "Correo: %s",

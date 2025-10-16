@@ -37,7 +37,7 @@ public class Material {
 
 
     @OneToMany(mappedBy = "idMaterial")
-    private Set<CotizacionMaterial> cotizacionMaterials = new LinkedHashSet<>();
+    private Set<CotizacionMaterial> cotizacionMateriales = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -80,10 +80,10 @@ public class Material {
     }
 
     public Set<CotizacionMaterial> getCotizacionMaterials() {
-        return cotizacionMaterials;
+        return cotizacionMateriales;
     }
 
     public void setCotizacionMaterials(Set<CotizacionMaterial> cotizacionMaterials) {
-        this.cotizacionMaterials = cotizacionMaterials;
+        this.cotizacionMateriales = cotizacionMaterials;
     }
 }

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Table(name = "cotizacion_material")
 public class CotizacionMaterial {
     @EmbeddedId
-    private CotizacionMaterialId id;
+    private CotizacionMaterialId id = new CotizacionMaterialId();
 
     @MapsId("idFolio")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

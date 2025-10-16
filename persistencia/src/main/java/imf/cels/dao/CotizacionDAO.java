@@ -1,7 +1,7 @@
 package imf.cels.dao;
 
 import imf.cels.entity.Cotizacion;
-import imf.cels.entity.Usuario;
+import imf.cels.integration.ServiceLocator;
 import imf.cels.persistence.AbstractDAO;
 import jakarta.persistence.EntityManager;
 import java.util.List;
@@ -60,6 +60,44 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         return entityManager
                 .createQuery("SELECT DISTINCT MONTH(c.fecha) FROM Cotizacion c ORDER BY MONTH(c.fecha)", Integer.class)
                 .getResultList();
+    }
+
+
+    //Registro de cotizaciones
+
+    //Guardado de entidad Cotizacion
+    public void registrarCotizacion(Cotizacion cotizacion) {
+
+        //Validacion
+        if(existeFolio(cotizacion.getId()))
+            throw new IllegalArgumentException("El Folio ya se encuentra en uso. Favor de recargarlo para utilizar uno disponible.");
+
+        if(cotizacion.getIdUsuario() == null) {
+            throw new IllegalArgumentException("No se encuentra ningún usuario vendedor activo. ");
+        }
+
+        if(cotizacion.getFecha() == null) {
+            throw new IllegalArgumentException("La fecha no se puede recuperar de manera correcta. ");
+        }
+
+        if(cotizacion.getCliente() == null) {
+            throw new IllegalArgumentException("Es necesario especificar el nombre del cliente. ");
+        }
+
+        if(cotizacion.getPrecioFinal() == null) {
+            throw new IllegalArgumentException("El precio final no puede ser nulo.");
+        }
+
+        //Guardado
+        ServiceLocator.getInstanceCotizacionDAO().save(cotizacion);
+    }
+
+    public boolean existeFolio(Integer id) {
+        List<Cotizacion> result = entityManager.createQuery(
+                "SELECT c FROM Cotizacion c WHERE c.id = :id", Cotizacion.class)
+                .setParameter("id", id)
+                .getResultList();
+        return !result.isEmpty();
     }
 
     @Override

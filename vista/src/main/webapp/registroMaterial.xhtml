@@ -7,163 +7,63 @@
 
 <h:head>
     <title>Agregar Material</title>
+    <h:outputStylesheet name="style.css"/>
+    <script src="resources/funct.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <style>
-        /* Fondo general */
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #1a1aa8;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        /* Encabezado */
-        .header {
-            background-color: #fff200;
-            color: #1a1aa8;
-            font-size: 26px;
-            text-align: center;
-            padding: 15px 0;
-            position: relative;
-        }
-
-        .back-icon, .menu-icon {
-            position: absolute;
-            top: 25px;
-            font-size: 26px;
-            color: #1a1aa8;
-            cursor: pointer;
-        }
-
-        .back-icon { left: 20px; }
-        .menu-icon { right: 20px; }
-
-        /* Contenedor blanco */
-        .container {
-            background-color: white;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 40px 50px;
-            box-shadow: 0px 6px 15px rgba(0,0,0,0.3);
-            box-sizing: border-box;
-        }
-
-        /* Grid responsiva */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 15px 20px;
-        }
-
-        .form-grid label {
-            text-align: right;
-            font-weight: normal;
-            font-size: 22px;
-            color: #222;
-            align-self: center;
-        }
-
-        .form-grid input,
-        .form-grid .ui-selectonemenu {
-            width: 100%;
-            height: 38px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            padding-left: 10px;
-            font-size: 15px;
-        }
-
-        /* Fuerza estilos de PrimeFaces */
-        .ui-selectonemenu-label,
-        .ui-selectonemenu-trigger {
-            color: white !important;
-            border: none !important;
-        }
-
-        .ui-selectonemenu-label {
-            text-align: left !important;
-            padding-left: 10px !important;
-        }
-
-        .ui-selectonemenu-trigger-icon {
-            color: white !important;
-        }
-
-        /* Botones */
-        .btn-container {
-            text-align: right;
-            margin-top: 30px;
-        }
-
-        .btn-blue {
-            background-color: #1a1aa8 !important;
-            border: none !important;
-            color: white !important;
-            padding: 10px 25px !important;
-            border-radius: 6px !important;
-            font-weight: 500 !important;
-            font-size: 15px !important;
-            margin-left: 10px !important;
-            box-shadow: none !important;
-        }
-
-        .btn-blue:hover {
-            background-color: #000d66 !important;
-        }
-
-        /* Responsividad */
-        @media (max-width: 700px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-grid label {
-                text-align: left;
-                margin-top: 10px;
-            }
-            .btn-container {
-                text-align: center;
-            }
-        }
-        .ui-selectonemenu-label {
-            color: #555 !important;
-            font-size: 15px !important;
-            padding-left: 10px !important;
-        }
-
-        /* Quita un asterisco visual automático de campos requeridos */
-        .ui-outputlabel-rfi {
-            display: none !important;
-        }
-    </style>
 </h:head>
 
 <h:body>
-    <h:form>
-        <!-- Encabezado -->
-        <div class="header">
-            <i class="pi pi-arrow-left back-icon"></i>
-            Agregar Material
-            <i class="pi pi-bars menu-icon"></i>
-        </div>
 
+    <!-- Encabezado con botones -->
+    <div class="header">
+        <!-- Link para regresar -->
+        <h:link outcome="index.xhtml" styleClass="back ui-button-success">
+            <i class="pi pi-arrow-left"></i>
+        </h:link>
+
+        <span>Registro de materiales</span>
+
+        <!-- Botón de menú -->
+        <p:commandButton class="menu" icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;" />
+    </div>
+
+    <!-- Menú superior oculto -->
+    <div id="menuPanel" class="menu-panel">
+        <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
+            <i class="pi pi-box"></i> Consulta Materiales
+        </h:link>
+
+        <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
+            <i class="pi pi-users"></i> Consulta Usuarios
+        </h:link>
+
+        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Consulta Cotizaciones
+        </h:link>
+    </div>
+
+    <p:messages id="msgs" showDetail="false" closable="true" /> <!--//Para mostrar los mensajes-->
+
+
+
+    <h:form>
         <!-- Contenedor del formulario -->
         <div class="container">
-            <p:messages id="msgs" showDetail="false" closable="true" /> <!--//Para mostrar los mensajes-->
             <div class="form-grid">
 
                 <!-- Nombre del Material -->
                 <p:outputLabel for="nombre" value="Nombre del Material: " />
                 <p:inputText id="nombre" value="#{materialUI.material.nombre}"
-                             required="true" requiredMessage="El nombre es obligatorio"
+                             required="true" requiredMessage="ERROR: El nombre es obligatorio"
                              placeholder="Ej. Vinil adhesivo" />
 
                 <!-- Tipo de Material -->
                 <p:outputLabel for="tipo" value="Tipo de Material: " />
                 <p:inputText id="tipo" value="#{materialUI.material.tipoMaterial}"
-                             required="true" requiredMessage="El tipo de material es obligatorio"
+                             required="true" requiredMessage="ERROR: El tipo de material es obligatorio"
                              placeholder="Ej. Lona, Acrílico, Vinil, etc." />
 
                 <!-- Costo -->
@@ -171,9 +71,9 @@
                 <p:inputText id="costo"
                              value="#{materialUI.material.costo}"
                              required="true"
-                             requiredMessage="El costo es obligatorio"
-                             converterMessage="El costo debe ser un número decimal válido"
-                             validatorMessage="El costo debe ser un número positivo"
+                             requiredMessage="ERROR: El costo es obligatorio"
+                             converterMessage="ERROR: El costo debe ser un número decimal válido"
+                             validatorMessage="ERROR: El costo debe ser un número mayor a 0"
                              placeholder="Ej. 150.00">
                     <f:validateDoubleRange minimum="0.01" />
                 </p:inputText>
@@ -181,7 +81,7 @@
                 <!-- Tipo de Unidad -->
                 <p:outputLabel for="unidad" value="Tipo de Unidad: " />
                 <p:selectOneMenu id="unidad" value="#{materialUI.material.tipoUnidad}"
-                                 required="true" requiredMessage="Debe seleccionar un tipo de unidad" style="width:100%;">
+                                 required="true" requiredMessage="ERROR: Debe seleccionar un tipo de unidad" style="width:100%;">
                     <f:selectItem itemLabel="Seleccione una unidad" itemValue="#{null}" noSelectionOption="true" />
                     <f:selectItems value="#{materialUI.tiposUnidad}" var="u"
                                    itemLabel="#{u.label}" itemValue="#{u}" />
@@ -191,7 +91,12 @@
 
             <!-- Botones -->
             <div class="btn-container">
-                <p:commandButton value="Agregar" actionListener="#{materialUI.guardar}" update="@form msgs" styleClass="btn-blue" />
+                <p:commandButton value="Agregar"
+                                 actionListener="#{materialUI.guardar}"
+                                 update="@form msgs"
+                                 styleClass="btn-blue"
+                                 oncomplete="if (!args.validationFailed) { window.location.href='consulta_materiales.xhtml'; }" />
+
                 <p:commandButton value="Cancelar"
                                  actionListener="#{materialUI.limpiarFormulario}"
                                  update="@form"

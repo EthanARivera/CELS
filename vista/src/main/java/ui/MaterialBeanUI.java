@@ -22,7 +22,6 @@ public class MaterialBeanUI implements Serializable {
 
     private final MaterialHelper helper = new MaterialHelper();
     private Material material = new Material();
-    private MaterialHelper helper;
     private List<Material> materiales;       // Lista completa
     private List<Material> listaFiltrada;  // Lista que se muestra (filtrada)
 
@@ -31,16 +30,17 @@ public class MaterialBeanUI implements Serializable {
     private String nombreBusqueda = "";
     private Integer idBusqueda;
 
-    public MaterialBeanUI() {}
+    public MaterialBeanUI() {
+    }
 
 
     // Devuelve todas las opciones del enum para el menú
     public TipoUnidad[] getTiposUnidad() {
         return TipoUnidad.values();
-        }
+    }
 
     public void guardar() {
-        try{
+        try {
             // Validaciones
             if (material.getNombre() == null || material.getNombre().isBlank() ||
                     material.getTipoMaterial() == null || material.getTipoMaterial().isBlank() ||
@@ -53,9 +53,10 @@ public class MaterialBeanUI implements Serializable {
                                 "Por favor complete todos los campos correctamente."));
                 return;
             }
-        // Guarda correctamente usando el Converter
-        helper.saveMaterial(material.getNombre(), material.getTipoMaterial(),
-                material.getCosto(), material.getTipoUnidad());
+
+            // Guarda correctamente usando el Converter
+            helper.saveMaterial(material.getNombre(), material.getTipoMaterial(),
+                    material.getCosto(), material.getTipoUnidad());
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -89,7 +90,6 @@ public class MaterialBeanUI implements Serializable {
     //CONSULTAS//
     @PostConstruct
     public void init() {
-        helper = new MaterialHelper();
         materiales = helper.obtenerMateriales();
         if (materiales == null) materiales = new ArrayList<Material>();
         ordenarPorNombre();

@@ -4,63 +4,48 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
 <h:head>
     <title>Gestor de Usuarios</title>
     <h:outputStylesheet name="style.css"/>
     <script src="resources/funct.js"></script>
 </h:head>
+
 <h:body>
     <!-- Encabezado con botones -->
     <div class="header">
-        <!-- Link para regresar -->
         <h:link outcome="index.xhtml" styleClass="back ui-button-success">
             <i class="pi pi-arrow-left"></i>
         </h:link>
-
         <span>Gestor de usuarios</span>
-
-        <!-- Botón de menú -->
-        <p:commandButton class="menu" icon="pi pi-bars"
-                         onclick="toggleMenu(); return false;" />
+        <p:commandButton class="menu" icon="pi pi-bars" onclick="toggleMenu(); return false;" />
     </div>
 
-    <!-- Menú superior oculto -->
+    <!-- Menú superior -->
     <div id="menuPanel" class="menu-panel">
         <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
             <i class="pi pi-box"></i> Consulta Materiales
         </h:link>
-
         <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
             <i class="pi pi-users"></i> Consulta Usuarios
         </h:link>
-
         <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
             <i class="pi pi-file"></i> Consulta Cotizaciones
         </h:link>
     </div>
 
+    <!-- FORM PRINCIPAL -->
     <h:form id="formUsuarios" styleClass="cuerpo-gestores">
 
-        <!-- Panel principal del catálogo -->
         <p:panel styleClass="catalogo-panel">
             <br/>
             <!-- Barra de búsqueda -->
-
-            <h:link outcome="registroUsuario.xhtml" styleClass="menu-option">
-                <i class="pi pi-box"></i> Agregar Usuario
-            </h:link>
             <div class="searchbar">
-                <i class="pi pi-search">    </i>
-
-                <p:inputText id="nombreBusqueda"
-                             value="#{usuarioBean.nombreBusqueda}"
-                             placeholder="Buscar por nombre"
-                             styleClass="search-input">
-                    <p:ajax event="keyup"
-                            process="@form"
-                            listener="#{usuarioBean.aplicarFiltro}"
-                            update="tablaUsuarios"
-                            delay="500"/>
+                <i class="pi pi-search"></i>
+                <p:inputText id="nombreBusqueda" value="#{usuarioBean.nombreBusqueda}"
+                             placeholder="Buscar por nombre" styleClass="search-input">
+                    <p:ajax event="keyup" listener="#{usuarioBean.aplicarFiltro}"
+                            update="tablaUsuarios" delay="500"/>
                 </p:inputText>
 
                 <i class="pi pi-search">    </i>
@@ -75,8 +60,6 @@
                             update="tablaUsuarios"
                             delay="100"/>
                 </p:inputText>
-
-                <br/><br/>
 
                 <p:commandButton value="Mostrar todos"
                                  icon="pi pi-refresh"
@@ -117,12 +100,15 @@
                     <h:outputText value="#{usuario.email}" />
                 </p:column>
 
-                <p:column headerText="Acciones"
-                          style="width:100px; text-align:center;">
+                <p:column headerText="Acciones" style="width:100px; text-align:center;">
                     <div class="action-buttons">
+                        <!-- Modificacion: abre diálogo -->
                         <p:commandButton icon="pi pi-pencil"
                                          title="Editar"
-                                         styleClass="ui-button-flat pencil-icon"/>
+                                         styleClass="ui-button-flat pencil-icon"
+                                         actionListener="#{usuarioBean.setUsuarioSeleccionado(usuario)}"
+                                         update=":formDialog:editDialogForm"
+                                         oncomplete="PF('dlgEditar').show()"/>
                         <p:commandButton icon="pi pi-trash"
                                          title="Eliminar"
                                          styleClass="ui-button-flat delete-icon"/>
@@ -130,10 +116,47 @@
                 </p:column>
             </p:dataTable>
         </p:panel>
-
     </h:form>
 
+    <!-- Modificacion DE EDICIÓN -->
+    <h:form id="formDialog">
+        <p:dialog id="dlgEditar"
+                  header="Editar Correo y Contraseña"
+                  widgetVar="dlgEditar"
+                  modal="true"
+                  resizable="false"
+                  closable="true"
+                  showEffect="fade"
+                  hideEffect="fade"
+                  width="400">
+
+            <h:panelGrid id="editDialogForm" columns="1" cellpadding="5">
+                <p:messages id="msgs" autoUpdate="true"/>
+
+                <h:outputLabel for="email" value="Correo Electrónico:"/>
+                <p:inputText id="email" value="#{usuarioBean.usuarioSeleccionado.email}"
+                             placeholder="Correo electrónico" required="true"/>
+
+                <h:outputLabel for="psswd" value="Contraseña:"/>
+                <p:password id="psswd" value="#{usuarioBean.usuarioSeleccionado.psswd}"
+                            placeholder="Contraseña" feedback="true" required="true"/> <!-- feedback: if its weak or strong password -->
+
+                <div style="margin-top:10px;">
+                    <p:commandButton value="Guardar cambios"
+                                     action="#{usuarioBean.guardarCambios}"
+                                     update=":formUsuarios:tablaUsuarios, :formDialog:msgs"
+                                     oncomplete="PF('dlgEditar').hide()"
+                                     styleClass="ui-button-success"/>
+
+                    <p:commandButton value="Cancelar"
+                                     actionListener="#{usuarioBean.cancelarEdicion}"
+                                     update=":formDialog:editDialogForm"
+                                     onclick="PF('dlgEditar').hide(); return false;"
+                                     styleClass="ui-button-secondary"/>
+                </div>
+            </h:panelGrid>
+        </p:dialog>
+    </h:form>
 
 </h:body>
-
 </html>

@@ -1,8 +1,12 @@
 package ui;
 
 import helper.UsuarioHelper;
+import imf.cels.delegate.DelegateUsuario;
 import imf.cels.entity.Usuario;
 import jakarta.annotation.PostConstruct;
+import jakarta.decorator.Delegate;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -23,6 +27,8 @@ public class UsuarioBeanUI implements Serializable {
 
     private String nombreBusqueda = "";
     private Integer idBusqueda;
+
+    private final DelegateUsuario delegate = new DelegateUsuario(); // p/modify
 
     @PostConstruct
     public void init() {
@@ -121,4 +127,27 @@ public class UsuarioBeanUI implements Serializable {
     public void setIdBusqueda(Integer idBusqueda) {
         this.idBusqueda = idBusqueda;
     }
+
+
+
+    // Modificacion
+    public void guardarCambios() {
+        if (usuarioSeleccionado != null && usuarioSeleccionado.getId() != null) {
+            try {
+                delegate.modificarCorreoYContrasena(usuarioSeleccionado); //llamar delegate
+                recargarUsuarios();
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                "Éxito", "Correo y contraseña actualizados correctamente"));
+            } catch (IllegalArgumentException ex) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
+            }
+        }
+    }
+
+    public void cancelarEdicion() {
+        usuarioSeleccionado = new Usuario(); // reset selection
+    }
+
 }

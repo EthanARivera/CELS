@@ -38,9 +38,8 @@ public class UsuarioNegocio {
     // Valida que el RFC del usuario coincida con el generado
     public boolean validarRFC(Usuario u) {
         if (u.getRfc() == null || u.getFechaNacimiento() == null) return false;
-
         String esperado = generarRFC(u);
-        return u.getRfc().toUpperCase().startsWith(esperado.substring(0, 10)); // check if the primer 10 caracteres de RFC match
+        return u.getRfc().toUpperCase().startsWith(esperado.substring(0, 10));
     }
 
     private String primeraVocal(String palabra) {

@@ -1,5 +1,6 @@
 package imf.cels.delegate;
 
+import imf.cels.dao.UsuarioDAO;
 import imf.cels.entity.Usuario;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.negocio.UsuarioNegocio;
@@ -73,9 +74,6 @@ public class DelegateUsuario {
         // Encripcion de contraseña antes de guardar
         usuario.setPsswd(encryptPassword(usuario.getPsswd()));
 
-        // Activate usuario automaticamente
-        usuario.setEstado(true);
-
         // Validacion
         if(!negocio.validarCorreo(usuario.getEmail()))
             throw new IllegalArgumentException("Correo Inválido");
@@ -134,14 +132,22 @@ public class DelegateUsuario {
 
     // modificacion de correo y contraseña
     public void modificarCorreoYContrasena(Usuario usuario){
+        // Validar formato de correo
         if (!negocio.validarCorreo(usuario.getEmail())) {
-            throw new IllegalArgumentException("Correo invalido");
+            throw new IllegalArgumentException("Correo inválido");
+        }
+
+        // Verificar que el correo no exista en otro usuario
+        UsuarioDAO dao = ServiceLocator.getInstanceUsuarioDAO();
+        Usuario existing = dao.findByOneParameterUnique(usuario.getEmail(), "email");
+        if (existing != null && !existing.getId().equals(usuario.getId())) {
+            throw new IllegalArgumentException("El correo ya está registrado por otro usuario");
         }
 
         // Encriptar nueva contraseña
         usuario.setPsswd(encryptPassword(usuario.getPsswd()));
 
-        // Guardar cambios
-        ServiceLocator.getInstanceUsuarioDAO().actualizarCorreoYContrasena(usuario.getId(), usuario.getEmail(), usuario.getPsswd());
+        // Guardar cambios en la base de datos
+        dao.actualizarCorreoYContrasena(usuario.getId(), usuario.getEmail(), usuario.getPsswd());
     }
 }

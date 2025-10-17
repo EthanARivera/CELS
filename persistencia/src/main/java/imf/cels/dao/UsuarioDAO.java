@@ -6,7 +6,6 @@ import imf.cels.entity.Usuario;
 
 import java.util.List;
 
-
 public class UsuarioDAO extends AbstractDAO<Usuario> {
     private final EntityManager entityManager;
 

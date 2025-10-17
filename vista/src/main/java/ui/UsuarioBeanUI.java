@@ -129,7 +129,6 @@ public class UsuarioBeanUI implements Serializable {
     }
 
 
-
     // Modificacion
     public void guardarCambios() {
         if (usuarioSeleccionado != null && usuarioSeleccionado.getId() != null) {

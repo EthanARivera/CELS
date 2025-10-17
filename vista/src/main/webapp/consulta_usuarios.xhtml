@@ -47,7 +47,6 @@
                     <p:ajax event="keyup" listener="#{usuarioBean.aplicarFiltro}"
                             update="tablaUsuarios" delay="500"/>
                 </p:inputText>
-
                 <i class="pi pi-search">    </i>
                 <p:inputText id="idBusqueda"
                              value="#{usuarioBean.idBusqueda}"
@@ -153,6 +152,7 @@
                                      update=":formDialog:editDialogForm"
                                      onclick="PF('dlgEditar').hide(); return false;"
                                      styleClass="ui-button-secondary"/>
+                    
                 </div>
             </h:panelGrid>
         </p:dialog>

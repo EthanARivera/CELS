@@ -27,17 +27,19 @@ public class ServiceLocator {
         return HibernateUtil.getEntityManager();
     }
 
-    /**
-     * se crea la instancia de usuarioDAO si esta no existe
-     */
-    public static UsuarioDAO getInstanceUsuarioDAO(){
-        if(usuarioDAO == null){
+
+    public static UsuarioDAO getInstanceUsuarioDAO() {
+        if (usuarioDAO == null) {
             usuarioDAO = new UsuarioDAO(getEntityManager());
             return usuarioDAO;
-        } else{
+        } else {
             return usuarioDAO;
         }
     }
+
+    /**
+     * se crea la instancia de materialDAO si esta no existe
+     */
 
     public static MaterialDAO getInstanceMaterialDAO(){
         if(materialDAO == null){

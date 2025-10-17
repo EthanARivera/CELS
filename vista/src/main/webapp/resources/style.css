@@ -573,3 +573,127 @@ body {
 .btn-primary:hover {
     background-color: #1d266e;
 }
+    /*-----------------------------------------------------------------------------*/
+         /*ALTAS DE MATERIALES*/
+
+
+    /* Contenedor blanco */
+    .container {
+        background-color: white;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 800px;
+        margin: 60px auto;
+        padding: 40px 50px;
+        box-shadow: 0px 6px 15px rgba(0,0,0,0.3);
+        box-sizing: border-box;
+    }
+
+    /* Grid responsiva */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 15px 20px;
+    }
+
+    .form-grid label {
+        text-align: right;
+        font-weight: normal;
+        font-size: 22px;
+        color: #222;
+        align-self: center;
+    }
+
+    .form-grid input,
+    .form-grid .ui-selectonemenu {
+        width: 100%;
+        height: 38px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        padding-left: 10px;
+        font-size: 15px;
+    }
+
+    /* Fuerza estilos de PrimeFaces */
+    .ui-selectonemenu-label,
+    .ui-selectonemenu-trigger {
+        color: white !important;
+        border: none !important;
+    }
+
+    .ui-selectonemenu-label {
+        text-align: left !important;
+        padding-left: 10px !important;
+    }
+
+    .ui-selectonemenu-trigger-icon {
+        color: white !important;
+    }
+
+    /* Botones */
+    .btn-container {
+        text-align: right;
+        margin-top: 30px;
+    }
+
+    .btn-blue {
+        background-color: #1a1aa8 !important;
+        border: none !important;
+        color: white !important;
+        padding: 10px 25px !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+        font-size: 15px !important;
+        margin-left: 10px !important;
+        box-shadow: none !important;
+    }
+
+    .btn-blue:hover {
+        background-color: #000d66 !important;
+    }
+
+    /* Quita un asterisco visual automático de campos requeridos */
+    .ui-outputlabel-rfi {
+        display: none !important;
+    }
+
+    /* Responsividad */
+    @media (max-width: 700px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        .form-grid label {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .btn-container {
+            text-align: center;
+        }
+    }
+    .ui-selectonemenu-label {
+        color: #555 !important;
+        font-size: 15px !important;
+        padding-left: 10px !important;
+    }
+
+    /*Resalta el campo en error */
+    body input.ui-state-error,
+    body .p-inputtext.p-invalid,
+    body .ui-selectonemenu.p-invalid {
+        border: 2px solid #d32f2f !important;
+        box-shadow: 0 0 4px rgba(211, 47, 47, 0.6) !important;
+    }
+
+    /*Quita el rojo al volver a escribir o salir del campo */
+    body input.ui-state-error:focus,
+    body .p-inputtext.p-invalid:focus,
+    body .ui-selectonemenu.p-invalid:focus,
+    body input:not(:placeholder-shown),
+    body .p-inputtext:not(:placeholder-shown) {
+        border: 1px solid #262F8D !important;
+        box-shadow: none !important;
+    }
+
+
+
+

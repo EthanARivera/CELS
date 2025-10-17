@@ -10,6 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "material")
+
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,10 +30,11 @@ public class Material {
     @Column(name = "costo", nullable = false, precision = 10, scale = 2)
     private BigDecimal costo;
 
-    @NotNull
+    @NotNull //No puede ser nulo
     @Column(name = "tipo_unidad", nullable = false, columnDefinition = "ENUM('mts','kgs','lts','pzas','m²','otro')")
-    @Convert(converter = TipoUnidadConverter.class)
+    @Convert(converter = TipoUnidadConverter.class)  // Usa el convertidor para mapear entre el enum y el texto almacenado en la base.
     private TipoUnidad tipoUnidad;
+
 
     @OneToMany(mappedBy = "idMaterial")
     private Set<CotizacionMaterial> cotizacionMateriales = new LinkedHashSet<>();
@@ -84,5 +86,4 @@ public class Material {
     public void setCotizacionMaterials(Set<CotizacionMaterial> cotizacionMaterials) {
         this.cotizacionMateriales = cotizacionMaterials;
     }
-
 }

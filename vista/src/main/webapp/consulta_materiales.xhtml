@@ -9,6 +9,7 @@
     <h:outputStylesheet name="style.css"/>
     <script src="resources/funct.js"></script>
 </h:head>
+
 <h:body>
     <!-- Encabezado con botones -->
     <div class="header">
@@ -44,30 +45,36 @@
         <!-- Panel principal del catálogo -->
         <p:panel styleClass="catalogo-panel">
             <br/>
+
+            <!--Para ir al registro-->
+            <h:link outcome="registroMaterial.xhtml" styleClass="menu-option">
+                <i class="pi pi-box"></i> Agregar Material
+            </h:link>
+
             <!-- Barra de búsqueda -->
             <div class="searchbar">
                 <i class="pi pi-search">    </i>
 
                 <p:inputText id="nombreBusqueda"
-                             value="#{materialBean.nombreBusqueda}"
+                             value="#{materialUI.nombreBusqueda}"
                              placeholder="Buscar por nombre"
                              styleClass="search-input">
                     <p:ajax event="keyup"
                             process="@form"
-                            listener="#{materialBean.aplicarFiltro}"
+                            listener="#{materialUI.aplicarFiltro}"
                             update="tablaMateriales"
                             delay="500"/>
                 </p:inputText>
 
                 <i class="pi pi-search">    </i>
                 <p:inputText id="idBusqueda"
-                             value="#{materialBean.idBusqueda}"
+                             value="#{materialUI.idBusqueda}"
                              placeholder="Buscar por ID"
                              styleClass="search-input"
                              style="margin-left:10px;">
                     <p:ajax event="keyup"
                             process="@form"
-                            listener="#{materialBean.aplicarFiltro}"
+                            listener="#{materialUI.aplicarFiltro}"
                             update="tablaMateriales"
                             delay="100"/>
                 </p:inputText>
@@ -76,7 +83,7 @@
 
                 <p:commandButton value="Mostrar todos"
                                  icon="pi pi-refresh"
-                                 actionListener="#{materialBean.recargarMateriales}"
+                                 actionListener="#{materialUI.recargarMateriales}"
                                  update="tablaMateriales"
                                  styleClass="btn-azul-iconoblanco btn-refresh"/>
             </div>
@@ -85,7 +92,7 @@
 
             <!-- Tabla de materiales -->
             <p:dataTable id="tablaMateriales"
-                         value="#{materialBean.listaFiltrada}"
+                         value="#{materialUI.listaFiltrada}"
                          var="material"
                          responsiveLayout="scroll"
                          emptyMessage="Sin materiales registrados"

@@ -28,4 +28,11 @@ public class ServiceFacadeLocator {
         }
     }
 
+    public static FacadeCotizacion getInstanceFacadeCotizacion() {
+        if (facadeCotizacion == null) {
+            facadeCotizacion = new FacadeCotizacion();
+        }
+        return facadeCotizacion;
+    }
+
 }

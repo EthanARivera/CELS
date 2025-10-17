@@ -87,7 +87,7 @@ public class MaterialBeanUI implements Serializable {
         this.material = material;
     }
 
-    //CONSULTAS//
+    //CONSULTAS DE MATERIALES//
     @PostConstruct
     public void init() {
         materiales = helper.obtenerMateriales();

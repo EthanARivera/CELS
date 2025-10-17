@@ -130,6 +130,9 @@ public class DelegateUsuario {
         }
     }
 
+
+
+
     // modificacion de correo y contraseña
     public void modificarCorreoYContrasena(Usuario usuario){
         // Validar formato de correo

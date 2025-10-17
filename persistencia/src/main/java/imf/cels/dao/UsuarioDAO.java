@@ -42,6 +42,10 @@ public class UsuarioDAO extends AbstractDAO<Usuario> {
         return entityManager;
     }
 
+
+
+
+
     // Modificacion
     // Update/actualizar email and password
     public void actualizarCorreoYContrasena(Integer id, String correo, String password) {

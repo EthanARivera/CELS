@@ -149,4 +149,31 @@ public class UsuarioBeanUI implements Serializable {
         usuarioSeleccionado = new Usuario(); // reset selection
     }
 
+
+
+    // Activacion/Desactivacion
+
+    public void prepararCambioEstado(Usuario usuario) {
+        this.usuarioSeleccionado = usuario;
+    }
+
+    // Cambiar estado y feedback
+    public void cambiarEstadoUsuario() {
+        if (usuarioSeleccionado != null && usuarioSeleccionado.getId() != null) {
+            boolean nuevoEstado = !usuarioSeleccionado.getEstado();
+            boolean exito = helper.cambiarEstadoUsuario(usuarioSeleccionado.getId(), nuevoEstado);
+
+            if (exito) {
+                usuarioSeleccionado.setEstado(nuevoEstado);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Exito",
+                                "Usuario " + usuarioSeleccionado.getNombre() + " actualizado correctamente"));
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+                                "No se pudo actualizar el estado del usuario"));
+            }
+        }
+    }
+
 }

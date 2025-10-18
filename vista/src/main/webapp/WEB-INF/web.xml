@@ -28,6 +28,6 @@
     </session-timeout>
   </session-config>
   <welcome-file-list>
-    <welcome-file>consulta_usuarios.xhtml</welcome-file>
+    <welcome-file>login.xhtml</welcome-file>
   </welcome-file-list>
 </web-app>

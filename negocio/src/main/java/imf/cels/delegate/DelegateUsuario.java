@@ -152,4 +152,15 @@ public class DelegateUsuario {
         // Guardar cambios en la base de datos
         dao.actualizarCorreoYContrasena(usuario.getId(), usuario.getEmail(), usuario.getPsswd());
     }
+
+
+
+    // Activacion/Desactivacion
+    public void cambiarEstadoUsuario(Integer idUsuario, boolean nuevoEstado){
+        Usuario usuario = ServiceLocator.getInstanceUsuarioDAO().findById(idUsuario);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuario no encontrado");
+        }
+        ServiceLocator.getInstanceUsuarioDAO().cambiarEstado(idUsuario, nuevoEstado);
+    }
 }

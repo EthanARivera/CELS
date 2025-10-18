@@ -67,4 +67,18 @@ public class UsuarioDAO extends AbstractDAO<Usuario> {
                 .getResultList();
         return !result.isEmpty();
     }
+
+
+
+    // Activacion/Desactivacion
+    public void cambiarEstado(Integer idUsuario, boolean nuevoEstado) {
+        execute ( em -> {
+            Usuario usuario = em.find(Usuario.class, idUsuario);
+            if (usuario != null) {
+                usuario.setEstado(nuevoEstado);
+                em.merge(usuario);
+            }
+            return null;
+        });
+    }
 }

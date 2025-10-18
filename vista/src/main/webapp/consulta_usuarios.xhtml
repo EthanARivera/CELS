@@ -108,9 +108,12 @@
                                          actionListener="#{usuarioBean.setUsuarioSeleccionado(usuario)}"
                                          update=":formDialog:editDialogForm"
                                          oncomplete="PF('dlgEditar').show()"/>
-                        <p:commandButton icon="pi pi-trash"
-                                         title="Eliminar"
-                                         styleClass="ui-button-flat delete-icon"/>
+                        <p:commandButton icon="pi pi-times"
+                                         title="Activar/Desactivar"
+                                         styleClass="ui-button-flat delete-icon"
+                                         actionListener="#{usuarioBean.prepararCambioEstado(usuario)}"
+                                         update=":formConfirmar"
+                                         oncomplete="PF('dlgConfirmarEstado').show()"/>
                     </div>
                 </p:column>
             </p:dataTable>
@@ -153,6 +156,28 @@
                                      onclick="PF('dlgEditar').hide(); return false;"
                                      styleClass="ui-button-secondary"/>
                 </div>
+            </h:panelGrid>
+        </p:dialog>
+    </h:form>
+
+
+    <!-- Activacion/Desactivacion -->
+    <h:form id="formConfirmar">
+        <p:dialog header="Confirmar acción" widgetVar="dlgConfirmarEstado" modal="true" resizable="false">
+            <h:panelGrid columns="1" cellpadding="5">
+                <h:outputText value="¿Desea #{usuarioBean.usuarioSeleccionado.estado ? 'desactivar' : 'activar'} al usuario #{usuarioBean.usuarioSeleccionado.nombre} #{usuarioBean.usuarioSeleccionado.apellidoPrim}?" />
+                <h:panelGroup layout="block" style="text-align:center; margin-top:10px;">
+                    <p:commandButton value="Sí"
+                                     action="#{usuarioBean.cambiarEstadoUsuario}"
+                                     update=":formUsuarios:tablaUsuarios, :formUsuarios:msgs"
+                                     oncomplete="PF('dlgConfirmarEstado').hide()"
+                                     styleClass="ui-button-success"
+                                     style="margin-right:10px;" />
+
+                    <p:commandButton value="No"
+                                     onclick="PF('dlgConfirmarEstado').hide(); return false;"
+                                     styleClass="ui-button-secondary" />
+                </h:panelGroup>
             </h:panelGrid>
         </p:dialog>
     </h:form>

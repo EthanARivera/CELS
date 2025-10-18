@@ -41,4 +41,16 @@ public class FacadeUsuario {
         return delegateUsuario.obtenerPorId(id);
     }
 
+
+    // Activacion/Desactivacion
+    public boolean cambiarEstadoUsuario(Integer idUsuario, boolean nuevoEstado) {
+        try {
+            delegateUsuario.cambiarEstadoUsuario(idUsuario, nuevoEstado);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

@@ -17,4 +17,10 @@ public class UsuarioHelper {
     public Usuario obtenerPorId(Integer id){
         return ServiceFacadeLocator.getInstanceFacadeUsuario().obtenerPorId(id);
     }
+
+
+    // Activacion/Desactivacion
+    public boolean cambiarEstadoUsuario(Integer idUsuario, boolean nuevoEstado) {
+        return ServiceFacadeLocator.getInstanceFacadeUsuario().cambiarEstadoUsuario(idUsuario, nuevoEstado);
+    }
 }

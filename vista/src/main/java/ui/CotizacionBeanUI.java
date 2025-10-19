@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-@Named
+@Named ("cotizacionUI")
 @ViewScoped
 public class CotizacionBeanUI implements Serializable {
     private final CotizacionHelper cotizacionHelper = new CotizacionHelper();

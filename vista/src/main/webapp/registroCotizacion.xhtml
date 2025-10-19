@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Nueva Cotización</title>
+    <h:outputStylesheet name="style.css"/>
+    <script src="resources/funct.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</h:head>
+
+<h:body class="cotizacion-page">
+
+    <!-- Encabezado con botones -->
+    <div class="header">
+        <!-- Link para regresar -->
+        <h:link outcome="index.xhtml" styleClass="back ui-button-success">
+            <i class="pi pi-arrow-left"></i>
+        </h:link>
+
+        <span>Nueva Cotización</span>
+
+        <!-- Botón de menú -->
+        <p:commandButton class="menu" icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;" />
+    </div>
+
+    <!-- Menú superior oculto -->
+    <div id="menuPanel" class="menu-panel">
+        <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
+            <i class="pi pi-box"></i> Consulta Materiales
+        </h:link>
+
+        <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
+            <i class="pi pi-users"></i> Consulta Usuarios
+        </h:link>
+
+        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Consulta Cotizaciones
+        </h:link>
+    </div>
+
+    <!-- AQUI COMIENZA EL FORMULARIO DE COTIZACIÓN -->
+    <p:messages id="msgs" showDetail="true" closable="true"/>
+    <h:form id="formCotizacion">
+        <div class="cotz-container">
+
+            <!-- Encabezado del formulario -->
+            <div class="cotz-header">
+                <div class="cotz-left">
+                    <div class="cotz-field">
+                        <label>Folio:</label>
+                        <p:inputText value="#{cotizacionUI.cotizacion.id}" readonly="true" styleClass="input-cot small"/>
+                    </div>
+
+                    <div class="cotz-field">
+                        <label>ID Empleado:</label>
+                        <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}" readonly="true" styleClass="input-cot small"/>
+                    </div>
+
+                    <div class="cotz-field">
+                        <label>Nombre del Cliente:</label>
+                        <p:inputText value="#{cotizacionUI.cotizacion.cliente}" placeholder="[Nombre]" styleClass="input-cot"/>
+                    </div>
+                </div>
+
+                <div class="cotz-right">
+                    <label>Fecha:</label>
+                    <p:calendar value="#{cotizacionUI.cotizacion.fecha}" pattern="dd/MM/yyyy"
+                                placeholder="DD/MM/AAAA" styleClass="input-cot small"/>
+                </div>
+            </div>
+
+            <!-- Sección Descripción -->
+            <div class="cotz-section">
+                <h2 class="cotz-title">Descripción</h2>
+                <p:inputTextarea value="#{cotizacionUI.cotizacion.descripcion}" rows="6"
+                                 placeholder="Ingrese una descripción sobre el proyecto a cotizar"
+                                 styleClass="input-desc"/>
+            </div>
+
+                <!-- Sección Cálculo de costo por materiales -->
+            <div class="cotz-section">
+                <h2 class="cotz-title">Cálculo de costo por materiales</h2>
+
+                <div class="cotz-subtitle">Lista de Materiales:</div>
+
+                <!-- Contenedor scrollable -->
+                <div class="scroll-container" id="materialesContainer">
+
+                    <!-- Grupo de campos de material (plantilla base) -->
+                    <div class="material-fields grupo-material">
+                        <div class="material-field">
+                            <label>Nombre:</label>
+                            <input type="text" class="input-cot" placeholder="[Nombre de Material]" />
+                        </div>
+
+                        <div class="material-field">
+                            <label>Tipo de Unidad:</label>
+                            <input type="text" class="input-cot" placeholder="[lts, kgs, mts]" />
+                        </div>
+
+                        <div class="material-row">
+                            <div class="material-item">
+                                <label>Costo unitario:</label>
+                                <input type="text" class="input-cot small" placeholder="$..." />
+                            </div>
+                            <div class="material-item">
+                                <label>Cantidad:</label>
+                                <input type="text" class="input-cot small" placeholder="##" />
+                            </div>
+                            <div class="material-item">
+                                <label>Costo Total Material:</label>
+                                <input type="text" class="input-cot small" placeholder="$$$" />
+                            </div>
+                        </div>
+
+                        <!-- Botones + y - -->
+                        <div class="material-buttons">
+                            <button type="button" class="btn-mat add" onclick="agregarGrupoMaterial(this)">
+                                <i class="pi pi-plus"></i>
+                            </button>
+                            <button type="button" class="btn-mat remove" onclick="eliminarGrupoMaterial(this)">
+                                <i class="pi pi-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Sección Cálculo de mano de obra -->
+            <div class="cotz-section">
+                <h2 class="cotz-title">Cálculo de mano de obra</h2>
+
+                <!-- Contenedor con scroll -->
+                <div class="scroll-container" id="manoObraContainer">
+                    <div class="mdo-fields grupo-mdo">
+
+                        <div class="mdo-field">
+                            <label>Responsable #</label>
+                        </div>
+
+                        <div class="mdo-field">
+                            <label>Costo/Hora:</label>
+                            <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                        </div>
+
+                        <div class="mdo-row">
+                            <div class="mdo-item">
+                                <label>Cantidad de Horas:</label>
+                                <p:inputText placeholder="##" styleClass="input-cot small"/>
+                            </div>
+                            <div class="mdo-item">
+                                <label>Costo de Mano de Obra del Responsable #:</label>
+                                <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="material-buttons">
+                            <button type="button" class="btn-mat add" onclick="agregarGrupoMDO(this)">
+                                <i class="pi pi-plus"></i>
+                            </button>
+                            <button type="button" class="btn-mat remove" onclick="eliminarGrupoMDO(this)">
+                                <i class="pi pi-minus"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de totales y facturación -->
+            <div class="cotz-section">
+                <h2 class="cotz-title">Totales y Facturación</h2>
+
+                <div class="totales-container">
+                    <!-- Columna izquierda: Totales -->
+                    <div class="totales-left">
+
+                        <div class="total-row">
+                            <div class="total-item">
+                                <label>Costo de Materiales:</label>
+                                <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                            </div>
+
+                            <div class="total-item">
+                                <label>Costo de Mano de Obra:</label>
+                                <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                            </div>
+                        </div>
+
+                        <div class="total-item">
+                            <label>Costo Final Bruto:</label>
+                            <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                        </div>
+
+                        <div class="total-item">
+                            <label>Índice de Ganancia:</label>
+                            <div class="ganancia-group">
+                                <p:inputText placeholder="%%" styleClass="input-cot small" />
+                                <span>%</span>
+                            </div>
+                        </div>
+
+                        <div class="total-item">
+                            <label>Costo Final:</label>
+                            <p:inputText placeholder="$$$$" styleClass="input-cot small invalid"/>
+                        </div>
+                    </div>
+
+                    <!-- Columna derecha: Facturación -->
+                    <div class="totales-right">
+                        <div class="facturacion-block">
+                            <label>¿Se requiere facturación?</label>
+                            <div class="facturacion-options">
+                                <label><input type="radio" name="factura" value="si" /> Sí</label>
+                                <label><input type="radio" name="factura" value="no" /> No</label>
+                            </div>
+                            <button type="button" class="btn-blue">Generar Cotización</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </h:form>
+
+
+</h:body>
+</html>

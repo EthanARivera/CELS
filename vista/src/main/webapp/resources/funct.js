@@ -18,3 +18,55 @@ document.addEventListener('click', function(event) {
         }
     }
 });
+
+// === FUNCIONES PARA AÑADIR / ELIMINAR BLOQUES DE MATERIALES ===
+
+function agregarGrupoMaterial(boton) {
+    const contenedor = document.getElementById('materialesContainer');
+    const grupo = boton.closest('.grupo-material');
+    const clon = grupo.cloneNode(true);
+
+    // Limpia los valores de los inputs en el clon
+    clon.querySelectorAll('input').forEach(input => input.value = '');
+
+    // Inserta el nuevo grupo al final
+    contenedor.appendChild(clon);
+}
+
+function eliminarGrupoMaterial(boton) {
+    const grupo = boton.closest('.grupo-material');
+    const contenedor = document.getElementById('materialesContainer');
+
+    // Solo eliminar si hay más de un grupo
+    if (contenedor.querySelectorAll('.grupo-material').length > 1) {
+        grupo.remove();
+    } else {
+        alert("Debe haber al menos un grupo de materiales.");
+    }
+}
+
+// === FUNCIONES PARA AÑADIR / ELIMINAR BLOQUES DE MANO DE OBRA ===
+
+function agregarGrupoMDO(boton) {
+    const contenedor = document.getElementById('manoObraContainer');
+    const grupo = boton.closest('.grupo-mdo');
+    const clon = grupo.cloneNode(true);
+
+    // Limpia los valores de los inputs en el clon
+    clon.querySelectorAll('input').forEach(input => input.value = '');
+
+    // Inserta el nuevo grupo al final
+    contenedor.appendChild(clon);
+}
+
+function eliminarGrupoMDO(boton) {
+    const grupo = boton.closest('.grupo-mdo');
+    const contenedor = document.getElementById('manoObraContainer');
+
+    // Solo eliminar si hay más de un grupo
+    if (contenedor.querySelectorAll('.grupo-mdo').length > 1) {
+        grupo.remove();
+    } else {
+        alert("Debe haber al menos un grupo de mano de obra.");
+    }
+}

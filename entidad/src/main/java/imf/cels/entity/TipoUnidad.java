@@ -1,6 +1,10 @@
 package imf.cels.entity;
 
-public enum TipoUnidad {
+
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
+
+public enum TipoUnidad{
     LITROS("lts"),
     METROS_CUADRADOS("m²"),
     KILOGRAMOS("kgs"),
@@ -23,9 +27,7 @@ public enum TipoUnidad {
         return label;
     }
 
-    /**
-     * Convierte un string de la BD al enum correspondiente.
-     */
+    //Convierte un string de la BD al enum correspondiente.
     public static TipoUnidad fromLabel(String label) {
         for (TipoUnidad t : values()) {
             if (t.label.equalsIgnoreCase(label)) {

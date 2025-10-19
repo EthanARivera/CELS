@@ -72,7 +72,9 @@ public class DelegateUsuario {
         }
 
         // Encripcion de contraseña antes de guardar
-        usuario.setPsswd(encryptPassword(usuario.getPsswd()));
+        if (usuario.getPsswd() != null && usuario.getPsswd().length() < 64) {
+            usuario.setPsswd(encryptPassword(usuario.getPsswd()));
+        }
 
         // Validacion
         if(!negocio.validarCorreo(usuario.getEmail()))

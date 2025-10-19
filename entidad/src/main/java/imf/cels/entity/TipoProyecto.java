@@ -30,8 +30,13 @@ public enum TipoProyecto {
      * Convierte de String de la BD al enum.
      */
     public static TipoProyecto fromLabel(String label) {
+        if (label == null) return null;
+        label = label.trim().toLowerCase();
+
         for (TipoProyecto t : values()) {
-            if (t.label.equalsIgnoreCase(label)) {
+            String normalized = t.label.trim().toLowerCase();
+            if (normalized.equals(label) ||
+                    normalized.replace("ó", "o").equals(label.replace("ó", "o"))) {
                 return t;
             }
         }

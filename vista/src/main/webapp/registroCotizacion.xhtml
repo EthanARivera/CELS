@@ -43,22 +43,35 @@
         </h:link>
     </div>
 
+    <p:messages id="msgs" showDetail="true" closable="true" autoUpdate="true"/>
+
+
     <!-- AQUI COMIENZA EL FORMULARIO DE COTIZACIÓN -->
-    <p:messages id="msgs" showDetail="true" closable="true"/>
     <h:form id="formCotizacion">
+
         <div class="cotz-container">
 
             <!-- Encabezado del formulario -->
             <div class="cotz-header">
                 <div class="cotz-left">
+
                     <div class="cotz-field">
                         <label>Folio:</label>
-                        <p:inputText value="#{cotizacionUI.cotizacion.id}" readonly="true" styleClass="input-cot small"/>
+                        <!--<p:inputText value="#{cotizacionUI.cotizacion.id}" readonly="true" styleClass="input-cot small"/>-->
+                        <!-- Muestra el folio si ya se generó, o texto temporal -->
+                        <p:inputText value="#{cotizacionUI.cotizacion.id}"
+                                     readonly="true"
+                                     placeholder="[Por asignar]"
+                                     styleClass="input-cot small"/>
                     </div>
 
                     <div class="cotz-field">
                         <label>ID Empleado:</label>
-                        <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}" readonly="true" styleClass="input-cot small"/>
+                       <!-- <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}" readonly="true" styleClass="input-cot small"/>-->
+                        <!-- El usuario escribe el ID manualmente -->
+                        <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}"
+                                     placeholder="####"
+                                     styleClass="input-cot small"/>
                     </div>
 
                     <div class="cotz-field">
@@ -77,12 +90,12 @@
             <!-- Sección Descripción -->
             <div class="cotz-section">
                 <h2 class="cotz-title">Descripción</h2>
-                <p:inputTextarea value="#{cotizacionUI.cotizacion.descripcion}" rows="6"
+                <p:inputTextarea value="#{cotizacionUI.cotizacion.descripcion}" rows="4"
                                  placeholder="Ingrese una descripción sobre el proyecto a cotizar"
                                  styleClass="input-desc"/>
             </div>
 
-                <!-- Sección Cálculo de costo por materiales -->
+            <!-- === AGREGAR MATERIALES === -->
             <div class="cotz-section">
                 <h2 class="cotz-title">Cálculo de costo por materiales</h2>
 
@@ -106,15 +119,15 @@
                         <div class="material-row">
                             <div class="material-item">
                                 <label>Costo unitario:</label>
-                                <input type="text" class="input-cot small" placeholder="$..." />
+                                <input type="text" class="input-cot small costo-unitario" placeholder="$..." />
                             </div>
                             <div class="material-item">
                                 <label>Cantidad:</label>
-                                <input type="text" class="input-cot small" placeholder="##" />
+                                <input type="text" class="input-cot small cantidad" placeholder="##" />
                             </div>
                             <div class="material-item">
                                 <label>Costo Total Material:</label>
-                                <input type="text" class="input-cot small" placeholder="$$$" />
+                                <input type="text" class="input-cot small total-material" placeholder="$$$" readonly="readonly" />
                             </div>
                         </div>
 
@@ -142,21 +155,23 @@
 
                         <div class="mdo-field">
                             <label>Responsable #</label>
+                            <input type="text" class="input-cot small num-responsable" placeholder="ID o número" />
+
                         </div>
 
                         <div class="mdo-field">
                             <label>Costo/Hora:</label>
-                            <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                            <input type="text" class="input-cot small costo-hora" placeholder="$$$$" />
                         </div>
 
                         <div class="mdo-row">
                             <div class="mdo-item">
                                 <label>Cantidad de Horas:</label>
-                                <p:inputText placeholder="##" styleClass="input-cot small"/>
+                                <input type="text" class="input-cot small cantidad-horas" placeholder="##" />
                             </div>
                             <div class="mdo-item">
                                 <label>Costo de Mano de Obra del Responsable #:</label>
-                                <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                                <input type="text" class="input-cot small total-mdo" placeholder="$$$$" readonly="" />
                             </div>
                         </div>
 
@@ -185,44 +200,52 @@
                         <div class="total-row">
                             <div class="total-item">
                                 <label>Costo de Materiales:</label>
-                                <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                                <input type="text" id="totalMateriales" class="input-cot small" readonly="" />
                             </div>
 
                             <div class="total-item">
                                 <label>Costo de Mano de Obra:</label>
-                                <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                                <input type="text" id="totalManoObra" class="input-cot small" readonly="" />
                             </div>
                         </div>
 
                         <div class="total-item">
                             <label>Costo Final Bruto:</label>
-                            <p:inputText placeholder="$$$$" styleClass="input-cot small"/>
+                            <input type="text" id="costoBruto" class="input-cot small" readonly="" />
                         </div>
 
                         <div class="total-item">
                             <label>Índice de Ganancia:</label>
                             <div class="ganancia-group">
-                                <p:inputText placeholder="%%" styleClass="input-cot small" />
+                                <input type="text" id="indiceGanancia" class="input-cot small" placeholder="%" />
                                 <span>%</span>
                             </div>
                         </div>
 
                         <div class="total-item">
                             <label>Costo Final:</label>
-                            <p:inputText placeholder="$$$$" styleClass="input-cot small invalid"/>
+                            <input type="text" id="costoFinal" class="input-cot small" readonly="" />
                         </div>
-                    </div>
 
-                    <!-- Columna derecha: Facturación -->
+
+                    </div>
+                    <!-- Bloque de facturación -->
                     <div class="totales-right">
                         <div class="facturacion-block">
-                            <label>¿Se requiere facturación?</label>
+                            <label>¿Se requerirá facturación?</label>
                             <div class="facturacion-options">
                                 <label><input type="radio" name="factura" value="si" /> Sí</label>
                                 <label><input type="radio" name="factura" value="no" /> No</label>
                             </div>
-                            <button type="button" class="btn-blue">Generar Cotización</button>
                         </div>
+
+
+
+                        <p:commandButton value="Generar Cotización"
+                                         actionListener="#{cotizacionUI.registrarCotizacion}"
+                                         update="@form"
+                                         styleClass="btn-blue"/>
+
                     </div>
                 </div>
             </div>

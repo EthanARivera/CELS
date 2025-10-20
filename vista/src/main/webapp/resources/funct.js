@@ -19,8 +19,8 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// === FUNCIONES PARA AÑADIR / ELIMINAR BLOQUES DE MATERIALES ===
 
+// === FUNCIONES PARA AÑADIR / ELIMINAR BLOQUES DE MATERIALES ==
 function agregarGrupoMaterial(boton) {
     const contenedor = document.getElementById('materialesContainer');
     const grupo = boton.closest('.grupo-material');
@@ -46,7 +46,6 @@ function eliminarGrupoMaterial(boton) {
 }
 
 // === FUNCIONES PARA AÑADIR / ELIMINAR BLOQUES DE MANO DE OBRA ===
-
 function agregarGrupoMDO(boton) {
     const contenedor = document.getElementById('manoObraContainer');
     const grupo = boton.closest('.grupo-mdo');
@@ -72,90 +71,6 @@ function eliminarGrupoMDO(boton) {
     }
 }
 
-// === FUNCION PRINCIPAL PARA PREPARAR LOS DATOS ANTES DE GUARDAR ===
-/*function prepararDatos() {
-    const materiales = [];
-    const manoDeObra = [];
-
-    // Recolectar materiales
-    document.querySelectorAll('.grupo-material').forEach(grupo => {
-        const nombre = grupo.querySelector('input[placeholder="[Nombre de Material]"]')?.value || "";
-        const tipoUnidad = grupo.querySelector('input[placeholder="[lts, kgs, mts]"]')?.value || "";
-        const costoUnitario = grupo.querySelector('input[placeholder="$..."]')?.value || "";
-        const cantidad = grupo.querySelector('input[placeholder="##"]')?.value || "";
-        const subtotal = grupo.querySelector('input[placeholder="$$$"]')?.value || "";
-
-        if (nombre.trim() !== "" && costoUnitario.trim() !== "") {
-            materiales.push({ nombre, tipoUnidad, costoUnitario, cantidad, subtotal });
-        }
-    });
-
-    // Recolectar mano de obra
-    document.querySelectorAll('.grupo-mdo').forEach(grupo => {
-        // Buscar el input que está después del label que contiene "Responsable"
-        let responsable = "";
-        grupo.querySelectorAll("label").forEach(lbl => {
-            if (lbl.textContent.includes("Responsable")) {
-                const next = lbl.nextElementSibling;
-                if (next && next.tagName === "INPUT") {
-                    responsable = next.value;
-                }
-            }
-        });
-        const costoHora = grupo.querySelector('input[placeholder="$$$$"]')?.value || "";
-        const cantidadHoras = grupo.querySelector('input[placeholder="##"]')?.value || "";
-        const subtotal = grupo.querySelectorAll('input[placeholder="$$$$"]')[1]?.value || "";
-
-        if (costoHora.trim() !== "") {
-            manoDeObra.push({ responsable, costoHora, cantidadHoras, subtotal });
-        }
-    });
-
-    // Convertir listas a JSON
-    const materialesJSON = JSON.stringify(materiales);
-    const manoDeObraJSON = JSON.stringify(manoDeObra);
-
-    // Asignar los valores a los inputs ocultos
-    const matInput = document.getElementById('formCotizacion:materialesJSON');
-    const mdoInput = document.getElementById('formCotizacion:manoDeObraJSON');
-
-    if (matInput && mdoInput) {
-        matInput.value = materialesJSON;
-        mdoInput.value = manoDeObraJSON;
-    }
-
-    console.log("📦 Datos preparados:");
-    console.log("Materiales:", materiales);
-    console.log("Mano de obra:", manoDeObra);
-} */
-
-// === ACTUALIZAR COSTOS AUTOMÁTICAMENTE ===
-
-// Cuando se escribe en campos de materiales o mano de obra
-/*document.addEventListener("input", function (e) {
-    // --- Cálculo automático de costo total de material ---
-    if (e.target.closest(".grupo-material")) {
-        const grupo = e.target.closest(".grupo-material");
-        const costoUnitario = parseFloat(grupo.querySelector("input[placeholder='$...']")?.value) || 0;
-        const cantidad = parseFloat(grupo.querySelector("input[placeholder='##']")?.value) || 0;
-        const totalField = grupo.querySelector("input[placeholder='$$$']");
-        if (totalField) totalField.value = (costoUnitario * cantidad).toFixed(2);
-    }
-
-    // --- Cálculo automático de costo de mano de obra ---
-    if (e.target.closest(".grupo-mdo")) {
-        const grupo = e.target.closest(".grupo-mdo");
-        const costoHora = parseFloat(grupo.querySelector("input[placeholder='$$$$']")?.value) || 0;
-        const horas = parseFloat(grupo.querySelector("input[placeholder='##']")?.value) || 0;
-        const subtotal = grupo.querySelector("input[placeholder='$$$$']");
-        // Evita que sobreescriba el costoHora original
-        const allInputs = grupo.querySelectorAll("input[placeholder='$$$$']");
-        if (allInputs.length > 1) {
-            // El segundo input es el total del responsable
-            allInputs[1].value = (costoHora * horas).toFixed(2);
-        }
-    }
-});*/
 
 // === CÁLCULO AUTOMÁTICO DE TOTALES (INDIVIDUALES Y GENERALES) ===
 document.addEventListener("input", function (e) {

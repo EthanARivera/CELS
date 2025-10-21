@@ -2,7 +2,6 @@ package imf.cels.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -17,16 +16,25 @@ public class Cotizacion {
     private Integer id;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario idUsuario;
 
     @NotNull
+    @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name = "fecha", nullable = false)
     private LocalDate fecha;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
+    @Column(name = "cliente", nullable = false)
+    private String cliente;
+
+    @Lob
+    @Column(name = "descripcion", columnDefinition = "MEDIUMTEXT", nullable = false)
+    private String descripcion;
+
+    @NotNull
+    @Convert(converter = TipoProyectoConverter.class)
     @Column(name = "tipo_proyecto", nullable = false)
     private TipoProyecto tipoProyecto;
 
@@ -34,11 +42,11 @@ public class Cotizacion {
     @Column(name = "precio_final", nullable = false, precision = 10, scale = 2)
     private BigDecimal precioFinal;
 
-    @OneToMany(mappedBy = "idFolio")
+    @OneToMany(mappedBy = "idFolio", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CotizacionManoDeObra> cotizacionManoDeObras = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "idFolio")
-    private Set<CotizacionMaterial> cotizacionMaterials = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "idFolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CotizacionMaterial> cotizacionMateriales = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -64,6 +72,18 @@ public class Cotizacion {
         this.fecha = fecha;
     }
 
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getDescripcion() { return descripcion; }
+
+    public void setDescripcion(String descripcion) { this.descripcion =  descripcion; }
+
     public TipoProyecto getTipoProyecto() {
         return tipoProyecto;
     }
@@ -88,12 +108,12 @@ public class Cotizacion {
         this.cotizacionManoDeObras = cotizacionManoDeObras;
     }
 
-    public Set<CotizacionMaterial> getCotizacionMaterials() {
-        return cotizacionMaterials;
+    public Set<CotizacionMaterial> getCotizacionMateriales() {
+        return cotizacionMateriales;
     }
 
-    public void setCotizacionMaterials(Set<CotizacionMaterial> cotizacionMaterials) {
-        this.cotizacionMaterials = cotizacionMaterials;
+    public void setCotizacionMateriales(Set<CotizacionMaterial> cotizacionMateriales) {
+        this.cotizacionMateriales = cotizacionMateriales;
     }
 
 }

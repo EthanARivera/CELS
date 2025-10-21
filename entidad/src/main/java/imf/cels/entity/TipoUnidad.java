@@ -27,9 +27,7 @@ public enum TipoUnidad{
         return label;
     }
 
-    /**
-     * Convierte un string de la BD al enum correspondiente.
-     */
+    //Convierte un string de la BD al enum correspondiente.
     public static TipoUnidad fromLabel(String label) {
         for (TipoUnidad t : values()) {
             if (t.label.equalsIgnoreCase(label)) {
@@ -38,5 +36,4 @@ public enum TipoUnidad{
         }
         throw new IllegalArgumentException("Unidad desconocida: " + label);
     }
-
 }

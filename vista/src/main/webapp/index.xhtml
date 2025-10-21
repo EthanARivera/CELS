@@ -21,7 +21,7 @@
     <div class="headerprin">
         <!-- Link para regresar -->
         <h:form>
-            <h:commandLink styleClass="link-btn" action="#{loginUI.logout}">
+            <h:commandLink styleClass="link-btn" actionListener="#{loginUI.logout()}">
                 <i class="pi pi-sign-out"></i>
             </h:commandLink>
         </h:form>
@@ -65,3 +65,4 @@
 </h:body>
 
 </html>
+

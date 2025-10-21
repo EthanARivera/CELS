@@ -2,6 +2,7 @@ package imf.cels.facade;
 
 import imf.cels.delegate.DelegateUsuario;
 import imf.cels.entity.Usuario;
+import imf.cels.integration.ServiceLocator;
 
 import java.util.List;
 
@@ -18,7 +19,14 @@ public class FacadeUsuario {
     }
 
     public void saveUsario(Usuario usuario){
-        delegateUsuario.saveUsario(usuario);
+        if (usuario.getPsswd() == null || usuario.getPsswd().isEmpty() || usuario.getPsswd().equals("1")) {
+            throw new IllegalArgumentException("Contraseña inválida: no se puede guardar valor vacío o '1'");
+        }
+        ServiceLocator.getInstanceUsuarioDAO().save(usuario);
+    }
+
+    //Registro de Usuario -
+    public void registrarUsuario(Usuario usuario){ delegateUsuario.registrarUsuario(usuario);
     }
 
     public List<Usuario> obtenerUsuarios() {
@@ -31,6 +39,18 @@ public class FacadeUsuario {
 
     public Usuario obtenerPorId(Integer id){
         return delegateUsuario.obtenerPorId(id);
+    }
+
+
+    // Activacion/Desactivacion
+    public boolean cambiarEstadoUsuario(Integer idUsuario, boolean nuevoEstado) {
+        try {
+            delegateUsuario.cambiarEstadoUsuario(idUsuario, nuevoEstado);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

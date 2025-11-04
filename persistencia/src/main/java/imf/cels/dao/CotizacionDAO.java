@@ -106,9 +106,11 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public void enviarCorreo() {
         //configuracion de credenciales
-        final String remitente = "e1197851@uabc.edu.mx";
-        final String psswd = "fdbx loxh smyg rrkg";
-        final String destinatario = "ethanandre.rivera@gmail.com";
+        final String remitente = "correo@uabc.edu.mx";
+        final String psswd = "xxxx xxxx xxxx xxxx"; //Para poder iniciar sesión como remitente es necesario
+                                                    //contar con una contraseña de aplicación en caso
+                                                    //de utilizar gmail (también entra el dominio de uabc)
+        final String destinatario = "correo@gmail.com";
 
         //Propiedades para Gmail
         Properties props = new Properties();

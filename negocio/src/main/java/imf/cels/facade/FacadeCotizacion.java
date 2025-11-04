@@ -49,4 +49,6 @@ public class FacadeCotizacion {
     public void saveCotizacionMaterial(CotizacionMaterial cotizacionMaterial) { delegateCotizacion.saveCotizacionMaterial(cotizacionMaterial); }
 
     public void saveCotizacionManoDeObra(CotizacionManoDeObra cotizacionManoDeObra) { delegateCotizacion.saveCotizacionManoDeObra(cotizacionManoDeObra); }
+
+    public void enviarEmail() { delegateCotizacion.enviarEmail(); }
 }

@@ -43,8 +43,6 @@
         </h:link>
     </div>
 
-    <p:messages id="msgs" showDetail="true" closable="true" autoUpdate="true"/>
-
 
     <!-- AQUI COMIENZA EL FORMULARIO DE COTIZACIÓN -->
     <h:form id="formCotizacion">
@@ -71,8 +69,11 @@
                         <label>ID Empleado:</label>
                        <!-- <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}" readonly="true" styleClass="input-cot small"/>-->
                         <!-- El usuario escribe el ID manualmente -->
-                        <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}"
+                        <!--<p:inputText value="#{cotizacionUI.cotizacion.idUsuario}"
                                      placeholder="####"
+                                     styleClass="input-cot small"/>-->
+                        <p:inputText value="#{cotizacionUI.idUsuarioCot}"
+                                     placeholder="[ID del empleado]"
                                      styleClass="input-cot small"/>
                     </div>
 
@@ -86,8 +87,19 @@
                 <!-- Fecha -->
                 <div class="cotz-right">
                     <label>Fecha:</label>
-                    <p:calendar value="#{cotizacionUI.cotizacion.fecha}" pattern="dd/MM/yyyy"
-                                placeholder="DD/MM/AAAA" styleClass="input-cot small"/>
+                    <!--<p:inputText value="#{cotizacionUI.cotizacion.fecha}"
+                                 readonly="true"
+                                 styleClass="input-cot small">
+                        <f:convertDateTime pattern="dd/MM/yyyy"
+                                           type="localDate"
+                                           dateStyle="short" />
+                    </p:inputText> -->
+                    <h:outputText value="#{cotizacionUI.cotizacion.fecha}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"
+                                           type="localDate"
+                                           dateStyle="short" />
+                    </h:outputText>
+
                 </div>
             </div>
 
@@ -243,8 +255,6 @@
                             </div>
                         </div>
 
-
-
                         <p:commandButton value="Generar Cotización"
                                          actionListener="#{cotizacionUI.registrarCotizacion}"
                                          update="@form"
@@ -253,7 +263,7 @@
                     </div>
                 </div>
             </div>
-
+            <p:messages id="msgs" showDetail="true" closable="true" autoUpdate="true"/>
         </div>
     </h:form>
 

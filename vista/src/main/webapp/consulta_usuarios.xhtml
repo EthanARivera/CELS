@@ -39,6 +39,11 @@
 
         <p:panel styleClass="catalogo-panel">
             <br/>
+
+            <h:link outcome="registroUsuario.xhtml" styleClass="menu-option">
+                <i class="pi pi-box"></i> Agregar Usuario
+            </h:link>
+
             <!-- Barras de búsqueda -->
             <div class="searchbar">
                 <i class="pi pi-search"></i>
@@ -147,8 +152,9 @@
                     <p:commandButton value="Guardar cambios"
                                      action="#{usuarioBean.guardarCambios}"
                                      update=":formUsuarios:tablaUsuarios, :formDialog:msgs"
-                                     oncomplete="PF('dlgEditar').hide()"
+                                     oncomplete="PF('dlgEditar')"
                                      styleClass="ui-button-success"/>
+                                    <!-- oncomplete="PF('dlgEditar').hide()"  // the ".hide()" make it automatically exit the dialog-->
 
                     <p:commandButton value="Cancelar"
                                      actionListener="#{usuarioBean.cancelarEdicion}"

@@ -67,14 +67,8 @@
                     <!-- ID Empleado -->
                     <div class="cotz-field">
                         <label>ID Empleado:</label>
-                       <!-- <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}" readonly="true" styleClass="input-cot small"/>-->
-                        <!-- El usuario escribe el ID manualmente -->
-                        <!--<p:inputText value="#{cotizacionUI.cotizacion.idUsuario}"
-                                     placeholder="####"
-                                     styleClass="input-cot small"/>-->
-                        <p:inputText value="#{cotizacionUI.idUsuarioCot}"
-                                     placeholder="[ID del empleado]"
-                                     styleClass="input-cot small"/>
+                       <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}" readonly="true" styleClass="input-cot small"/>
+
                     </div>
 
                     <!-- Nombre cliente -->
@@ -240,8 +234,15 @@
 
                         <div class="total-item">
                             <label>Costo Final:</label>
-                            <input type="text" id="costoFinal" class="input-cot small" readonly="" />
+                            <!-- Muestra el costo final calculado automáticamente -->
+                            <input type="text" id="formCotizacion:costoFinal"
+                                   class="input-cot small"
+                                   readonly="readonly" />
                         </div>
+
+                        <!-- Campo oculto para enviar el precio final al bean -->
+                        <h:inputHidden id="precioFinalHidden"
+                                       value="#{cotizacionUI.cotizacion.precioFinal}" />
 
 
                     </div>

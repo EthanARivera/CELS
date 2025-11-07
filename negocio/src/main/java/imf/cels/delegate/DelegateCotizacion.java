@@ -62,5 +62,10 @@ public class DelegateCotizacion {
         ServiceLocator.getCotizacionManoDeObraDAO().registrarCotizacionManoDeObra(cotizacionManoDeObra);
     }
 
+    // Aprobación de Cotización
+    public void aprobarCotizacion(Integer idFolio) {
+        ServiceLocator.getInstanceCotizacionDAO().aprobarCotizacion(idFolio);
+    }
+
 
 }

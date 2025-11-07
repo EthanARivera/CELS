@@ -1,5 +1,6 @@
 package imf.cels.delegate;
 
+import imf.cels.dao.UsuarioDAO;
 import imf.cels.entity.Usuario;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.negocio.UsuarioNegocio;
@@ -129,5 +130,39 @@ public class DelegateUsuario {
             // If SHA-256 algorithm is not available (rare), throw a RuntimeException
             throw new RuntimeException("Error encrypting password", e);
         }
+    }
+
+
+
+    // modificacion de correo y contraseña
+    public void modificarCorreoYContrasena(Usuario usuario){
+        // Validar formato de correo
+        if (!negocio.validarCorreo(usuario.getEmail())) {
+            throw new IllegalArgumentException("Correo inválido");
+        }
+
+        // Verificar que el correo no exista en otro usuario
+        UsuarioDAO dao = ServiceLocator.getInstanceUsuarioDAO();
+        Usuario existing = dao.findByOneParameterUnique(usuario.getEmail(), "email");
+        if (existing != null && !existing.getId().equals(usuario.getId())) {
+            throw new IllegalArgumentException("El correo ya está registrado por otro usuario");
+        }
+
+        // Encriptar nueva contraseña
+        usuario.setPsswd(encryptPassword(usuario.getPsswd()));
+
+        // Guardar cambios en la base de datos
+        dao.actualizarCorreoYContrasena(usuario.getId(), usuario.getEmail(), usuario.getPsswd());
+    }
+
+
+
+    // Activacion/Desactivacion
+    public void cambiarEstadoUsuario(Integer idUsuario, boolean nuevoEstado){
+        Usuario usuario = ServiceLocator.getInstanceUsuarioDAO().findById(idUsuario);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuario no encontrado");
+        }
+        ServiceLocator.getInstanceUsuarioDAO().cambiarEstado(idUsuario, nuevoEstado);
     }
 }

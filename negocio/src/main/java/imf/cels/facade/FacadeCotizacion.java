@@ -50,5 +50,7 @@ public class FacadeCotizacion {
 
     public void saveCotizacionManoDeObra(CotizacionManoDeObra cotizacionManoDeObra) { delegateCotizacion.saveCotizacionManoDeObra(cotizacionManoDeObra); }
 
+    public void enviarEmail() { delegateCotizacion.enviarEmail(); }
+
     public void aprobarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);}
 }

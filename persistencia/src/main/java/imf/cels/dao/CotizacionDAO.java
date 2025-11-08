@@ -3,8 +3,12 @@ package imf.cels.dao;
 import imf.cels.entity.Cotizacion;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.persistence.AbstractDAO;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityManager;
 import java.util.List;
+import java.util.Properties;
 
 public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     private final EntityManager entityManager;
@@ -98,6 +102,45 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
                 .setParameter("id", id)
                 .getResultList();
         return !result.isEmpty();
+    }
+
+    public void enviarCorreo() {
+        //configuracion de credenciales
+        final String remitente = "correo@uabc.edu.mx";
+        final String psswd = "xxxx xxxx xxxx xxxx"; //Para poder iniciar sesión como remitente es necesario
+                                                    //contar con una contraseña de aplicación en caso
+                                                    //de utilizar gmail (también entra el dominio de uabc)
+        final String destinatario = "correo@gmail.com";
+
+        //Propiedades para Gmail
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        //Autenticacion de usuario
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(remitente, psswd);
+            }
+        });
+
+        //Estructura del mensaje
+        try{
+            Message mensaje = new MimeMessage(session);
+            mensaje.setFrom(new InternetAddress(remitente));
+            mensaje.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+            mensaje.setSubject("Prueba de envío con Jakarta Mail.");
+            mensaje.setText("Hola Papu! Este es un mensaje de prueba enviado con Jakarta Mail");
+
+            //Envío
+            Transport.send(mensaje);
+            System.out.println("Mensaje enviado correctamente");
+        } catch (MessagingException mex) {
+            mex.printStackTrace();
+        }
     }
 
     @Override

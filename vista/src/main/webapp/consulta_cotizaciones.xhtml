@@ -177,6 +177,11 @@
                         <p:commandButton icon="pi pi-trash"
                                          title="Eliminar"
                                          styleClass="ui-button-flat delete-icon"/>
+                        <p:commandButton icon="pi pi-send"
+                                         title="Enviar correo"
+                                         actionListener="#{cotizacionBeanUI.enviarEmail}"
+                                         update="@form"
+                                         styleClass="ui-button-flat pencil-icon"/>
                     </div>
                 </p:column>
             </p:dataTable>

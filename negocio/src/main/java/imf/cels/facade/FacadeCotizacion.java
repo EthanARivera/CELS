@@ -52,5 +52,5 @@ public class FacadeCotizacion {
 
     public void enviarEmail() { delegateCotizacion.enviarEmail(); }
 
-    public void aprobarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);}
+    public void aprobarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);} // PBI-CO-US18
 }

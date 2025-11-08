@@ -65,10 +65,10 @@ public class DelegateCotizacion {
     public void enviarEmail() {
         ServiceLocator.getInstanceCotizacionDAO().enviarCorreo();
     }
+
     // Aprobación de Cotización
     public void aprobarCotizacion(Integer idFolio) {
         ServiceLocator.getInstanceCotizacionDAO().aprobarCotizacion(idFolio);
     }
-
 
 }

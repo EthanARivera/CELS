@@ -26,4 +26,5 @@ public class CotizacionHelper {
     public void aprobarCotizacion(Integer idFolio) {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().aprobarCotizacion(idFolio);
     }
+
 }

@@ -361,36 +361,13 @@ public class CotizacionBeanUI implements Serializable {
                         "Índice: " + gananciaPercent + "%"));
     }
 
+
     // Aprobación de Cotización
     public void mostrarDialogoAprobacion(Cotizacion cotizacion) {
         this.idCotizacionSeleccionada = cotizacion.getId();
         this.textoConfirmacion = "";
         this.dialogAprobacionVisible = true;
     }
-
-
-    /*
-    public void aprobarCotizacion() {
-            FacesContext context = FacesContext.getCurrentInstance();
-
-        try {
-            if (!"Aprobado".equalsIgnoreCase(textConfirmacion.trim())) {
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-                        "Confirmación incorrecta", "Debe escribir exactamente 'Aprobado' para confirmar."));
-                return;
-            }
-            cotizacionHelper.aprobarCotizacion(idCotizacionSeleccionada);
-            dialogAprobacionVisible = false;
-
-            // Refresh List
-            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
-
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Cotización aprobada", "La cotización " + idCotizacionSeleccionada + " fue aprobada exitosamente."));
-        } catch (Exception e) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error interno", e.getMessage()));
-        }
-    }*/
 
     public void aprobarCotizacion() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -429,11 +406,11 @@ public class CotizacionBeanUI implements Serializable {
         }
     }
 
-
     public void cancelarCotizacion() {
         dialogAprobacionVisible = false;
         textoConfirmacion = "";
     }
+
 
     //Setter y Getters del registro
     public Cotizacion getCotizacion() { return cotizacion; }

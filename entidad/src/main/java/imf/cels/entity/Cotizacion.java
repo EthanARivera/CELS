@@ -120,6 +120,7 @@ public class Cotizacion {
         this.cotizacionMateriales = cotizacionMateriales;
     }
 
+    // PBI-CO-US18 Aprobación de Cotización
     public Boolean getisCotizacionAprobado() { return aprobado; }
     public void setisCotizacionAprobado(Boolean aprobado) { this.aprobado = aprobado; }
 

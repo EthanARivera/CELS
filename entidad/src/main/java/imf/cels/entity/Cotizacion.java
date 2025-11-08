@@ -48,6 +48,10 @@ public class Cotizacion {
     @OneToMany(mappedBy = "idFolio", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CotizacionMaterial> cotizacionMateriales = new LinkedHashSet<>();
 
+    @NotNull
+    @Column(name = "aprobado", nullable = false)
+    private Boolean aprobado = false;
+
     public Integer getId() {
         return id;
     }
@@ -115,5 +119,9 @@ public class Cotizacion {
     public void setCotizacionMateriales(Set<CotizacionMaterial> cotizacionMateriales) {
         this.cotizacionMateriales = cotizacionMateriales;
     }
+
+    // PBI-CO-US18 Aprobación de Cotización
+    public Boolean getisCotizacionAprobado() { return aprobado; }
+    public void setisCotizacionAprobado(Boolean aprobado) { this.aprobado = aprobado; }
 
 }

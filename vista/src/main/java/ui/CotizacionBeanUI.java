@@ -2,6 +2,7 @@ package ui;
 
 import helper.MaterialHelper;
 import imf.cels.delegate.DelegateCotizacion;
+import imf.cels.entity.Cotizacion;
 import imf.cels.entity.*;
 import helper.CotizacionHelper;
 import imf.cels.integration.ServiceFacadeLocator;
@@ -52,6 +53,11 @@ public class CotizacionBeanUI implements Serializable {
     private int idBusqueda;
     private List<Integer> aniosDisponibles;
     private List<Integer> mesesDisponibles;
+
+    // Aprobación de Cotización
+    private boolean dialogAprobacionVisible;
+    private String textoConfirmacion;
+    private Integer idCotizacionSeleccionada;
 
     @PostConstruct
     public void init(){
@@ -197,8 +203,29 @@ public class CotizacionBeanUI implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
 
         try {
-            //settear la fecha
+            //Guardado de Cada material vinculado a la cotizacion
+            /*for(CotizacionMaterial cm : listaMateriales) {
+                CotizacionMaterialId id = new CotizacionMaterialId();
+                id.setIdFolio(cotizacion.getId());
+                id.setIdMaterial(cm.getIdMaterial().getId());
 
+                cm.setId(id); //se establece el id a partir del folio y el id del material (compuesto)
+                cm.setIdFolio(cotizacion); //se asocia a la cotizacion
+
+                ServiceFacadeLocator.getInstanceFacadeCotizacion().saveCotizacionMaterial(cm);
+            }*/
+
+            //Guardado de Cada Responsable en Mano de obra vinculado a la cotizacion
+            /*for(CotizacionManoDeObra cmdo : listaManoDeObra) {
+                CotizacionManoDeObraId id = new CotizacionManoDeObraId();
+                id.setIdFolio(cotizacion.getId());
+                id.setNumResponsable(numResponsable);
+
+                cmdo.setId(id);
+                cmdo.setIdFolio(cotizacion);
+
+                ServiceFacadeLocator.getInstanceFacadeCotizacion().saveCotizacionManoDeObra(cmdo);
+            }*/
 
             //Asociacion de la cotización a cada elemento
             for(CotizacionMaterial cm : listaMateriales) {
@@ -244,7 +271,6 @@ public class CotizacionBeanUI implements Serializable {
 
             //Limpiar el registro para un nuevo
             cotizacion = new Cotizacion();
-            cotizacion.setIdUsuario(new Usuario());
             listaManoDeObra.clear();
             listaMateriales.clear();
 
@@ -335,6 +361,57 @@ public class CotizacionBeanUI implements Serializable {
                         "Índice: " + gananciaPercent + "%"));
     }
 
+
+    // Aprobación de Cotización
+    public void mostrarDialogoAprobacion(Cotizacion cotizacion) {
+        this.idCotizacionSeleccionada = cotizacion.getId();
+        this.textoConfirmacion = "";
+        this.dialogAprobacionVisible = true;
+    }
+
+    public void aprobarCotizacion() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            // Check if confirmation text is exactly "Aprobado"
+            if (textoConfirmacion == null || !"Aprobado".equalsIgnoreCase(textoConfirmacion.trim())) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Confirmación incorrecta",
+                        "El texto ingresado es incorrecto. Escriba exactamente 'Aprobado' para confirmar."
+                ));
+                return;
+            }
+
+            // Approve the quotation
+            cotizacionHelper.aprobarCotizacion(idCotizacionSeleccionada);
+            dialogAprobacionVisible = false;
+
+            // Refresh list of cotizaciones
+            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+
+            // Success message
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Cotización aprobada",
+                    "La cotización con ID " + idCotizacionSeleccionada + " ha sido aprobada correctamente."
+            ));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error interno",
+                    "No se pudo aprobar la cotización: " + e.getMessage()
+            ));
+        }
+    }
+
+    public void cancelarCotizacion() {
+        dialogAprobacionVisible = false;
+        textoConfirmacion = "";
+    }
+
+
     //Setter y Getters del registro
     public Cotizacion getCotizacion() { return cotizacion; }
     public void setCotizacion(Cotizacion cotizacion) {  this.cotizacion = cotizacion; }
@@ -382,4 +459,13 @@ public class CotizacionBeanUI implements Serializable {
     public void setRequiereFactura(boolean requiereFactura) { this.requiereFactura = requiereFactura; }
 
     public void enviarEmail() { cotizacionHelper.enviarEmail(); }
+
+    public boolean isDialogAprobacionVisible() { return dialogAprobacionVisible; }
+    public void setDialogAprobacionVisible(boolean dialogAprobacionVisible) { this.dialogAprobacionVisible = dialogAprobacionVisible; }
+
+    public String getTextoConfirmacion() { return textoConfirmacion; }
+    public void setTextoConfirmacion(String textConfirmacion) { this.textoConfirmacion = textConfirmacion; }
+
+    public Integer getIdCotizacionSeleccionada() { return idCotizacionSeleccionada; }
+    public void  setIdCotizacionSeleccionada(Integer idCotizacionSeleccionada) { this.idCotizacionSeleccionada = idCotizacionSeleccionada; }
 }

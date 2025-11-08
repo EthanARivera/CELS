@@ -21,4 +21,10 @@ public class CotizacionHelper {
     }*/
 
     public void enviarEmail() { ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarEmail(); }
+
+    // Aprobación de Cotización
+    public void aprobarCotizacion(Integer idFolio) {
+        ServiceFacadeLocator.getInstanceFacadeCotizacion().aprobarCotizacion(idFolio);
+    }
+
 }

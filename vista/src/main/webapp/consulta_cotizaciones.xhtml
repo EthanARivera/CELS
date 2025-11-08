@@ -150,9 +150,22 @@
 
                 <!-- PBI-CO-US18 -->
                 <p:column headerText="Cotización">
+                    <h:panelGroup>
+                        <h:outputText value="Aprobado" styleClass="badge-success"
+                                      rendered="#{c.isCotizacionAprobado}"/>
+                        <p:commandButton value="Aprobar"
+                                         icon="pi pi-check"
+                                         rendered="#{!c.isCotizacionAprobado}"
+                                         actionListener="#{cotizacionBeanUI.mostrarDialogoAprobacion(c)}"
+                                         update=":formCotizaciones"
+                                         oncomplete="PF('dlgAprobacion').show()"
+                                         process="@this"
+                                         styleClass="btn-verde"/>
+                    </h:panelGroup>
                 </p:column>
 
-                <p:column headerText="Contrato">
+                <p:column headerText="Contrato" style="text-align:center;">
+
                 </p:column>
 
                 <p:column headerText="Acciones"
@@ -168,6 +181,39 @@
                 </p:column>
             </p:dataTable>
         </p:panel>
+
+        <p:dialog id="dialogAprobacion"
+                  header="Aprobar Cotización"
+                  widgetVar="dlgAprobacion"
+                  modal="true"
+                  resizable="false"
+                  closable="false"
+                  visible="#{cotizacionBeanUI.dialogAprobacionVisible}"
+                  style="width:350px;">
+
+            <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
+                <h:outputText value="Para aprobar la cotización 0#{cotizacionBeanUI.idCotizacionSeleccionada}, escriba 'Aprobado':"/>
+                <p:inputText value="#{cotizacionBeanUI.textoConfirmacion}"
+                             placeholder="Escriba aquí"
+                             style="width:100%; text-align:center;"/>
+
+                <p:commandButton value="OK"
+                                 icon="pi pi-check"
+                                 actionListener="#{cotizacionBeanUI.aprobarCotizacion}"
+                                 update="tablaCotizaciones growl"
+                                 oncomplete="PF('dlgAprobacion').hide()"
+                                 process="@form"/>
+
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 actionListener="#{cotizacionBeanUI.cancelarAprobacion}"
+                                 update="dialogAprobacion"
+                                 oncomplete="PF('dlgAprobacion').hide()"
+                                 styleClass="ui-button-secondary"/>
+            </h:panelGrid>
+        </p:dialog>
+
+        <p:growl id="growl" showDetail="true" life="4000"/> <!-- the message in the top right -->
 
     </h:form>
 

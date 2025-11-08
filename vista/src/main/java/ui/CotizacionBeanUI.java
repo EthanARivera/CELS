@@ -1,6 +1,7 @@
 package ui;
 
 import imf.cels.delegate.DelegateCotizacion;
+import imf.cels.entity.Cotizacion;
 import imf.cels.entity.*;
 import helper.CotizacionHelper;
 import imf.cels.integration.ServiceFacadeLocator;
@@ -41,6 +42,11 @@ public class CotizacionBeanUI implements Serializable {
     private int idBusqueda;
     private List<Integer> aniosDisponibles;
     private List<Integer> mesesDisponibles;
+
+    // Aprobación de Cotización
+    private boolean dialogAprobacionVisible;
+    private String textoConfirmacion;
+    private Integer idCotizacionSeleccionada;
 
     @PostConstruct
     public void init(){
@@ -253,6 +259,80 @@ public class CotizacionBeanUI implements Serializable {
         }
     }
 
+    // Aprobación de Cotización
+    public void mostrarDialogoAprobacion(Cotizacion cotizacion) {
+        this.idCotizacionSeleccionada = cotizacion.getId();
+        this.textoConfirmacion = "";
+        this.dialogAprobacionVisible = true;
+    }
+
+
+    /*
+    public void aprobarCotizacion() {
+            FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            if (!"Aprobado".equalsIgnoreCase(textConfirmacion.trim())) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "Confirmación incorrecta", "Debe escribir exactamente 'Aprobado' para confirmar."));
+                return;
+            }
+            cotizacionHelper.aprobarCotizacion(idCotizacionSeleccionada);
+            dialogAprobacionVisible = false;
+
+            // Refresh List
+            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Cotización aprobada", "La cotización " + idCotizacionSeleccionada + " fue aprobada exitosamente."));
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error interno", e.getMessage()));
+        }
+    }*/
+
+    public void aprobarCotizacion() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            // Check if confirmation text is exactly "Aprobado"
+            if (textoConfirmacion == null || !"Aprobado".equalsIgnoreCase(textoConfirmacion.trim())) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Confirmación incorrecta",
+                        "El texto ingresado es incorrecto. Escriba exactamente 'Aprobado' para confirmar."
+                ));
+                return;
+            }
+
+            // Approve the quotation
+            cotizacionHelper.aprobarCotizacion(idCotizacionSeleccionada);
+            dialogAprobacionVisible = false;
+
+            // Refresh list of cotizaciones
+            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+
+            // Success message
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Cotización aprobada",
+                    "La cotización con ID " + idCotizacionSeleccionada + " ha sido aprobada correctamente."
+            ));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error interno",
+                    "No se pudo aprobar la cotización: " + e.getMessage()
+            ));
+        }
+    }
+
+
+    public void cancelarCotizacion() {
+        dialogAprobacionVisible = false;
+        textoConfirmacion = "";
+    }
+
     //Setter y Getters del registro
     public Cotizacion getCotizacion() { return cotizacion; }
     public void setCotizacion(Cotizacion cotizacion) {  this.cotizacion = cotizacion; }
@@ -280,4 +360,13 @@ public class CotizacionBeanUI implements Serializable {
 
     public BigDecimal getCostoHorasMDO() { return costoHorasMDO; }
     public void setCostoHorasMDO(BigDecimal costoHorasMDO) { this.costoHorasMDO = costoHorasMDO; }
+
+    public boolean isDialogAprobacionVisible() { return dialogAprobacionVisible; }
+    public void setDialogAprobacionVisible(boolean dialogAprobacionVisible) { this.dialogAprobacionVisible = dialogAprobacionVisible; }
+
+    public String getTextoConfirmacion() { return textoConfirmacion; }
+    public void setTextoConfirmacion(String textConfirmacion) { this.textoConfirmacion = textConfirmacion; }
+
+    public Integer getIdCotizacionSeleccionada() { return idCotizacionSeleccionada; }
+    public void  setIdCotizacionSeleccionada(Integer idCotizacionSeleccionada) { this.idCotizacionSeleccionada = idCotizacionSeleccionada; }
 }

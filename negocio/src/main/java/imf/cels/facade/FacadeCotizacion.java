@@ -50,5 +50,5 @@ public class FacadeCotizacion {
 
     public void saveCotizacionManoDeObra(CotizacionManoDeObra cotizacionManoDeObra) { delegateCotizacion.saveCotizacionManoDeObra(cotizacionManoDeObra); }
 
-    public void apagarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);}
+    public void aprobarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);}
 }

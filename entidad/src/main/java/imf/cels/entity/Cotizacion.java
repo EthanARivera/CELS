@@ -120,7 +120,7 @@ public class Cotizacion {
         this.cotizacionMateriales = cotizacionMateriales;
     }
 
-    public Boolean getAprobado() { return aprobado; }
-    public void setAprobado(Boolean aprobado) { this.aprobado = aprobado; }
+    public Boolean getisCotizacionAprobado() { return aprobado; }
+    public void setisCotizacionAprobado(Boolean aprobado) { this.aprobado = aprobado; }
 
 }

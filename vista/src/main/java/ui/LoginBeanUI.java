@@ -12,7 +12,6 @@ import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 import imf.cels.entity.Usuario;
-
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -21,6 +20,7 @@ import java.io.Serializable;
 public class LoginBeanUI implements Serializable{
     private LoginHelper loginHelper;
     private Usuario usuario;
+    private Usuario datosFormulario;
     
     public LoginBeanUI() {
         loginHelper = new LoginHelper();
@@ -32,46 +32,72 @@ public class LoginBeanUI implements Serializable{
      */
     @PostConstruct
     public void init(){
-        usuario= new Usuario();
+        usuario= null;
+        datosFormulario= new Usuario();
     }
 
     public String login() {
-        String appURL = "/index.xhtml";
+        try {
+            String email = datosFormulario.getEmail() != null ? datosFormulario.getEmail().trim() : "";
+            String password = datosFormulario.getPsswd() != null ? datosFormulario.getPsswd().trim() : "";
 
-        Usuario us = loginHelper.Login(usuario.getEmail(), usuario.getPsswd());
-        if (us != null && us.getId() != null) {
-            usuario = us;
-            try {
-                FacesContext.getCurrentInstance().getExternalContext()
-                        .redirect(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + appURL);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (email.isEmpty() || password.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                "Debe ingresar correo y contraseña", "Intente de nuevo"));
+                return null;
             }
-            return null; // ya hiciste redirect manual
-        } else {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Usuario o contraseña incorrecta:", "Intente de nuevo"));
-            return null; // quédate en la misma página para mostrar mensaje
+
+            Usuario us = loginHelper.Login(email, password);
+
+            // En caso de que usuario o el id sea nulo, no redirige
+            if (us == null || us.getId() == null) {
+                usuario = new Usuario(); // limpia datos previos
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                "Usuario o contraseña incorrecta", "Intente de nuevo"));
+                datosFormulario = new Usuario();
+                return null;
+            }
+
+            // En caso de que pase, guarda usuario en sesión y redirige
+            usuario = us;
+            datosFormulario = new Usuario();
+            FacesContext.getCurrentInstance().getExternalContext().redirect(
+                    FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/index.xhtml");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     public String logout(){
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         usuario=null;
+        datosFormulario=new Usuario();
         return "/login.xhtml?faces-redirect=true";
     }
 
     /* Corroborar que la sesión esté abierta */
     public void verificarSesion() throws IOException{
         FacesContext context = FacesContext.getCurrentInstance();
-        if(usuario==null || usuario.getEmail()==null){
+        if(usuario==null || usuario.getEmail()==null || usuario.getId()==null){
             context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath()+"/login.xhtml");
         }
     }
 
     public void redirigirSiLogueado() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
-        if (usuario != null && usuario.getEmail() != null) {
+        String currentPage = context.getViewRoot().getViewId();
+        if (currentPage != null && currentPage.contains("login.xhtml")) {
+            FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+            usuario=null;
+            datosFormulario=new Usuario();
+            return;
+        }
+
+        if (usuario != null && usuario.getEmail() != null && usuario.getId() != null) {
             context.getExternalContext()
                     .redirect(context.getExternalContext().getRequestContextPath() + "/index.xhtml");
         }
@@ -87,4 +113,11 @@ public class LoginBeanUI implements Serializable{
         this.usuario = usuario;
     }
 
+    public Usuario getDatosFormulario() {
+        return datosFormulario;
+    }
+
+    public void setDatosFormulario(Usuario datosFormulario) {
+        this.datosFormulario = datosFormulario;
+    }
 }

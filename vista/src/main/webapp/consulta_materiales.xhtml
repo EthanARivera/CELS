@@ -40,6 +40,9 @@
         </h:link>
     </div>
 
+    <!-- Nos permite usar TipoUnidad -->
+
+
     <h:form id="formMateriales" styleClass="cuerpo-gestores">
 
         <!-- Panel principal del catálogo -->
@@ -125,16 +128,87 @@
                     <div class="action-buttons">
                         <p:commandButton icon="pi pi-pencil"
                                          title="Editar"
-                                         styleClass="ui-button-flat pencil-icon"/>
+                                         styleClass="ui-button-flat pencil-icon"
+                                         actionListener="#{materialBean.prepararEdicion(material)}"
+                                         update=":formEditar"
+                                         oncomplete="PF('dlgEditar').show()"
+                                         />
                         <p:commandButton icon="pi pi-trash"
                                          title="Eliminar"
-                                         styleClass="ui-button-flat delete-icon"/>
+                                         styleClass="ui-button-flat delete-icon"
+                                         actionListener="#{materialBean.eliminarMaterial(material)}"
+                                         update=":formMateriales:tablaMateriales growl">
+                            <p:confirm header = "Confirmar eliminación"
+                                       message="¿Estás seguro de eliminar el material '#{material.nombre}'?"
+                                       icon ="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
                     </div>
                 </p:column>
             </p:dataTable>
+
         </p:panel>
 
+        <!-- Mensajes para eliminación de materiales-->
+        <p:growl id="growl" showDetail="true" life="4000" />
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" width="350" columnClasses="label-column, input-column">
+            <div style="display: flex; justify-content: center; gap: 10px;">
+            <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </div>
+        </p:confirmDialog>
+
     </h:form>
+    <!--Ventana para editar el material-->
+    <p:dialog header="Editar Material" widgetVar="dlgEditar"
+              modal="true" resizable="false" width="450">
+        <h:form id="formEditar">
+            <h:panelGrid columns="2" cellpadding="5" style="width:100%"
+                         columnClasses="label-column, input-column">
+
+                <h:outputLabel value="ID:" />
+                <h:inputText value="#{materialBean.materialSeleccionado.id}" disabled="true" style="width:100%"/>
+
+                <h:outputLabel value="Nombre:" />
+                <h:inputText value="#{materialBean.materialSeleccionado.nombre}" disabled="true" style="width:100%"/>
+
+                <h:outputLabel value="Tipo de material:" />
+                <h:inputText value="#{materialBean.materialSeleccionado.tipoMaterial}" disabled="true" style="width:100%"/>
+
+                <h:outputLabel value="Costo:" />
+                <p:inputNumber value="#{materialBean.materialSeleccionado.costo}"
+                               symbol=" $" symbolPosition="s"
+                               decimalPlaces="2"
+                               required="true"
+                               minValue="0"
+                               inputStyle="width:100%"/>
+
+                <h:outputLabel value="Tipo de unidad:" />
+                <h:inputText id="tipoUnidad"
+                             value="#{materialBean.materialSeleccionado.tipoUnidad}"
+                             disabled="true"
+                             style="width:100%"
+                />
+            </h:panelGrid>
+            <br/>
+            <div style="text-align:center; margin-top:10px;">
+                <p:commandButton value="Guardar"
+                                 icon="pi pi-save"
+                                 actionListener="#{materialBean.guardarCambios}"
+                                 update=":formMateriales:tablaMateriales"
+                                 oncomplete="PF('dlgEditar').hide();"
+                                 styleClass="btn-azul-iconoblanco"/>
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 type="button"
+                                 onclick="PF('dlgEditar').hide();"
+                                 styleClass="btn-rojo-iconoblanco"/>
+
+            </div>
+
+
+        </h:form>
+    </p:dialog>
 
 
 </h:body>

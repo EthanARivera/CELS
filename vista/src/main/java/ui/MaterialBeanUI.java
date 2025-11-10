@@ -7,6 +7,8 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -149,6 +151,21 @@ public class MaterialBeanUI implements Serializable {
         idBusqueda = null;
     }
 
+    public void prepararEdicion(Material material){
+        this.materialSeleccionado = material;
+    }
+
+    public void guardarCambios(){
+        try{
+            helper.modificar(materialSeleccionado);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Modificación exitosa", "El material fue modificado correctamente"));
+            recargarMateriales();
+        }catch(Exception e){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Modificación fallida", "El material no fue modificado"));
+
+        }
+    }
+
     // --- Getters y Setters ---
     public List<Material> getMateriales() {
         return materiales;
@@ -185,5 +202,14 @@ public class MaterialBeanUI implements Serializable {
         this.idBusqueda = idBusqueda;
     }
 
+    public void eliminarMaterial(Material material){
+        try{
+            helper.eliminar(material.getId());
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,"Eliminación exitosa", "El material fue elimnado correctamente"));
+            recargarMateriales();
+        }catch(Exception e){
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Eliminación fallida", "El material no fue elimnado"));
 
+        }
+    }
 }

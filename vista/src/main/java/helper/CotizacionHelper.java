@@ -19,4 +19,6 @@ public class CotizacionHelper {
     public void saveCotizacionManoDeObra(CotizacionManoDeObra cotizacionManoDeObra) {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().saveCotizacionManoDeObra(cotizacionManoDeObra);
     }*/
+
+    public void enviarEmail() { ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarEmail(); }
 }

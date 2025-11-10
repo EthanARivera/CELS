@@ -53,6 +53,12 @@ public class CotizacionBeanUI implements Serializable {
     private List<Integer> aniosDisponibles;
     private List<Integer> mesesDisponibles;
 
+    //variables para la facturación
+    private Cotizacion cotizacionSeleccionada;
+    private String emailParaEnvio;
+
+
+
     @PostConstruct
     public void init(){
         cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
@@ -381,5 +387,29 @@ public class CotizacionBeanUI implements Serializable {
     public boolean isRequiereFactura() { return requiereFactura; }
     public void setRequiereFactura(boolean requiereFactura) { this.requiereFactura = requiereFactura; }
 
-    public void enviarEmail() { cotizacionHelper.enviarEmail(); }
+    public void enviarCorreo(Cotizacion cotizacion) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+      //validación
+        if (cotizacion == null || cotizacion.getId() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "Error", "No se pudo seleccionar la cotización."));
+            return;
+        }
+
+        try {
+
+            cotizacionHelper.enviarCotizacionPorCorreo(cotizacion.getId());
+
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Éxito", "Correo enviado para el Folio #" + cotizacion.getId()));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Error al enviar", "No se pudo enviar el correo: " + e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
 }
+

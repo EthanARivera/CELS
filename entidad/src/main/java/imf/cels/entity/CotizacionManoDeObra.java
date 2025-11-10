@@ -5,30 +5,44 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+//Imports para el XML
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cotizacion_mano_de_obra")
+@XmlRootElement(name = "manoDeObra")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CotizacionManoDeObra {
     @EmbeddedId
+    @XmlTransient
     private CotizacionManoDeObraId id = new CotizacionManoDeObraId();
 
     @MapsId("idFolio")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "id_folio", nullable = false)
+    @XmlTransient
     private Cotizacion idFolio;
 
     @NotNull
     @Column(name = "costo_hora", nullable = false, precision = 10, scale = 2)
+    @XmlElement
     private BigDecimal costoHora;
 
     @NotNull
     @Column(name = "cantidad_horas", nullable = false, precision = 10, scale = 2)
+    @XmlElement
     private BigDecimal cantidadHoras;
 
     @NotNull
     @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
+    @XmlElement
     private BigDecimal subtotal;
 
     public CotizacionManoDeObraId getId() {

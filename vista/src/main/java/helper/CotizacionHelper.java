@@ -20,5 +20,8 @@ public class CotizacionHelper {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().saveCotizacionManoDeObra(cotizacionManoDeObra);
     }*/
 
-    public void enviarEmail() { ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarEmail(); }
+    public void enviarCotizacionPorCorreo(Integer idCotizacion) throws Exception {
+        ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarCotizacionPorCorreo(idCotizacion);
+    }
+
 }

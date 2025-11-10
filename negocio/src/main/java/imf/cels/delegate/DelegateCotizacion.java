@@ -61,8 +61,5 @@ public class DelegateCotizacion {
         ServiceLocator.getCotizacionManoDeObraDAO().registrarCotizacionManoDeObra(cotizacionManoDeObra);
     }
 
-    public void enviarEmail() {
-        ServiceLocator.getInstanceCotizacionDAO().enviarCorreo();
-    }
 
 }

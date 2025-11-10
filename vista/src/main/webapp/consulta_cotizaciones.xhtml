@@ -70,7 +70,7 @@
             <div class="filter-bar" style="display:flex; flex-direction: column; gap:12px;">
                 <div style="display:flex; flex-wrap:wrap; gap:10px;">
                     <p:commandButton value="Ordenar por fecha"
-                                    icon="pi pi-calendar"
+                                     icon="pi pi-calendar"
                                      actionListener="#{cotizacionBeanUI.consultarPorFecha}"
                                      update="tablaCotizaciones"
                                      styleClass="btn-azul-iconoblanco"/>
@@ -179,7 +179,7 @@
                                          styleClass="ui-button-flat delete-icon"/>
                         <p:commandButton icon="pi pi-send"
                                          title="Enviar correo"
-                                         actionListener="#{cotizacionBeanUI.enviarEmail}"
+                                         actionListener="#{cotizacionBeanUI.enviarCorreo(c)}"
                                          update="@form"
                                          styleClass="ui-button-flat pencil-icon"/>
                     </div>

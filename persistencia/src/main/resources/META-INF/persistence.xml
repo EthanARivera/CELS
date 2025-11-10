@@ -21,7 +21,7 @@
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3307/cels?useSSL=false&amp;serverTimezone=UTC"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="bnleon19"/>
+            <property name="jakarta.persistence.jdbc.password" value="root"/>
 
 
             <property name="hibernate.show_sql" value="true"/>

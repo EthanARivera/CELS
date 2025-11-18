@@ -71,4 +71,8 @@ public class DelegateCotizacion {
         ServiceLocator.getInstanceCotizacionDAO().aprobarCotizacion(idFolio);
     }
 
+    // Apribación de Contrato
+    public void aprobarContrato(Integer idFolio) {
+        ServiceLocator.getInstanceCotizacionDAO().aprobarContrato(idFolio);
+    }
 }

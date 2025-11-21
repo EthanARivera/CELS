@@ -143,6 +143,26 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         }
     }
 
+    //Actualizacion
+    public Cotizacion buscarPorIdUnico(int id) {
+
+        try { //carga los materiales y mano de obra al editar.
+            Cotizacion cot = entityManager.createQuery(
+                            "SELECT c FROM Cotizacion c " +
+                                    "LEFT JOIN FETCH c.cotizacionMateriales " +
+                                    "LEFT JOIN FETCH c.cotizacionManoDeObras " +
+                                    "WHERE c.id = :id", Cotizacion.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            return cot;
+
+        } catch (Exception e) {
+            System.out.println("Error al cargar materiales y mndos");
+            return null; // si no existe, regresamos null
+        }
+    }
+
     @Override
     public EntityManager getEntityManager() {
         return entityManager;

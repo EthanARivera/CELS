@@ -13,12 +13,9 @@ import jakarta.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-@Named ("cotizacionUI")
+@Named ()
 @ViewScoped
 public class CotizacionBeanUI implements Serializable {
     private final CotizacionHelper cotizacionHelper = new CotizacionHelper();
@@ -26,6 +23,9 @@ public class CotizacionBeanUI implements Serializable {
     private final DelegateCotizacion delegateCotizacion = new DelegateCotizacion();
 
     private Cotizacion cotizacion = new Cotizacion();
+    private boolean modoEdicion = false; //Bandera para la accion del boton guardar actualizacion
+
+    private String tituloFormulario = "Nueva Cotización";
     private CotizacionMaterial  nuevoMaterial = new CotizacionMaterial();
     private CotizacionManoDeObra nuevaManoDeObra = new CotizacionManoDeObra();
 
@@ -33,12 +33,15 @@ public class CotizacionBeanUI implements Serializable {
     private List<CotizacionMaterial> listaMateriales = new ArrayList<>();
     private List<CotizacionManoDeObra> listaManoDeObra = new ArrayList<>();
 
+    //variables auxiliares
     private Integer idMaterialSeleccionado;
     private Integer numResponsable;
     private BigDecimal costoMaterialSeleccionado = BigDecimal.ZERO;
     private BigDecimal cantidadSeleccionada = BigDecimal.ZERO;
     private BigDecimal cantidadHorasMDO = BigDecimal.ZERO;
     private BigDecimal costoHorasMDO = BigDecimal.ZERO;
+
+    // Totales manejados SOLO en el bean
     // Campos para totales y ganancia
     private BigDecimal totalMateriales = BigDecimal.ZERO;
     private BigDecimal totalManoDeObra = BigDecimal.ZERO;
@@ -47,6 +50,7 @@ public class CotizacionBeanUI implements Serializable {
     private BigDecimal precioFinal = BigDecimal.ZERO;
     private boolean requiereFactura = false;
 
+    //Filtros para consulta
     private int anioFiltro;
     private int mesFiltro;
     private int idBusqueda;
@@ -54,13 +58,66 @@ public class CotizacionBeanUI implements Serializable {
     private List<Integer> mesesDisponibles;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
         aniosDisponibles = delegateCotizacion.obtenerAniosDisponibles();
         mesesDisponibles = delegateCotizacion.obtenerMesesDisponibles();
 
-        if(cotizacion.getIdUsuario() == null) {
+        if (cotizacion.getIdUsuario() == null) {
             cotizacion.setIdUsuario(new Usuario());
+        }
+
+        //IMPORTANTE PARA ACTUALIZACION
+        System.out.println("INIT COTIZACION — Bean cargado");
+
+        Map<String, String> params =
+                FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+
+        String idString = params.get("idCotizacion");
+        System.out.println("INIT COTIZACION: Bean cargado");
+
+        if (idString != null) {
+            try {
+                int id = Integer.parseInt(idString);
+                System.out.println("Cargando cotización ID: " + id);
+                cargarCotizacionParaEditarPorId(id);  // mEtodo que esta abajo
+                modoEdicion = true;
+            } catch (NumberFormatException ignore) {
+                System.out.println("ERROR PARSEANDO ID  ");
+            }
+        }
+    }
+
+    //IMPORTANTE PARA ACTUALIZACION
+    public void cargarCotizacionParaEditarPorId(int id) {
+
+        Cotizacion c = delegateCotizacion.buscarPorIdUnico(id);
+
+        if (c != null) {
+
+            // Asignar la entidad al bean
+            this.cotizacion = c;
+
+            //cargar listas desde la entidad
+            this.listaMateriales = new ArrayList<>(c.getCotizacionMateriales());
+            this.listaManoDeObra = new ArrayList<>(c.getCotizacionManoDeObras());
+
+            //GANANCIA como NO existe en BD, la dejamos en 0
+            this.gananciaPercent = BigDecimal.ZERO;
+
+            //FACTURA como NO existe en BD, siempre false
+            this.requiereFactura = false;
+
+            //Recalcular totales a partir de los materiales y mano de obra
+            recalcularTotales();
+
+            //Activar modo edición
+            this.modoEdicion = true;
+
+            //Título
+            this.tituloFormulario = "Actualizar Cotización";
+
+            System.out.println("COTIZACIÓN CARGADA EN BEAN correctamente.");
         }
     }
 
@@ -137,6 +194,75 @@ public class CotizacionBeanUI implements Serializable {
     }
 
     public List<Material> getMaterialesDisponibles() { return materialHelper.obtenerMateriales(); }
+
+    //actualizacion
+    public void guardarPseudoModificacion() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+
+            // Siempre es una NUEVA cotización con el ID NULL
+            cotizacion.setId(null);
+
+            // Fecha nueva
+            cotizacion.setFecha(LocalDate.now());
+
+            for (CotizacionMaterial cm : listaMateriales) {
+                cm.setIdFolio(cotizacion);
+            }
+
+            for (CotizacionManoDeObra cmdo : listaManoDeObra) {
+                cmdo.setIdFolio(cotizacion);
+            }
+
+            cotizacion.setCotizacionMateriales(new LinkedHashSet<>(listaMateriales));
+            cotizacion.setCotizacionManoDeObras(new LinkedHashSet<>(listaManoDeObra));
+
+            recalcularTotales();
+            cotizacion.setPrecioFinal(precioFinal);
+
+            cotizacionHelper.saveCotizacion(cotizacion);
+
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Cotización Actualizada",
+                            "Se generó una nueva cotización basada en la anterior."));
+
+            limpiarFormulario();
+
+        } catch (Exception ex) {
+            context.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Error al actualizar", ex.getMessage()));
+        }
+    }
+
+
+    //Metodo para guardar cotizacion segun su tipo (Registro nuevo o actualizacion)
+    public void guardarCotizacion() {
+        if (modoEdicion) {
+            guardarPseudoModificacion();
+        } else {
+            registrarCotizacion();
+        }
+    }
+
+    //para limpiar el formulario despues de guardar
+    private void limpiarFormulario() {
+        this.cotizacion = new Cotizacion();
+        cotizacion.setIdUsuario(new Usuario());
+        this.listaMateriales.clear();
+        this.listaManoDeObra.clear();
+        this.modoEdicion = false;
+    }
+
+    //Cambia el texto del boton dependiendo de si es registro o actualizacion
+    public String getTextoBotonGuardar() {
+        if (modoEdicion) {
+            return "Guardar Cambios";
+        } else {
+            return "Generar Cotización";
+        }
+    }
 
     /*Funcion para agregar materiales a la lista de materiales
     * que se guardará junto con la cotización*/
@@ -382,4 +508,14 @@ public class CotizacionBeanUI implements Serializable {
     public void setRequiereFactura(boolean requiereFactura) { this.requiereFactura = requiereFactura; }
 
     public void enviarEmail() { cotizacionHelper.enviarEmail(); }
+
+    //actualizacion de cotizaciones
+    //Se usa para el cambio de titulo dependiendo de si es registro o actualizacion
+    public String getTituloFormulario() {
+        return tituloFormulario;
+    }
+
+    public void setTituloFormulario(String tituloFormulario) {
+        this.tituloFormulario = tituloFormulario;
+    }
 }

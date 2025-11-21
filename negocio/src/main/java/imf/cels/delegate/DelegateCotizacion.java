@@ -65,4 +65,10 @@ public class DelegateCotizacion {
         ServiceLocator.getInstanceCotizacionDAO().enviarCorreo();
     }
 
+    //para actualizacion
+    public Cotizacion buscarPorIdUnico(int id){
+        return ServiceLocator.getInstanceCotizacionDAO().buscarPorIdUnico(id);
+    }
+
+
 }

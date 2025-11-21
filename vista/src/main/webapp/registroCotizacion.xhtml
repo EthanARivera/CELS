@@ -17,11 +17,13 @@
     <!-- Encabezado con botones -->
     <div class="header">
         <!-- Link para regresar -->
-        <h:link outcome="index.xhtml" styleClass="back ui-button-success">
+        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="back ui-button-success"> <!--Redirige a las consultas de cot-->
             <i class="pi pi-arrow-left"></i>
         </h:link>
 
-        <span>Nueva Cotización</span>
+        <!--ORIGINAL<span>Nueva Cotización</span>-->
+        <span>#{cotizacionBeanUI.tituloFormulario}</span> <!--Cambia el titulo dependiendo de si es actualizacion o registro-->
+
 
         <!-- Botón de menú -->
         <p:commandButton class="menu" icon="pi pi-bars"
@@ -56,9 +58,9 @@
                     <!-- Folio -->
                     <div class="cotz-field">
                         <label>Folio:</label>
-                        <!--<p:inputText value="#{cotizacionUI.cotizacion.id}" readonly="true" styleClass="input-cot small"/>-->
+                        <!--<p:inputText value="#{cotizacionBeanUI.cotizacion.id}" readonly="true" styleClass="input-cot small"/>-->
                         <!-- Muestra el folio si ya se generó, o texto temporal -->
-                        <p:inputText value="#{cotizacionUI.cotizacion.id}"
+                        <p:inputText value="#{cotizacionBeanUI.cotizacion.id}"
                                      readonly="true"
                                      placeholder="[Por asignar]"
                                      styleClass="input-cot small"/>
@@ -67,28 +69,31 @@
                     <!-- ID Empleado -->
                     <div class="cotz-field">
                         <label>ID Empleado:</label>
-                       <p:inputText value="#{cotizacionUI.cotizacion.idUsuario}" readonly="true" styleClass="input-cot small"/>
+                       <p:inputText value="#{cotizacionBeanUI.cotizacion.idUsuario.id}"
+                                    readonly="true"
+                                    styleClass="input-cot small"/>
 
                     </div>
 
                     <!-- Nombre cliente -->
                     <div class="cotz-field">
                         <label>Nombre del Cliente:</label>
-                        <p:inputText value="#{cotizacionUI.cotizacion.cliente}" placeholder="[Nombre]" styleClass="input-cot"/>
+                        <p:inputText value="#{cotizacionBeanUI.cotizacion.cliente}"
+                                     styleClass="input-cot" />
                     </div>
                 </div>
 
                 <!-- Fecha -->
                 <div class="cotz-right">
                     <label>Fecha:</label>
-                    <!--<p:inputText value="#{cotizacionUI.cotizacion.fecha}"
+                    <!--<p:inputText value="#{cotizacionBeanUI.cotizacion.fecha}"
                                  readonly="true"
                                  styleClass="input-cot small">
                         <f:convertDateTime pattern="dd/MM/yyyy"
                                            type="localDate"
                                            dateStyle="short" />
                     </p:inputText> -->
-                    <h:outputText value="#{cotizacionUI.cotizacion.fecha}">
+                    <h:outputText value="#{cotizacionBeanUI.cotizacion.fecha}">
                         <f:convertDateTime pattern="dd/MM/yyyy"
                                            type="localDate"
                                            dateStyle="short" />
@@ -100,7 +105,8 @@
             <!-- Sección Descripción -->
             <div class="cotz-section">
                 <h2 class="cotz-title">Descripción</h2>
-                <p:inputTextarea value="#{cotizacionUI.cotizacion.descripcion}" rows="4"
+                <p:inputTextarea value="#{cotizacionBeanUI.cotizacion.descripcion}"
+                                 rows="4"
                                  placeholder="Ingrese una descripción sobre el proyecto a cotizar"
                                  styleClass="input-desc"/>
             </div>
@@ -210,24 +216,24 @@
                         <div class="total-row">
                             <div class="total-item">
                                 <label>Costo de Materiales:</label>
-                                <input type="text" id="totalMateriales" class="input-cot small" readonly="" />
+                                <p:inputText value="#{cotizacionBeanUI.totalMateriales}" readonly="true" styleClass="input-cot small"/>
                             </div>
 
                             <div class="total-item">
                                 <label>Costo de Mano de Obra:</label>
-                                <input type="text" id="totalManoObra" class="input-cot small" readonly="" />
+                                <p:inputText value="#{cotizacionBeanUI.totalManoDeObra}" readonly="true" styleClass="input-cot small"/>
                             </div>
                         </div>
 
                         <div class="total-item">
                             <label>Costo Final Bruto:</label>
-                            <input type="text" id="costoBruto" class="input-cot small" readonly="" />
+                            <p:inputText value="#{cotizacionBeanUI.costoBruto}" readonly="true" styleClass="input-cot small"/>
                         </div>
 
                         <div class="total-item">
                             <label>Índice de Ganancia:</label>
                             <div class="ganancia-group">
-                                <input type="text" id="indiceGanancia" class="input-cot small" placeholder="%" />
+                                <p:inputText value="#{cotizacionBeanUI.gananciaPercent}" styleClass="input-cot small"/>
                                 <span>%</span>
                             </div>
                         </div>
@@ -235,14 +241,14 @@
                         <div class="total-item">
                             <label>Costo Final:</label>
                             <!-- Muestra el costo final calculado automáticamente -->
-                            <input type="text" id="formCotizacion:costoFinal"
+                            <p:inputText value="#{cotizacionBeanUI.precioFinal}"
                                    class="input-cot small"
                                    readonly="readonly" />
                         </div>
 
                         <!-- Campo oculto para enviar el precio final al bean -->
                         <h:inputHidden id="precioFinalHidden"
-                                       value="#{cotizacionUI.cotizacion.precioFinal}" />
+                                       value="#{cotizacionBeanUI.cotizacion.precioFinal}" />
 
 
                     </div>
@@ -251,15 +257,17 @@
                         <div class="facturacion-block">
                             <label>¿Se requerirá facturación?</label>
                             <div class="facturacion-options">
-                                <label><input type="radio" name="factura" value="si" /> Sí</label>
-                                <label><input type="radio" name="factura" value="no" /> No</label>
+                                <p:selectOneRadio value="#{cotizacionBeanUI.requiereFactura}">
+                                    <f:selectItem itemLabel="Sí" itemValue="true"/>
+                                    <f:selectItem itemLabel="No" itemValue="false"/>
+                                </p:selectOneRadio>
                             </div>
                         </div>
 
-                        <p:commandButton value="Generar Cotización"
-                                         actionListener="#{cotizacionUI.registrarCotizacion}"
+                        <p:commandButton value="#{cotizacionBeanUI.textoBotonGuardar}"
+                                         actionListener="#{cotizacionBeanUI.guardarCotizacion}"
                                          update="@form"
-                                         styleClass="btn-blue"/>
+                                         styleClass="btn-blue"/> <!--En el actionListener si es edicion ejecuta guardarPseudoModificacion y si es creacion ejecuta registrarCotizacion-->
 
                     </div>
                 </div>

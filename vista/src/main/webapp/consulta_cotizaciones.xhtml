@@ -154,9 +154,18 @@
                 <p:column headerText="Acciones"
                           style="width:100px; text-align:center;">
                     <div class="action-buttons">
-                        <p:commandButton icon="pi pi-pencil"
+                      <!-- ORIGINAL <p:commandButton icon="pi pi-pencil"
                                          title="Editar"
-                                         styleClass="ui-button-flat pencil-icon"/>
+                                         styleClass="ui-button-flat pencil-icon"/> -->
+
+                        <!-- link para que pueda redirigirse correctamente-->
+                        <h:link outcome="registroCotizacion?faces-redirect=true"
+                                title="Editar"
+                                styleClass="ui-button-flat pencil-icon">
+                            <f:param name="idCotizacion" value="#{c.id}" />
+                            <i class="pi pi-pencil"></i>
+                        </h:link>
+
                         <p:commandButton icon="pi pi-trash"
                                          title="Eliminar"
                                          styleClass="ui-button-flat delete-icon"/>

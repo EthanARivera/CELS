@@ -31,6 +31,10 @@ public class CotizacionManoDeObra {
     @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
 
+    public CotizacionManoDeObra() {
+        this.id = new CotizacionManoDeObraId();
+    }
+
     public CotizacionManoDeObraId getId() {
         return id;
     }

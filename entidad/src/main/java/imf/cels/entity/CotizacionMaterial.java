@@ -33,6 +33,10 @@ public class CotizacionMaterial {
     @Column(name = "subtotal", nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
 
+    public CotizacionMaterial() {
+        this.id = new CotizacionMaterialId();
+    }
+
     public CotizacionMaterialId getId() {
         return id;
     }

@@ -53,4 +53,10 @@ public class FacadeUsuario {
         }
     }
 
+    public String obtenerCorreo(Integer idUsuario) { return delegateUsuario.obtenerCorreo(idUsuario); }
+
+    public Integer obtenerIdUsuario(Integer idUsuario) { return delegateUsuario.obtenerIdUsuario(idUsuario); }
+
+    public String obtenerNombre (Integer idUsuario) { return delegateUsuario.obtenerNombre(idUsuario); }
+
 }

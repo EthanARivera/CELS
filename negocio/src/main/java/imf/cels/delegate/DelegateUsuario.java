@@ -165,4 +165,11 @@ public class DelegateUsuario {
         }
         ServiceLocator.getInstanceUsuarioDAO().cambiarEstado(idUsuario, nuevoEstado);
     }
+
+    public String obtenerCorreo(Integer idUsuario) { return ServiceLocator.getInstanceUsuarioDAO().obtenerCorreo(idUsuario); }
+
+    public Integer obtenerIdUsuario(Integer idUsuario) { return ServiceLocator.getInstanceUsuarioDAO().obtenerIdUsuario(idUsuario); }
+
+    public String obtenerNombre(Integer idUsuario) { return ServiceLocator.getInstanceUsuarioDAO().obtenerNombre(idUsuario); }
+
 }

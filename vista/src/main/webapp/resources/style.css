@@ -6,7 +6,7 @@
         height: 100%;
     }
     body {
-        background-color: #262F8D;
+        background-color: #454545;
         color: white;
         font-family: Tahoma, Verdana, Arial, sans-serif;
     }
@@ -30,7 +30,7 @@
         align-items: center;
         height: 15%;
         justify-content: space-between;
-        background: #262F8D;
+        background: #454545;
         color: white;
         padding: 0 20px;
         margin: 0;

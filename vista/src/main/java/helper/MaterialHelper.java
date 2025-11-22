@@ -25,11 +25,15 @@ public class MaterialHelper implements Serializable {
         return ServiceFacadeLocator.getInstanceFacadeMaterial().obtenerMateriales();
     }
 
-    public List<Material> obtenerPorNombre(String nombre){
+    public List<Material> buscarPorNombre(String nombre){
         return ServiceFacadeLocator.getInstanceFacadeMaterial().obtenerPorNombre(nombre);
     }
 
-    public Material obtenerPorId(Integer id){
+    public List<Material> buscarPorNombreCot(String nombre){
+        return ServiceFacadeLocator.getInstanceFacadeMaterial().obtenerPorNombreCot(nombre);
+    }
+
+    public Material buscarPorId(Integer id){
         return ServiceFacadeLocator.getInstanceFacadeMaterial().obtenerPorId(id);
     }
 

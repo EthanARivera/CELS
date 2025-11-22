@@ -37,4 +37,11 @@ public class MaterialHelper implements Serializable {
         return ServiceFacadeLocator.getInstanceFacadeMaterial().obtenerPorId(id);
     }
 
+    public void modificar(Material material){
+        ServiceFacadeLocator.getInstanceFacadeMaterial().modificarMaterial(material);
+    }
+
+    public void eliminar(Integer id){
+        ServiceFacadeLocator.getInstanceFacadeMaterial().eliminarMaterial(id);
+    }
 }

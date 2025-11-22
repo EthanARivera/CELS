@@ -55,6 +55,7 @@
 
     /*LOGIN*/
 
+
     /*PRINCIPAL*/
 
     .nav-links {
@@ -421,6 +422,22 @@
         color: #262F8D !important;
     }
 
+
+    /*Menu de edición*/
+
+    .label-column {
+        text-align: right;
+        font-weight: bold;
+        padding-right: 10px;
+        width: 150px;
+    }
+
+    .input-column {
+
+        width: 100%;
+    }
+
+    /*Eliminación de materiales*/
 /* Si el botón tiene ícono (como el pi-bars), ajustamos el color del ícono */
 .menu .ui-icon,
 .menu .pi {

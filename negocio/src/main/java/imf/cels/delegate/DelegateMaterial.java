@@ -26,5 +26,13 @@ public class DelegateMaterial {
     public List<Material> obtenerPorNombreCot(String nombre) {
         return ServiceLocator.getInstanceMaterialDAO().findByNameCot(nombre);
     }
+
+    public void actualizarMaterial(Material material){
+        ServiceLocator.getInstanceMaterialDAO().update(material);
+    }
+
+    public void eliminarMaterial(Integer id){
+        ServiceLocator.getInstanceMaterialDAO().eliminar(id);
+    }
 }
 

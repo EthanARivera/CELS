@@ -55,14 +55,17 @@ public class DelegateCotizacion {
 
     }
 
+
     //Guardado de entidad CotizacionManoDeObra
     //Llamando a CotizacionManoDeObraDAO desde ServiceLocator
     public void saveCotizacionManoDeObra(CotizacionManoDeObra cotizacionManoDeObra) {
         ServiceLocator.getCotizacionManoDeObraDAO().registrarCotizacionManoDeObra(cotizacionManoDeObra);
     }
 
-    public void enviarEmail() {
-        ServiceLocator.getInstanceCotizacionDAO().enviarCorreo();
+
+    // Aprobación de Cotización
+    public void aprobarCotizacion(Integer idFolio) {
+        ServiceLocator.getInstanceCotizacionDAO().aprobarCotizacion(idFolio);
     }
 
     public Integer ultimoFolio() { return ServiceLocator.getInstanceCotizacionDAO().ultimoFolio(); }

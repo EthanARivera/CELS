@@ -1,9 +1,12 @@
 package ui;
 
+import helper.CotizacionHelper;
 import imf.cels.delegate.DelegateCotizacion;
 import imf.cels.entity.*;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -17,6 +20,8 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
     @Inject
     private LoginBeanUI loginUI;
 
+    private CotizacionHelper cotizacionHelper;
+
     private final DelegateCotizacion delegateCotizacion = new DelegateCotizacion();
 
     //Filtros y Busqueda de cotizaciones
@@ -26,6 +31,16 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
     private int idBusqueda;
     private List<Integer> aniosDisponibles;
     private List<Integer> mesesDisponibles;
+
+    //variables para la facturación
+    private Cotizacion cotizacionSeleccionada;
+    private String emailParaEnvio;
+
+    // Aprobación de Cotización
+    private boolean dialogAprobacionVisible;
+    private String textoConfirmacion;
+    private Integer idCotizacionSeleccionada;
+
 
     @PostConstruct
     public void init(){
@@ -45,6 +60,87 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
         if (mes >= 1 && mes <= 12) return nombres[mes - 1];
         return "Mes " + mes;
+    }
+
+    /*******************************************
+     *    Aprobación (Marinela Verganio)
+     *******************************************/
+
+    // Aprobación de Cotización
+    public void mostrarDialogoAprobacion(Cotizacion cotizacion) {
+        this.idCotizacionSeleccionada = cotizacion.getId();
+        this.textoConfirmacion = "";
+        this.dialogAprobacionVisible = true;
+    }
+
+    public void aprobarCotizacion() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            // Check if confirmation text is exactly "Aprobado"
+            if (textoConfirmacion == null || !"Aprobado".equalsIgnoreCase(textoConfirmacion.trim())) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Confirmación incorrecta",
+                        "El texto ingresado es incorrecto. Escriba exactamente 'Aprobado' para confirmar."
+                ));
+                return;
+            }
+
+            // Approve the quotation
+            cotizacionHelper.aprobarCotizacion(idCotizacionSeleccionada);
+            dialogAprobacionVisible = false;
+
+            // Refresh list of cotizaciones
+            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+
+            // Success message
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Cotización aprobada",
+                    "La cotización con ID " + idCotizacionSeleccionada + " ha sido aprobada correctamente."
+            ));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error interno",
+                    "No se pudo aprobar la cotización: " + e.getMessage()
+            ));
+        }
+    }
+
+    public void cancelarCotizacion() {
+        dialogAprobacionVisible = false;
+        textoConfirmacion = "";
+    }
+
+    /**************************************************
+     *         Envío de Correos (Brayan Leon)
+     **************************************************/
+
+    public void enviarCorreo(Cotizacion cotizacion) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        //validación
+        if (cotizacion == null || cotizacion.getId() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "Error", "No se pudo seleccionar la cotización."));
+            return;
+        }
+
+        try {
+
+            cotizacionHelper.enviarCotizacionPorCorreo(cotizacion.getId());
+
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Éxito", "Correo enviado para el Folio #" + cotizacion.getId()));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Error al enviar", "No se pudo enviar el correo: " + e.getMessage()));
+            e.printStackTrace();
+        }
     }
 
     //Setters/Getters
@@ -74,4 +170,15 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
     public void  setMesFiltro(int mesFiltro) { this.mesFiltro = mesFiltro; }
 
     public List<Integer> getMesesDisponibles() { return mesesDisponibles; }
+
+    //setters / getters para aprobacion (marinela)
+
+    public boolean isDialogAprobacionVisible() { return dialogAprobacionVisible; }
+    public void setDialogAprobacionVisible(boolean dialogAprobacionVisible) { this.dialogAprobacionVisible = dialogAprobacionVisible; }
+
+    public String getTextoConfirmacion() { return textoConfirmacion; }
+    public void setTextoConfirmacion(String textConfirmacion) { this.textoConfirmacion = textConfirmacion; }
+
+    public Integer getIdCotizacionSeleccionada() { return idCotizacionSeleccionada; }
+    public void  setIdCotizacionSeleccionada(Integer idCotizacionSeleccionada) { this.idCotizacionSeleccionada = idCotizacionSeleccionada; }
 }

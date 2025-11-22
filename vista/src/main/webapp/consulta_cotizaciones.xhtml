@@ -202,25 +202,25 @@
                   modal="true"
                   resizable="false"
                   closable="false"
-                  visible="#{cotizacionBeanUI.dialogAprobacionVisible}"
+                  visible="#{cotizacionUI.dialogAprobacionVisible}"
                   style="width:350px;">
 
             <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
-                <h:outputText value="Para aprobar la cotización 0#{cotizacionBeanUI.idCotizacionSeleccionada}, escriba 'Aprobado':"/>
-                <p:inputText value="#{cotizacionBeanUI.textoConfirmacion}"
+                <h:outputText value="Para aprobar la cotización 0#{cotizacionUI.idCotizacionSeleccionada}, escriba 'Aprobado':"/>
+                <p:inputText value="#{cotizacionUI.textoConfirmacion}"
                              placeholder="Escriba aquí"
                              style="width:100%; text-align:center;"/>
 
                 <p:commandButton value="OK"
                                  icon="pi pi-check"
-                                 actionListener="#{cotizacionBeanUI.aprobarCotizacion}"
+                                 actionListener="#{cotizacionUI.aprobarCotizacion}"
                                  update="tablaCotizaciones growl"
                                  oncomplete="PF('dlgAprobacion').hide()"
                                  process="@form"/>
 
                 <p:commandButton value="Cancelar"
                                  icon="pi pi-times"
-                                 actionListener="#{cotizacionBeanUI.cancelarAprobacion}"
+                                 actionListener="#{cotizacionUI.cancelarAprobacion}"
                                  update="dialogAprobacion"
                                  oncomplete="PF('dlgAprobacion').hide()"
                                  styleClass="ui-button-secondary"/>

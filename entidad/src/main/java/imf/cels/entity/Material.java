@@ -17,7 +17,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "material")
-@XmlRootElement(name = "infoMaterial") // ✅ ANOTACIÓN DE CLASE
+@XmlRootElement(name = "infoMaterial")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Material {
     @Id

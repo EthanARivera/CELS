@@ -16,7 +16,7 @@ public class CotizacionManoDeObraDAO extends AbstractDAO<CotizacionManoDeObra> {
     //Guardado de entidad CotizacionManoDeObra
     public void registrarCotizacionManoDeObra(CotizacionManoDeObra cotizacionManoDeObra) {
         //Guardado
-        ServiceLocator.getCotizacionManoDeObraDAO().save(cotizacionManoDeObra);
+        ServiceLocator.getCotizacionManoDeObraDAO().update(cotizacionManoDeObra);
     }
 
     @Override

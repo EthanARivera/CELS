@@ -73,10 +73,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     public void registrarCotizacion(Cotizacion cotizacion) {
 
         //Validacion
-        if(existeFolio(cotizacion.getId()))
-            throw new IllegalArgumentException("El Folio ya se encuentra en uso. Favor de recargarlo para utilizar uno disponible.");
-
-        if(cotizacion.getIdUsuario() == null) {
+       if(cotizacion.getIdUsuario() == null) {
             throw new IllegalArgumentException("No se encuentra ningún usuario vendedor activo. ");
         }
 
@@ -96,51 +93,14 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         ServiceLocator.getInstanceCotizacionDAO().save(cotizacion);
     }
 
-    public boolean existeFolio(Integer id) {
-        List<Cotizacion> result = entityManager.createQuery(
-                "SELECT c FROM Cotizacion c WHERE c.id = :id", Cotizacion.class)
-                .setParameter("id", id)
-                .getResultList();
-        return !result.isEmpty();
-    }
+    //función con query para obtener el último folio existente
+    public Integer ultimoFolio() {
+        Integer ultimoIdFolio = entityManager
+                .createQuery("SELECT MAX(c.id) FROM Cotizacion c", Integer.class)
+                .getSingleResult();
 
-    public void enviarCorreo() {
-        //configuracion de credenciales
-        final String remitente = "correo@uabc.edu.mx";
-        final String psswd = "xxxx xxxx xxxx xxxx"; //Para poder iniciar sesión como remitente es necesario
-                                                    //contar con una contraseña de aplicación en caso
-                                                    //de utilizar gmail (también entra el dominio de uabc)
-        final String destinatario = "correo@gmail.com";
-
-        //Propiedades para Gmail
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.port", "587");
-
-        //Autenticacion de usuario
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(remitente, psswd);
-            }
-        });
-
-        //Estructura del mensaje
-        try{
-            Message mensaje = new MimeMessage(session);
-            mensaje.setFrom(new InternetAddress(remitente));
-            mensaje.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
-            mensaje.setSubject("Prueba de envío con Jakarta Mail.");
-            mensaje.setText("Hola Papu! Este es un mensaje de prueba enviado con Jakarta Mail");
-
-            //Envío
-            Transport.send(mensaje);
-            System.out.println("Mensaje enviado correctamente");
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
-        }
+        //retorna 0 si no se encuentra ningun folio
+        return (ultimoIdFolio != null) ? ultimoIdFolio : 0;
     }
 
     //Actualizacion
@@ -167,4 +127,35 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     public EntityManager getEntityManager() {
         return entityManager;
     }
+
+
+    // Aprobación de Cotización
+    public void aprobarCotizacion(Integer idFolio) {
+        Cotizacion cotizacion = entityManager.find(Cotizacion.class, idFolio);
+
+        if (cotizacion == null) {
+            throw new IllegalArgumentException("No se encontró la cotización con el folio especificado.");
+        }
+
+        if (Boolean.TRUE.equals(cotizacion.getisCotizacionAprobado())) {
+            throw new IllegalStateException("La cotización ya fue aprobada y no puede desaprobarse.");
+        }
+
+        /*executeInsideTransaction(em -> {
+            cotizacion.setAprobado(true);
+            em.merge(cotizacion);
+        });*/
+        try {
+            entityManager.getTransaction().begin();
+            cotizacion.setisCotizacionAprobado(true);
+            entityManager.merge(cotizacion);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw e;
+        }
+    }
+
 }

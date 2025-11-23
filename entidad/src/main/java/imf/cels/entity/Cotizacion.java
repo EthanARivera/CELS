@@ -7,26 +7,40 @@ import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+//imports para los archivos XML
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 @Entity
 @Table(name = "cotizacion")
+@XmlRootElement(name = "cotizacion")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Cotizacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_folio", nullable = false)
+    @XmlElement
     private Integer id;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
+    @XmlTransient
     private Usuario idUsuario;
 
     @NotNull
     @Convert(converter = LocalDateAttributeConverter.class)
     @Column(name = "fecha", nullable = false)
+    @XmlElement
     private LocalDate fecha;
 
     @NotNull
     @Column(name = "cliente", nullable = false)
+    @XmlElement
     private String cliente;
 
     @Lob
@@ -40,13 +54,22 @@ public class Cotizacion {
 
     @NotNull
     @Column(name = "precio_final", nullable = false, precision = 10, scale = 2)
+    @XmlElement
     private BigDecimal precioFinal;
 
     @OneToMany(mappedBy = "idFolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @XmlElementWrapper(name = "manosDeObra")
+    @XmlElement(name = "manoDeObra")
     private Set<CotizacionManoDeObra> cotizacionManoDeObras = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idFolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @XmlElementWrapper(name = "materiales")
+    @XmlElement(name = "material")
     private Set<CotizacionMaterial> cotizacionMateriales = new LinkedHashSet<>();
+
+    @NotNull
+    @Column(name = "aprobado", nullable = false)
+    private Boolean aprobado = false;
 
     public Integer getId() {
         return id;
@@ -115,5 +138,9 @@ public class Cotizacion {
     public void setCotizacionMateriales(Set<CotizacionMaterial> cotizacionMateriales) {
         this.cotizacionMateriales = cotizacionMateriales;
     }
+
+    // PBI-CO-US18 Aprobación de Cotización
+    public Boolean getisCotizacionAprobado() { return aprobado; }
+    public void setisCotizacionAprobado(Boolean aprobado) { this.aprobado = aprobado; }
 
 }

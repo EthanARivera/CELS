@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ui;
 
 import helper.LoginHelper;
@@ -62,6 +57,7 @@ public class LoginBeanUI implements Serializable{
 
             // En caso de que pase, guarda usuario en sesión y redirige
             usuario = us;
+            setUsuario(usuario);
             datosFormulario = new Usuario();
             FacesContext.getCurrentInstance().getExternalContext().redirect(
                     FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/index.xhtml");
@@ -102,6 +98,19 @@ public class LoginBeanUI implements Serializable{
                     .redirect(context.getExternalContext().getRequestContextPath() + "/index.xhtml");
         }
     }
+
+    public Integer obtenerIdUsuarioEnSesion() {
+        return usuario.getId();
+    }
+
+    public String obtenerNombreUsuarioEnSesion() {
+        if(usuario != null && usuario.getNombre() != null) {
+            return usuario.getNombre();
+        } else {
+            return "Invitado";
+        }
+    }
+
     
     /* getters y setters */
 

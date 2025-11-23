@@ -16,7 +16,7 @@ public class CotizacionMaterialDAO extends AbstractDAO<CotizacionMaterial> {
     //Guardado de entidad CotizacionMaterial
     public void registrarCotizacionMaterial(CotizacionMaterial cotizacionMaterial){
         //Guardado
-        ServiceLocator.getCotizacionMaterialDAO().save(cotizacionMaterial);
+        ServiceLocator.getCotizacionMaterialDAO().update(cotizacionMaterial);
     }
 
     @Override

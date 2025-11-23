@@ -4,6 +4,12 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
+<!-- Verificación de sesión -->
+<f:metadata>
+    <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"></f:event>
+</f:metadata>
+
 <h:head>
     <title>Gestor de Materiales</title>
     <h:outputStylesheet name="style.css"/>
@@ -11,6 +17,7 @@
 </h:head>
 
 <h:body>
+
     <!-- Encabezado con botones -->
     <div class="header">
         <!-- Link para regresar -->

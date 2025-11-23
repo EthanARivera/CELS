@@ -45,6 +45,10 @@ public class CotizacionManoDeObra {
     @XmlElement
     private BigDecimal subtotal;
 
+    public CotizacionManoDeObra() {
+        this.id = new CotizacionManoDeObraId();
+    }
+
     public CotizacionManoDeObraId getId() {
         return id;
     }

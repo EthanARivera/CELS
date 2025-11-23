@@ -5,6 +5,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
+<!-- Verificación de sesión -->
+<f:metadata>
+    <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"></f:event>
+</f:metadata>
+
 <h:head>
     <title>Agregar Material</title>
     <h:outputStylesheet name="style.css"/>
@@ -95,7 +100,7 @@
                                  actionListener="#{materialUI.guardar}"
                                  update="@form msgs"
                                  styleClass="btn-blue"
-                                 oncomplete="if (!args.validationFailed) { window.location.href='consulta_materiales.xhtml'; }" />
+                                 oncomplete="if (!args.validationFailed) { setTimeout(function(){ window.location.href='consulta_materiales.xhtml'; }, 1500); }" /> <!--Retraso de 1.5s antes de la redirección para poder ver mensaje de éxito-->>
 
                 <p:commandButton value="Cancelar"
                                  actionListener="#{materialUI.limpiarFormulario}"

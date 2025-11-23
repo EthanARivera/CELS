@@ -68,4 +68,5 @@ public class DelegateCotizacion {
         ServiceLocator.getInstanceCotizacionDAO().aprobarCotizacion(idFolio);
     }
 
+    public Integer ultimoFolio() { return ServiceLocator.getInstanceCotizacionDAO().ultimoFolio(); }
 }

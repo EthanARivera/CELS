@@ -77,5 +77,9 @@ public class FacadeCotizacion {
 
     public void saveCotizacionManoDeObra(CotizacionManoDeObra cotizacionManoDeObra) { delegateCotizacion.saveCotizacionManoDeObra(cotizacionManoDeObra); }
 
+    public void enviarEmail() { delegateCotizacion.enviarEmail(); }
+
+    public Integer ultimoFolio() { return delegateCotizacion.ultimoFolio(); }
+
     public void aprobarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);} // PBI-CO-US18
 }

@@ -73,10 +73,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     public void registrarCotizacion(Cotizacion cotizacion) {
 
         //Validacion
-        if(existeFolio(cotizacion.getId()))
-            throw new IllegalArgumentException("El Folio ya se encuentra en uso. Favor de recargarlo para utilizar uno disponible.");
-
-        if(cotizacion.getIdUsuario() == null) {
+       if(cotizacion.getIdUsuario() == null) {
             throw new IllegalArgumentException("No se encuentra ningún usuario vendedor activo. ");
         }
 
@@ -96,12 +93,14 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         ServiceLocator.getInstanceCotizacionDAO().save(cotizacion);
     }
 
-    public boolean existeFolio(Integer id) {
-        List<Cotizacion> result = entityManager.createQuery(
-                "SELECT c FROM Cotizacion c WHERE c.id = :id", Cotizacion.class)
-                .setParameter("id", id)
-                .getResultList();
-        return !result.isEmpty();
+    //función con query para obtener el último folio existente
+    public Integer ultimoFolio() {
+        Integer ultimoIdFolio = entityManager
+                .createQuery("SELECT MAX(c.id) FROM Cotizacion c", Integer.class)
+                .getSingleResult();
+
+        //retorna 0 si no se encuentra ningun folio
+        return (ultimoIdFolio != null) ? ultimoIdFolio : 0;
     }
 
     @Override

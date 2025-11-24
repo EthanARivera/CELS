@@ -6,3 +6,4 @@ import jakarta.inject.Named;
 @Named
 @ApplicationScoped
 public class DummyBean { }
+

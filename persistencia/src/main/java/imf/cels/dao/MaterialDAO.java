@@ -37,6 +37,22 @@ public class MaterialDAO extends AbstractDAO<Material> {
         }
     }
 
+    // Método que ayudará a obtener los nombres al autoComplete de material
+    // En el alta de cotizacion
+    public List<Material> findByNameCot(String name) {
+        if (name == null) name = "";
+        name = name.trim();
+        if (name.isEmpty()) {
+            // retornar todos si la búsqueda está vacía
+            return entityManager.createQuery("SELECT m FROM Material m", Material.class)
+                    .getResultList();
+        }
+        return entityManager.createQuery(
+                        "SELECT m FROM Material m WHERE LOWER(m.nombre) LIKE :nombre", Material.class)
+                .setParameter("nombre", "%" + name.toLowerCase() + "%")
+                .getResultList();
+    }
+
     public void update(Material material) {
         EntityTransaction transaction = null;
         try{

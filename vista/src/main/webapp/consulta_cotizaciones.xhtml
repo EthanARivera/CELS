@@ -4,6 +4,12 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
+<!-- Verificación de sesión -->
+<f:metadata>
+    <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"></f:event>
+</f:metadata>
+
 <h:head>
     <title>Gestor de Cotizaciones</title>
     <link href="resources/style.css" rel="stylesheet"/>
@@ -44,20 +50,23 @@
         <!-- Panel principal del catálogo -->
         <p:panel styleClass="catalogo-panel">
             <br/>
-            <!-- Barra de búsqueda -->
+
+            <!--Para ir al registro-->
             <h:link outcome="registroCotizacion.xhtml" styleClass="menu-option">
                 <i class="pi pi-box"></i> Agregar Cotización
             </h:link>
+
+            <!-- Barra de búsqueda -->
             <div class="searchbar">
                 <i class="pi pi-search">    </i>
 
                 <p:inputText id="idBusqueda"
-                             value="#{cotizacionBeanUI.idBusqueda}"
+                             value="#{cotizacionUI.idBusqueda}"
                              placeholder="Buscar cotización por id"
                              styleClass="search-input">
                     <p:ajax event="keyup"
                             process="@form"
-                            listener="#{cotizacionBeanUI.buscarPorId}"
+                            listener="#{cotizacionUI.buscarPorId}"
                             update="tablaCotizaciones"
                             delay="500"/>
                 </p:inputText>
@@ -71,45 +80,45 @@
                 <div style="display:flex; flex-wrap:wrap; gap:10px;">
                     <p:commandButton value="Ordenar por fecha"
                                     icon="pi pi-calendar"
-                                     actionListener="#{cotizacionBeanUI.consultarPorFecha}"
+                                     actionListener="#{cotizacionUI.consultarPorFecha}"
                                      update="tablaCotizaciones"
                                      styleClass="btn-azul-iconoblanco"/>
 
                     <p:commandButton value="Ordenar por folio"
                                      icon="pi pi-sort-numeric-up"
-                                     actionListener="#{cotizacionBeanUI.consultarPorFolio}"
+                                     actionListener="#{cotizacionUI.consultarPorFolio}"
                                      update="tablaCotizaciones"
                                      styleClass="btn-azul-iconoblanco"/>
 
                     <p:commandButton value="Ordenar por vendedor"
                                      icon="pi pi-user"
-                                     actionListener="#{cotizacionBeanUI.consultarPorVendedor}"
+                                     actionListener="#{cotizacionUI.consultarPorVendedor}"
                                      update="tablaCotizaciones"
                                      styleClass="btn-azul-iconoblanco"/>
                 </div>
 
                 <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:8px;">
-                    <p:selectOneMenu id="anioFiltro" value="#{cotizacionBeanUI.anioFiltro}" style="width:120px;">
+                    <p:selectOneMenu id="anioFiltro" value="#{cotizacionUI.anioFiltro}" style="width:120px;">
                         <f:selectItem itemLabel="Año" itemValue="" noSelectionOption="true"/>
-                        <f:selectItems value="#{cotizacionBeanUI.aniosDisponibles}" var="anio"
+                        <f:selectItems value="#{cotizacionUI.aniosDisponibles}" var="anio"
                                        itemValue="#{anio}" itemLabel="#{anio}"/>
                     </p:selectOneMenu>
 
                     <p:commandButton value="Filtrar por año"
                                      icon="pi pi-filter"
-                                     actionListener="#{cotizacionBeanUI.obtenerPorAnio}"
+                                     actionListener="#{cotizacionUI.obtenerPorAnio}"
                                      update="tablaCotizaciones"
                                      styleClass="btn-azul-iconoblanco"/>
 
-                    <p:selectOneMenu id="mesFiltro" value="#{cotizacionBeanUI.mesFiltro}" style="width:120px;">
+                    <p:selectOneMenu id="mesFiltro" value="#{cotizacionUI.mesFiltro}" style="width:120px;">
                         <f:selectItem itemLabel="Mes" itemValue="" noSelectionOption="true"/>
-                        <f:selectItems value="#{cotizacionBeanUI.mesesDisponibles}" var="mes"
-                                       itemValue="#{mes}" itemLabel="#{cotizacionBeanUI.obtenerNombreMes(mes)}"/>
+                        <f:selectItems value="#{cotizacionUI.mesesDisponibles}" var="mes"
+                                       itemValue="#{mes}" itemLabel="#{cotizacionUI.obtenerNombreMes(mes)}"/>
                     </p:selectOneMenu>
 
                     <p:commandButton value="Filtrar por mes"
                                      icon="pi pi-filter"
-                                     actionListener="#{cotizacionBeanUI.obtenerPorMes}"
+                                     actionListener="#{cotizacionUI.obtenerPorMes}"
                                      update="tablaCotizaciones"
                                      styleClass="btn-azul-iconoblanco"/>
                 </div>
@@ -118,7 +127,7 @@
 
             <!-- Tabla de cotizaciones -->
             <p:dataTable id="tablaCotizaciones"
-                         value="#{cotizacionBeanUI.cotizaciones}"
+                         value="#{cotizacionUI.cotizaciones}"
                          var="c"
                          responsiveLayout="scroll"
                          emptyMessage="Sin cotizaciones registradas"
@@ -156,7 +165,7 @@
                         <p:commandButton value="Aprobar"
                                          icon="pi pi-check"
                                          rendered="#{!c.isCotizacionAprobado}"
-                                         actionListener="#{cotizacionBeanUI.mostrarDialogoAprobacion(c)}"
+                                         actionListener="#{cotizacionUI.mostrarDialogoAprobacion(c)}"
                                          update=":formCotizaciones"
                                          oncomplete="PF('dlgAprobacion').show()"
                                          process="@this"
@@ -197,7 +206,7 @@
                                          styleClass="ui-button-flat delete-icon"/>
                         <p:commandButton icon="pi pi-send"
                                          title="Enviar correo"
-                                         actionListener="#{cotizacionBeanUI.enviarEmail}"
+                                         actionListener="#{cotizacionUI.enviarCorreo(c)}"
                                          update="@form"
                                          styleClass="ui-button-flat pencil-icon"/>
                     </div>
@@ -211,25 +220,25 @@
                   modal="true"
                   resizable="false"
                   closable="false"
-                  visible="#{cotizacionBeanUI.dialogAprobacionVisible}"
+                  visible="#{cotizacionUI.dialogAprobacionVisible}"
                   style="width:350px;">
 
             <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
-                <h:outputText value="Para aprobar la cotización 0#{cotizacionBeanUI.idCotizacionSeleccionada}, escriba 'Aprobado':"/>
-                <p:inputText value="#{cotizacionBeanUI.textoConfirmacion}"
+                <h:outputText value="Para aprobar la cotización 0#{cotizacionUI.idCotizacionSeleccionada}, escriba 'Aprobado':"/>
+                <p:inputText value="#{cotizacionUI.textoConfirmacion}"
                              placeholder="Escriba aquí"
                              style="width:100%; text-align:center;"/>
 
                 <p:commandButton value="OK"
                                  icon="pi pi-check"
-                                 actionListener="#{cotizacionBeanUI.aprobarCotizacion}"
+                                 actionListener="#{cotizacionUI.aprobarCotizacion}"
                                  update="tablaCotizaciones growl"
                                  oncomplete="PF('dlgAprobacion').hide()"
                                  process="@form"/>
 
                 <p:commandButton value="Cancelar"
                                  icon="pi pi-times"
-                                 actionListener="#{cotizacionBeanUI.cancelarAprobacion}"
+                                 actionListener="#{cotizacionUI.cancelarAprobacion}"
                                  update="dialogAprobacion"
                                  oncomplete="PF('dlgAprobacion').hide()"
                                  styleClass="ui-button-secondary"/>

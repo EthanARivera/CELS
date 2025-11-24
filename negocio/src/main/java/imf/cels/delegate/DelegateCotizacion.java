@@ -77,4 +77,5 @@ public class DelegateCotizacion {
         ServiceLocator.getInstanceCotizacionDAO().aprobarContrato(idFolio);
     }
 
+    public Integer ultimoFolio() { return ServiceLocator.getInstanceCotizacionDAO().ultimoFolio(); }
 }

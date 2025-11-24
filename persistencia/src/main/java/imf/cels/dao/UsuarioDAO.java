@@ -81,4 +81,26 @@ public class UsuarioDAO extends AbstractDAO<Usuario> {
             return null;
         });
     }
+
+    //Obtención del correo del usuario actual
+    public String obtenerCorreo(Integer idUsuario) {
+        return execute(em -> {
+            Usuario usuario = em.find(Usuario.class, idUsuario);
+            return usuario != null ? usuario.getEmail() : null;
+        });
+    }
+
+    public Integer obtenerIdUsuario(Integer idUsuario) {
+        return execute(em -> {
+            Usuario usuario = em.find(Usuario.class, idUsuario);
+            return usuario.getId();
+        });
+    }
+
+    public String obtenerNombre(Integer idUsuario) {
+        return execute(em -> {
+            Usuario usuario = em.find(Usuario.class, idUsuario);
+            return usuario.getNombre();
+        });
+    }
 }

@@ -25,6 +25,10 @@ public class FacadeMaterial {
         return delegateMaterial.obtenerPorNombre(nombre);
     }
 
+    public List<Material> obtenerPorNombreCot(String nombre){
+        return delegateMaterial.obtenerPorNombreCot(nombre);
+    }
+
     public Material obtenerPorId(Integer id){
         return delegateMaterial.obtenerPorId(id);
     }

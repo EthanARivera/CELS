@@ -138,7 +138,6 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         }
     }
 
-
     // Aprobación de Contrato
     public void aprobarContrato(Integer idFolio) {
         Cotizacion cotizacion = entityManager.find(Cotizacion.class, idFolio);
@@ -167,4 +166,5 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
             throw e;
         }
     }
+
 }

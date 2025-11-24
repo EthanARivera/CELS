@@ -186,7 +186,7 @@
                         <p:commandButton value="Aprobar"
                                          icon="pi pi-check"
                                          rendered="#{!c.isContratoAprobado}"
-                                         actionListener="#{cotizacionBeanUI.mostrarDialogoAprobacionContrato(c)}"
+                                         actionListener="#{cotizacionUI.mostrarDialogoAprobacionContrato(c)}"
                                          update=":formCotizaciones"
                                          oncomplete="PF('dlgAprobacionContrato').show()"
                                          process="@this"
@@ -214,6 +214,7 @@
             </p:dataTable>
         </p:panel>
 
+        <!-- DialogContización -->
         <p:dialog id="dialogAprobacion"
                   header="Aprobar Cotización"
                   widgetVar="dlgAprobacion"
@@ -245,32 +246,33 @@
             </h:panelGrid>
         </p:dialog>
 
+        <!-- DialogContrato-->
         <p:dialog id="dialogAprobacionContrato"
                   header="Aprobar Contrato"
                   widgetVar="dlgAprobacionContrato"
                   modal="true"
                   resizable="false"
                   closable="false"
-                  visible="#{cotizacionBeanUI.dialogAprobacionContratoVisible}"
+                  visible="#{cotizacionUI.dialogAprobacionContratoVisible}"
                   style="width:350px;">
 
             <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
-                <h:outputText value="Para aprobar el contrato del folio #{cotizacionBeanUI.idContratoSeleccionado}, escriba 'Aprobado':"/>
+                <h:outputText value="Para aprobar el contrato del folio #{cotizacionUI.idContratoSeleccionado}, escriba 'Aprobado':"/>
 
-                <p:inputText value="#{cotizacionBeanUI.textoConfirmacionContrato}"
+                <p:inputText value="#{cotizacionUI.textoConfirmacionContrato}"
                              placeholder="Escriba aquí"
                              style="width:100%; text-align:center;"/>
 
                 <p:commandButton value="OK"
                                  icon="pi pi-check"
-                                 actionListener="#{cotizacionBeanUI.aprobarContrato}"
+                                 actionListener="#{cotizacionUI.aprobarContrato}"
                                  update="tablaCotizaciones growl"
                                  oncomplete="PF('dlgAprobacionContrato').hide()"
                                  process="@form"/>
 
                 <p:commandButton value="Cancelar"
                                  icon="pi pi-times"
-                                 actionListener="#{cotizacionBeanUI.cancelarAprobacionContrato}"
+                                 actionListener="#{cotizacionUI.cancelarAprobacionContrato}"
                                  update="dialogAprobacionContrato"
                                  oncomplete="PF('dlgAprobacionContrato').hide()"
                                  styleClass="ui-button-secondary"/>

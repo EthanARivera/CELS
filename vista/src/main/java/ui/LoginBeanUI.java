@@ -1,6 +1,7 @@
 package ui;
 
 import helper.LoginHelper;
+import imf.cels.respaldos.ServicioRespaldo;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -128,5 +129,21 @@ public class LoginBeanUI implements Serializable{
 
     public void setDatosFormulario(Usuario datosFormulario) {
         this.datosFormulario = datosFormulario;
+    }
+
+    //prueba de respaldo
+
+    public void probarRespaldoManual() {
+        try {
+            ServicioRespaldo servicio = new ServicioRespaldo();
+            servicio.ejecutarRespaldo();
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Respaldo generado en C:/Respaldos"));
+
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Fallo: " + e.getMessage()));
+        }
     }
 }

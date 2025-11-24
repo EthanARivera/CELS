@@ -47,6 +47,15 @@
         <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
             <i class="pi pi-file"></i> Consulta Cotizaciones
         </h:link>
+
+        //boton temporal para pronbar respaldo
+        <h:form style="display:inline;">
+            <p:commandButton value="PROBAR RESPALDO"
+                             actionListener="#{loginUI.probarRespaldoManual}"
+                             styleClass="ui-button-warning"
+                             icon="pi pi-database"
+                             style="margin: 10px; width: 200px; height: 100px; font-size: 1.2em;"/>
+        </h:form>
     </div>
 
     <!-- Links de navegación -->

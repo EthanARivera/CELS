@@ -417,6 +417,7 @@ public class CotizacionBeanUI implements Serializable {
         textoConfirmacion = "";
     }
 
+    // Aprobación de Contrato
     // Mostrar diálogo
     public void mostrarDialogoAprobacionContrato(Cotizacion cotizacion) {
         this.idContratoSeleccionado = cotizacion.getId();
@@ -465,7 +466,6 @@ public class CotizacionBeanUI implements Serializable {
         dialogAprobacionContratoVisible = false;
         textoConfirmacionContrato = "";
     }
-
 
 
     //Setter y Getters del registro
@@ -525,6 +525,7 @@ public class CotizacionBeanUI implements Serializable {
     public Integer getIdCotizacionSeleccionada() { return idCotizacionSeleccionada; }
     public void  setIdCotizacionSeleccionada(Integer idCotizacionSeleccionada) { this.idCotizacionSeleccionada = idCotizacionSeleccionada; }
 
+
     public boolean isDialogAprobacionContratoVisible() { return dialogAprobacionContratoVisible; }
     public void setDialogAprobacionContratoVisible(boolean v) { this.dialogAprobacionContratoVisible = v; }
 
@@ -533,5 +534,4 @@ public class CotizacionBeanUI implements Serializable {
 
     public Integer getIdContratoSeleccionado() { return idContratoSeleccionado; }
     public void setIdContratoSeleccionado(Integer idContratoSeleccionado) { this.idContratoSeleccionado = idContratoSeleccionado; }
-
 }

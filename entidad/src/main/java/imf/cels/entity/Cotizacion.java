@@ -52,6 +52,7 @@ public class Cotizacion {
     @Column(name = "is_cotizacion_aprobado", nullable = false)
     private Boolean is_cotizacion_aprobado = false;
 
+
     @NotNull
     @Column (name = "is_contrato_aprobado", nullable = false)
     private Boolean is_contrato_aprobado = false;
@@ -131,5 +132,4 @@ public class Cotizacion {
     // PBI-CO-US20 Aprobación del Contrato
     public Boolean getisContratoAprobado() { return is_contrato_aprobado; }
     public  void  setisContratoAprobado(Boolean isContratoAprobado) { this.is_contrato_aprobado = isContratoAprobado; }
-
 }

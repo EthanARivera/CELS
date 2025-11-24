@@ -36,6 +36,7 @@ CREATE TABLE cotizacion (
     cliente VARCHAR(64) NOT NULL,
     precio_final DECIMAL(10,2) NOT NULL,
     is_cotizacion_aprobado BOOLEAN NOT NULL DEFAULT FALSE,
+    is_contrato_aprobado BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
         ON UPDATE CASCADE
         ON DELETE RESTRICT

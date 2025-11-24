@@ -164,9 +164,27 @@
                     </h:panelGroup>
                 </p:column>
 
+                <!-- Aprobación de Contrato -->
                 <p:column headerText="Contrato" style="text-align:center;">
+                    <h:panelGroup>
 
+                        <!-- Mostrar badge si YA está aprobado -->
+                        <h:outputText value="Aprobado"
+                                      styleClass="badge-success"
+                                      rendered="#{c.isContratoAprobado}" />
+
+                        <!-- Botón para aprobar contrato -->
+                        <p:commandButton value="Aprobar"
+                                         icon="pi pi-check"
+                                         rendered="#{!c.isContratoAprobado}"
+                                         actionListener="#{cotizacionBeanUI.mostrarDialogoAprobacionContrato(c)}"
+                                         update=":formCotizaciones"
+                                         oncomplete="PF('dlgAprobacionContrato').show()"
+                                         process="@this"
+                                         styleClass="btn-verde"/>
+                    </h:panelGroup>
                 </p:column>
+
 
                 <p:column headerText="Acciones"
                           style="width:100px; text-align:center;">
@@ -217,6 +235,39 @@
                                  styleClass="ui-button-secondary"/>
             </h:panelGrid>
         </p:dialog>
+
+        <p:dialog id="dialogAprobacionContrato"
+                  header="Aprobar Contrato"
+                  widgetVar="dlgAprobacionContrato"
+                  modal="true"
+                  resizable="false"
+                  closable="false"
+                  visible="#{cotizacionBeanUI.dialogAprobacionContratoVisible}"
+                  style="width:350px;">
+
+            <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
+                <h:outputText value="Para aprobar el contrato del folio #{cotizacionBeanUI.idContratoSeleccionado}, escriba 'Aprobado':"/>
+
+                <p:inputText value="#{cotizacionBeanUI.textoConfirmacionContrato}"
+                             placeholder="Escriba aquí"
+                             style="width:100%; text-align:center;"/>
+
+                <p:commandButton value="OK"
+                                 icon="pi pi-check"
+                                 actionListener="#{cotizacionBeanUI.aprobarContrato}"
+                                 update="tablaCotizaciones growl"
+                                 oncomplete="PF('dlgAprobacionContrato').hide()"
+                                 process="@form"/>
+
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 actionListener="#{cotizacionBeanUI.cancelarAprobacionContrato}"
+                                 update="dialogAprobacionContrato"
+                                 oncomplete="PF('dlgAprobacionContrato').hide()"
+                                 styleClass="ui-button-secondary"/>
+            </h:panelGrid>
+        </p:dialog>
+
 
         <p:growl id="growl" showDetail="true" life="4000"/> <!-- the message in the top right -->
 

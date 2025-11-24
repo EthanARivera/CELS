@@ -59,6 +59,12 @@ public class CotizacionBeanUI implements Serializable {
     private String textoConfirmacion;
     private Integer idCotizacionSeleccionada;
 
+    // Aprobación de Contrato
+    private boolean dialogAprobacionContratoVisible;
+    private String textoConfirmacionContrato;
+    private Integer idContratoSeleccionado;
+
+
     @PostConstruct
     public void init(){
         cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
@@ -411,6 +417,56 @@ public class CotizacionBeanUI implements Serializable {
         textoConfirmacion = "";
     }
 
+    // Mostrar diálogo
+    public void mostrarDialogoAprobacionContrato(Cotizacion cotizacion) {
+        this.idContratoSeleccionado = cotizacion.getId();
+        this.textoConfirmacionContrato = "";
+        this.dialogAprobacionContratoVisible = true;
+    }
+
+    // Aprobar contrato
+    public void aprobarContrato() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            if (textoConfirmacionContrato == null ||
+                    !"Aprobado".equalsIgnoreCase(textoConfirmacionContrato.trim())) {
+
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Confirmación incorrecta",
+                        "Debe escribir exactamente 'Aprobado' para confirmar."
+                ));
+                return;
+            }
+
+            cotizacionHelper.aprobarContrato(idContratoSeleccionado);
+            dialogAprobacionContratoVisible = false;
+
+            // actualizar tabla
+            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Contrato aprobado",
+                    "El contrato del folio " + idContratoSeleccionado + " fue aprobado correctamente."
+            ));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error al aprobar contrato",
+                    e.getMessage()
+            ));
+        }
+    }
+
+    public void cancelarAprobacionContrato() {
+        dialogAprobacionContratoVisible = false;
+        textoConfirmacionContrato = "";
+    }
+
+
 
     //Setter y Getters del registro
     public Cotizacion getCotizacion() { return cotizacion; }
@@ -468,4 +524,14 @@ public class CotizacionBeanUI implements Serializable {
 
     public Integer getIdCotizacionSeleccionada() { return idCotizacionSeleccionada; }
     public void  setIdCotizacionSeleccionada(Integer idCotizacionSeleccionada) { this.idCotizacionSeleccionada = idCotizacionSeleccionada; }
+
+    public boolean isDialogAprobacionContratoVisible() { return dialogAprobacionContratoVisible; }
+    public void setDialogAprobacionContratoVisible(boolean v) { this.dialogAprobacionContratoVisible = v; }
+
+    public String getTextoConfirmacionContrato() { return textoConfirmacionContrato; }
+    public void setTextoConfirmacionContrato(String t) { this.textoConfirmacionContrato = t; }
+
+    public Integer getIdContratoSeleccionado() { return idContratoSeleccionado; }
+    public void setIdContratoSeleccionado(Integer idContratoSeleccionado) { this.idContratoSeleccionado = idContratoSeleccionado; }
+
 }

@@ -103,7 +103,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         return (ultimoIdFolio != null) ? ultimoIdFolio : 0;
     }
 
-    //Actualizacion
+    //actualización de cotización
     public Cotizacion buscarPorIdUnico(int id) {
 
         try { //carga los materiales y mano de obra al editar.

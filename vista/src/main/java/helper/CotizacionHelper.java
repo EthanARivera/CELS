@@ -56,4 +56,11 @@ public class CotizacionHelper {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().aprobarCotizacion(idFolio);
     }
 
+    //actualización de cotización
+    public Cotizacion obtenerCotizacionPorId(int id) {
+        return ServiceFacadeLocator.getInstanceFacadeCotizacion()
+                .buscarPorIdUnico(id);
+    }
+
+
 }

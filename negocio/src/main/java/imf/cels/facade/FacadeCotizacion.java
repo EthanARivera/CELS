@@ -226,4 +226,10 @@ public class FacadeCotizacion {
     }
 
     public void aprobarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);} // PBI-CO-US18
+
+    //actualización de cotización
+    public Cotizacion buscarPorIdUnico(int id) {
+        return delegateCotizacion.buscarPorIdUnico(id);
+    }
+
 }

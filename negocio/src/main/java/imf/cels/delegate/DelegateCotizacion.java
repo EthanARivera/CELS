@@ -69,4 +69,10 @@ public class DelegateCotizacion {
     }
 
     public Integer ultimoFolio() { return ServiceLocator.getInstanceCotizacionDAO().ultimoFolio(); }
+
+    //actualización de cotización
+    public Cotizacion buscarPorIdUnico(int id) {
+        return ServiceLocator.getInstanceCotizacionDAO().buscarPorIdUnico(id);
+    }
+
 }

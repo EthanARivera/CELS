@@ -3,12 +3,24 @@ package imf.cels.dao;
 import imf.cels.entity.Cotizacion;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.persistence.AbstractDAO;
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import jakarta.persistence.EntityManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     private final EntityManager entityManager;
@@ -138,4 +150,97 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         }
     }
 
+    public File generarContratoDocx(Cotizacion cotizacion) throws Exception {
+        //Se Carga la plantilla del contrato desde resources
+        InputStream in = getClass().getClassLoader().getResourceAsStream("plantillas/plantillaContrato.docx");
+        if (in == null) {
+            throw new Exception("No se encontró la plantilla: plantillas/plantillaContrato.docx");
+        }
+
+        XWPFDocument doc = new XWPFDocument(in);
+
+        //Se reemplazan los placeholders del documento
+        for (XWPFParagraph p : doc.getParagraphs()) {
+            for (XWPFRun run : p.getRuns()) {
+                String text = run.getText(0);
+                if (text != null) {
+                    text = text.replace("${CLIENTE}", cotizacion.getCliente());
+                    text = text.replace("${FECHA}", java.time.LocalDate.now().toString());
+                    text = text.replace("${DESCRIPCION}", cotizacion.getDescripcion());
+                    text = text.replace("${DESCRIPCION_CORTA}",
+                            cotizacion.getDescripcion().length() > 40
+                                    ? cotizacion.getDescripcion().substring(0, 40)
+                                    : cotizacion.getDescripcion());
+                    text = text.replace("${PRECIO_FINAL}", cotizacion.getPrecioFinal().toString());
+                    run.setText(text, 0);
+                }
+            }
+        }
+
+        //Se Guarda el archivo temporal con el contrato modificado
+        File archivoFinal = File.createTempFile("contrato_" + cotizacion.getId(), ".docx");
+        archivoFinal.deleteOnExit();
+
+        FileOutputStream out = new FileOutputStream(archivoFinal);
+        doc.write(out);
+        out.close();
+        doc.close();
+        in.close();
+
+        return archivoFinal;
+    }
+
+    public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
+        Cotizacion cotizacion = entityManager.find(Cotizacion.class, idCotizacion);
+
+        File archivoGenerado = generarContratoDocx(cotizacion);
+
+        // Ejemplo
+        // final String remitente = "luis.cedillo@uabc.edu.mx";
+        // final String psswd = "zdsv woaa azxy afvv";
+
+        // final String destinatario = "lfcedillocamacho@gmail.com";
+
+        final String remitente = "CORREO";
+        final String psswd = "CONTRASEÑA APLICACION";
+
+        final String destinatario = "CORREO";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(remitente, psswd);
+            }
+        });
+
+        Message mensaje = new MimeMessage(session);
+        mensaje.setFrom(new InternetAddress(remitente));
+        mensaje.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+        mensaje.setSubject("Contrato de cotización: " + idCotizacion);
+
+        //Cuerpo del mensaje
+        MimeBodyPart texto = new MimeBodyPart();
+        texto.setText("Contrato de la cotización: " + idCotizacion);
+
+        //Se adjunta el documento
+        MimeBodyPart adjuntoDocx = new MimeBodyPart();
+        adjuntoDocx.attachFile(archivoGenerado);
+        adjuntoDocx.setFileName("Contrato_Folio_" + idCotizacion + ".docx");
+
+        //Se juntan todas las partes
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(texto);
+        multipart.addBodyPart(adjuntoDocx);
+        mensaje.setContent(multipart);
+
+        Transport.send(mensaje);
+
+        return true;
+    }
 }

@@ -1,13 +1,15 @@
 package imf.cels.delegate;
 
+import imf.cels.dao.CotizacionDAO;
 import imf.cels.entity.Cotizacion;
 import imf.cels.entity.CotizacionMaterial;
 import imf.cels.entity.CotizacionManoDeObra;
 import imf.cels.integration.ServiceLocator;
-
 import java.util.List;
 
 public class DelegateCotizacion {
+
+    private CotizacionDAO cotizacionDAO = ServiceLocator.getInstanceCotizacionDAO();
 
     public List<Cotizacion> buscarPorId(int id){
         return ServiceLocator.getInstanceCotizacionDAO().buscarPorId(id);
@@ -69,4 +71,8 @@ public class DelegateCotizacion {
     }
 
     public Integer ultimoFolio() { return ServiceLocator.getInstanceCotizacionDAO().ultimoFolio(); }
+
+    public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
+        return cotizacionDAO.enviarContratoPorCorreo(idCotizacion);
+    }
 }

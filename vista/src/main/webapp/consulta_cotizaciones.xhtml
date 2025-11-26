@@ -191,6 +191,11 @@
                                          actionListener="#{cotizacionUI.enviarCorreo(c)}"
                                          update="@form"
                                          styleClass="ui-button-flat pencil-icon"/>
+                        <p:commandButton icon="pi pi-file"
+                                         title="Enviar contrato"
+                                         actionListener="#{cotizacionUI.enviarContrato(c)}"
+                                         update="@form"
+                                         styleClass="ui-button-flat pencil-icon"/>
                     </div>
                 </p:column>
             </p:dataTable>
@@ -226,11 +231,7 @@
                                  styleClass="ui-button-secondary"/>
             </h:panelGrid>
         </p:dialog>
-
         <p:growl id="growl" showDetail="true" life="4000"/> <!-- the message in the top right -->
-
     </h:form>
-
 </h:body>
-
 </html>

@@ -50,6 +50,8 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        cotizacionHelper = new CotizacionHelper();
         cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
         aniosDisponibles = delegateCotizacion.obtenerAniosDisponibles();
         mesesDisponibles = delegateCotizacion.obtenerMesesDisponibles();
@@ -139,6 +141,49 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Error al enviar", "No se pudo enviar el correo: " + e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
+    public void enviarContrato(Cotizacion cotizacion) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        //validación
+        if (cotizacion == null || cotizacion.getId() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "Error", "No se pudo seleccionar la cotización."));
+            return;
+        }
+
+        if (!cotizacion.getisCotizacionAprobado()) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_WARN,
+                    "Cotización no aprobada",
+                    "Debe aprobar la cotización antes de enviar el contrato."
+            ));
+            return;
+        }
+
+        try {
+            boolean enviado = cotizacionHelper.enviarContratoPorCorreo(cotizacion.getId());
+
+            if (enviado) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        "Éxito",
+                        "El contrato ha sido enviado al correo del cliente para el Folio #" + cotizacion.getId()
+                ));
+            } else {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "Error",
+                        "No se pudo enviar el contrato."
+                ));
+            }
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Error al enviar", "No se pudo enviar el contrato: " + e.getMessage()));
             e.printStackTrace();
         }
     }

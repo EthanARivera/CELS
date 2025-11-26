@@ -53,12 +53,6 @@ public class AltaCotizacionBeanUI implements Serializable {
 
     // Datos principales
     private Cotizacion cotizacion;
-
-    // ===== PARA ACTUALIZAR (PBI-CO-US13) =====
-    private boolean modoActualizar = false;
-    private Integer idCotizacionOriginal;
-    private Cotizacion cotizacionOriginal;
-
     private Usuario usuarioActivo;
     private TipoProyecto tipoProyecto;
     private TipoProyecto[] tiposProyecto = TipoProyecto.values();
@@ -84,9 +78,10 @@ public class AltaCotizacionBeanUI implements Serializable {
     // Para autocompletar
     private String manoObraSeleccionada;
 
-    // INIT ORIGINAL
+    // INIT
 
-  /*  @PostConstruct
+
+    @PostConstruct
     public void init() {
 
         // Construimos el Gson personalizado
@@ -116,79 +111,7 @@ public class AltaCotizacionBeanUI implements Serializable {
         cargarCatalogoMateriales();
         jsonTablaMateriales = "[]";
         jsonTablaManoObra = "[]";
-    }*/
-
-    //Init
-    @PostConstruct
-    public void init() {
-
-        // Construimos el Gson personalizado
-        gson = new GsonBuilder()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .create();
-
-        try {
-            loginUI.verificarSesion();
-            usuarioActivo = loginUI.getUsuario();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        //      DETECTAR SI VENIMOS DE "Actualizar"
-        try {
-            String idParam = FacesContext.getCurrentInstance()
-                    .getExternalContext()
-                    .getRequestParameterMap()
-                    .get("idCotizacion");
-
-            if (idParam != null && !idParam.trim().isEmpty()) {
-
-                modoActualizar = true;
-                idCotizacionOriginal = Integer.parseInt(idParam);
-
-                // Traer cotización original desde DB
-                cotizacionOriginal = cotizacionHelper.obtenerCotizacionPorId(idCotizacionOriginal);
-
-                // Crear una cotización NUEVA
-                cotizacion = new Cotizacion();
-                cotizacion.setFecha(LocalDate.now());
-                cotizacion.setIdUsuario(usuarioActivo);
-
-                listaMateriales = new ArrayList<>();
-                listaManoDeObra = new ArrayList<>();
-                materialesSeleccionados = new ArrayList<>();
-
-                cargarCatalogoMateriales();
-
-                // Rellenar campos
-                cargarDatosEnPantalla(cotizacionOriginal);
-
-                return; // IMPORTANTE (no ejecuta el init normal)
-            }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            modoActualizar = false;
-        }
-
-
-        //      FLUJO NORMAL (NUEVA COTIZACIÓN)
-        cotizacion = new Cotizacion();
-        cotizacion.setFecha(LocalDate.now());
-        cotizacion.setIdUsuario(usuarioActivo);
-        cotizacion.setCotizacionMateriales(new LinkedHashSet<>());
-        cotizacion.setCotizacionManoDeObras(new LinkedHashSet<>());
-
-        listaMateriales = new ArrayList<>();
-        materialesSeleccionados = new ArrayList<>();
-        listaManoDeObra = new ArrayList<>();
-
-        cargarCatalogoMateriales();
-        jsonTablaMateriales = "[]";
-        jsonTablaManoObra = "[]";
     }
-
 
     // CARGA DE NOMBRE DE USUARIO EN SESION Y FECHA
 
@@ -348,17 +271,11 @@ public class AltaCotizacionBeanUI implements Serializable {
         precioFinal = costoBruto.multiply(multiplicador);
     }
 
- 
+
     // REGISTRAR COTIZACIÓN
 
 
     public void registrarCotizacion() {
-
-        // para actualización de cotización
-        if (modoActualizar) {
-            registrarCotizacionComoNuevaVersion();
-            return;
-        }
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
@@ -449,9 +366,9 @@ public class AltaCotizacionBeanUI implements Serializable {
             ));
         }
     }
- 
+
     // DTO PARA JSON
- 
+
 
     @Data
     public static class MaterialFila {
@@ -461,9 +378,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         private BigDecimal subtotal;
     }
 
- 
+
     // AUTOCOMPLETE CON FILTRO
- 
+
 
     public List<Material> buscarMateriales(String nombre) {
 
@@ -487,9 +404,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         return filtrados;
     }
 
- 
+
     // RESPONSE JSON DIRECTO
- 
+
 
     public void buscar() throws IOException {
 
@@ -510,9 +427,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         context.responseComplete();
     }
 
- 
+
     // ADAPTADOR PARA LOCALDATE
- 
+
 
     public static class LocalDateAdapter extends TypeAdapter<LocalDate> {
 
@@ -527,106 +444,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         }
     }
 
-    //Para actualización de cotización
-    private void cargarDatosEnPantalla(Cotizacion c) {
-        try {
-            // Campos simples
-            cotizacion.setCliente(c.getCliente());
-            cotizacion.setDescripcion(c.getDescripcion());
-            tipoProyecto = c.getTipoProyecto();
-
-            // Materiales
-            listaMateriales = new ArrayList<>();
-            for (CotizacionMaterial cm : c.getCotizacionMateriales()) {
-                listaMateriales.add(cm);
-            }
-
-            // Mano de obra
-            listaManoDeObra = new ArrayList<>();
-            for (CotizacionManoDeObra mo : c.getCotizacionManoDeObras()) {
-                listaManoDeObra.add(mo);
-            }
-
-            recalcularTotales();
-
-            // Convertir a JSON para que el JS rellene las tablas
-            Gson g = new Gson();
-            jsonTablaMateriales = g.toJson(c.getCotizacionMateriales());
-            jsonTablaManoObra = g.toJson(c.getCotizacionManoDeObras());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Para actualización de cotización
-    private void registrarCotizacionComoNuevaVersion() {
-
-        FacesContext ctx = FacesContext.getCurrentInstance();
-
-        try {
-            reconstruirDesdeJsonTablaMateriales();
-            reconstruirDesdeJsonTablaManoObra();
-
-            aplicarGanancia();
-
-            Cotizacion nueva = new Cotizacion();
-            nueva.setCliente(cotizacion.getCliente());
-            nueva.setDescripcion(cotizacion.getDescripcion());
-            nueva.setFecha(LocalDate.now());
-            nueva.setIdUsuario(usuarioActivo);
-            nueva.setTipoProyecto(tipoProyecto);
-            nueva.setPrecioFinal(precioFinal);
-
-            cotizacionHelper.saveCotizacion(nueva);
-
-            Integer idFolio = nueva.getId();
-
-            // Guardar materiales
-            for (CotizacionMaterial cm : listaMateriales) {
-
-                CotizacionMaterialId pk = new CotizacionMaterialId();
-                pk.setIdFolio(idFolio);
-                pk.setIdMaterial(cm.getIdMaterial().getId());
-
-                cm.setId(pk);
-                cm.setIdFolio(nueva);
-
-                cotizacionHelper.saveCotizacionMaterial(cm);
-            }
-
-            // Guardar mano de obra
-            for (CotizacionManoDeObra mo : listaManoDeObra) {
-
-                CotizacionManoDeObraId pk = new CotizacionManoDeObraId();
-                pk.setIdFolio(idFolio);
-                pk.setNumResponsable(mo.getId().getNumResponsable());
-
-                mo.setId(pk);
-                mo.setIdFolio(nueva);
-
-                cotizacionHelper.saveCotizacionManoDeObra(mo);
-            }
-
-            ctx.addMessage(null, new FacesMessage(
-                    FacesMessage.SEVERITY_INFO,
-                    "Actualización exitosa",
-                    "Se creó una nueva versión de la cotización."
-            ));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ctx.addMessage(null, new FacesMessage(
-                    FacesMessage.SEVERITY_ERROR,
-                    "Error",
-                    "No se pudo crear la nueva versión."
-            ));
-        }
-    }
-
 
     // GETTERS Y SETTERS
- 
+
 
     public String getJsonMateriales() { return jsonMateriales; }
     public void setJsonMateriales(String jsonMateriales) { this.jsonMateriales = jsonMateriales; }
@@ -652,4 +472,3 @@ public class AltaCotizacionBeanUI implements Serializable {
     public TipoProyecto[] getTiposProyecto() { return tiposProyecto; }
     public void setTiposProyecto(TipoProyecto[] tiposProyecto) { this.tiposProyecto = tiposProyecto; }
 }
-

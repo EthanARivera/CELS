@@ -51,6 +51,10 @@ public class CotizacionHelper {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarCotizacionPorCorreo(idCotizacion);
     }
 
+    public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
+        return ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarContratoPorCorreo(idCotizacion);
+    }
+
     // Aprobación de Cotización
     public void aprobarCotizacion(Integer idFolio) {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().aprobarCotizacion(idFolio);

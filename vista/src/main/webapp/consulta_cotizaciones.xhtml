@@ -194,7 +194,6 @@
                     </h:panelGroup>
                 </p:column>
 
-
                 <p:column headerText="Acciones"
                           style="width:100px; text-align:center;">
                     <div class="action-buttons">
@@ -207,6 +206,11 @@
                         <p:commandButton icon="pi pi-send"
                                          title="Enviar correo"
                                          actionListener="#{cotizacionUI.enviarCorreo(c)}"
+                                         update="@form"
+                                         styleClass="ui-button-flat pencil-icon"/>
+                        <p:commandButton icon="pi pi-file"
+                                         title="Enviar contrato"
+                                         actionListener="#{cotizacionUI.enviarContrato(c)}"
                                          update="@form"
                                          styleClass="ui-button-flat pencil-icon"/>
                     </div>

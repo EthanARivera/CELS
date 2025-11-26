@@ -235,4 +235,7 @@ public class FacadeCotizacion {
     public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
         return delegateCotizacion.enviarContratoPorCorreo(idCotizacion);
     }
+
+    public void aprobarContrato(Integer idFolio) {delegateCotizacion.aprobarContrato(idFolio);} // PBI-CO-US20
+
 }

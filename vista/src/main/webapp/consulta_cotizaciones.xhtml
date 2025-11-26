@@ -173,8 +173,25 @@
                     </h:panelGroup>
                 </p:column>
 
+                <!-- PBI-CO-US20 Aprobación de Contrato -->
                 <p:column headerText="Contrato" style="text-align:center;">
+                    <h:panelGroup>
 
+                        <!-- Mostrar badge si YA está aprobado -->
+                        <h:outputText value="Aprobado"
+                                      styleClass="badge-success"
+                                      rendered="#{c.isContratoAprobado}" />
+
+                        <!-- Botón para aprobar contrato -->
+                        <p:commandButton value="Aprobar"
+                                         icon="pi pi-check"
+                                         rendered="#{!c.isContratoAprobado}"
+                                         actionListener="#{cotizacionUI.mostrarDialogoAprobacionContrato(c)}"
+                                         update=":formCotizaciones"
+                                         oncomplete="PF('dlgAprobacionContrato').show()"
+                                         process="@this"
+                                         styleClass="btn-verde"/>
+                    </h:panelGroup>
                 </p:column>
 
                 <p:column headerText="Acciones"
@@ -201,6 +218,7 @@
             </p:dataTable>
         </p:panel>
 
+        <!-- DialogContización -->
         <p:dialog id="dialogAprobacion"
                   header="Aprobar Cotización"
                   widgetVar="dlgAprobacion"
@@ -231,7 +249,45 @@
                                  styleClass="ui-button-secondary"/>
             </h:panelGrid>
         </p:dialog>
+
+        <!-- DialogContrato-->
+        <p:dialog id="dialogAprobacionContrato"
+                  header="Aprobar Contrato"
+                  widgetVar="dlgAprobacionContrato"
+                  modal="true"
+                  resizable="false"
+                  closable="false"
+                  visible="#{cotizacionUI.dialogAprobacionContratoVisible}"
+                  style="width:350px;">
+
+            <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
+                <h:outputText value="Para aprobar el contrato del folio #{cotizacionUI.idContratoSeleccionado}, escriba 'Aprobado':"/>
+
+                <p:inputText value="#{cotizacionUI.textoConfirmacionContrato}"
+                             placeholder="Escriba aquí"
+                             style="width:100%; text-align:center;"/>
+
+                <p:commandButton value="OK"
+                                 icon="pi pi-check"
+                                 actionListener="#{cotizacionUI.aprobarContrato}"
+                                 update="tablaCotizaciones growl"
+                                 oncomplete="PF('dlgAprobacionContrato').hide()"
+                                 process="@form"/>
+
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 actionListener="#{cotizacionUI.cancelarAprobacionContrato}"
+                                 update="dialogAprobacionContrato"
+                                 oncomplete="PF('dlgAprobacionContrato').hide()"
+                                 styleClass="ui-button-secondary"/>
+            </h:panelGrid>
+        </p:dialog>
+
+
         <p:growl id="growl" showDetail="true" life="4000"/> <!-- the message in the top right -->
+
     </h:form>
+
 </h:body>
+
 </html>

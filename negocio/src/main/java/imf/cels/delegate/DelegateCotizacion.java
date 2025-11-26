@@ -64,10 +64,14 @@ public class DelegateCotizacion {
         ServiceLocator.getCotizacionManoDeObraDAO().registrarCotizacionManoDeObra(cotizacionManoDeObra);
     }
 
-
     // Aprobación de Cotización
     public void aprobarCotizacion(Integer idFolio) {
         ServiceLocator.getInstanceCotizacionDAO().aprobarCotizacion(idFolio);
+    }
+
+    // Apribación de Contrato
+    public void aprobarContrato(Integer idFolio) {
+        ServiceLocator.getInstanceCotizacionDAO().aprobarContrato(idFolio);
     }
 
     public Integer ultimoFolio() { return ServiceLocator.getInstanceCotizacionDAO().ultimoFolio(); }

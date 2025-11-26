@@ -59,4 +59,9 @@ public class CotizacionHelper {
     public void aprobarCotizacion(Integer idFolio) {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().aprobarCotizacion(idFolio);
     }
+
+    // Aprobación de Contrato
+    public void aprobarContrato(Integer idFolio) {
+        ServiceFacadeLocator.getInstanceFacadeCotizacion().aprobarContrato(idFolio);
+    }
 }

@@ -243,4 +243,33 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
         return true;
     }
+    // Aprobación de Contrato
+    public void aprobarContrato(Integer idFolio) {
+        Cotizacion cotizacion = entityManager.find(Cotizacion.class, idFolio);
+
+        if (cotizacion == null) {
+            throw new IllegalArgumentException("No se encontró el contrato con el folio especificado.");
+        }
+
+        if (Boolean.TRUE.equals(cotizacion.getisContratoAprobado())) {
+            throw new IllegalStateException("El contrato ya fue aprobada y no puede desaprobarse.");
+        }
+
+        /*executeInsideTransaction(em -> {
+            cotizacion.setAprobado(true);
+            em.merge(cotizacion);
+        });*/
+        try {
+            entityManager.getTransaction().begin();
+            cotizacion.setisContratoAprobado(true);
+            entityManager.merge(cotizacion);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw e;
+        }
+    }
+
 }

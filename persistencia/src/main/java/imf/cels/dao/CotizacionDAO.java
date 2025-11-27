@@ -129,7 +129,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
             throw new IllegalArgumentException("No se encontró la cotización con el folio especificado.");
         }
 
-        if (Boolean.TRUE.equals(cotizacion.getisCotizacionAprobado())) {
+        if (Boolean.TRUE.equals(cotizacion.getisCotizacionAprobada())) {
             throw new IllegalStateException("La cotización ya fue aprobada y no puede desaprobarse.");
         }
 
@@ -139,7 +139,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         });*/
         try {
             entityManager.getTransaction().begin();
-            cotizacion.setisCotizacionAprobado(true);
+            cotizacion.setIsCotizacionAprobada(true);
             entityManager.merge(cotizacion);
             entityManager.getTransaction().commit();
         } catch (Exception e) {

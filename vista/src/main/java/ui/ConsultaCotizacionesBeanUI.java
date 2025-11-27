@@ -211,7 +211,7 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
             return;
         }
 
-        if (!cotizacion.getisCotizacionAprobado()) {
+        if (!cotizacion.getisCotizacionAprobada()) {
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_WARN,
                     "Cotización no aprobada",

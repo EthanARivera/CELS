@@ -173,26 +173,32 @@
                     </h:panelGroup>
                 </p:column>
 
+
                 <!-- PBI-CO-US20 Aprobación de Contrato -->
                 <p:column headerText="Contrato" style="text-align:center;">
                     <h:panelGroup>
-
                         <!-- Mostrar badge si YA está aprobado -->
                         <h:outputText value="Aprobado"
                                       styleClass="badge-success"
                                       rendered="#{c.isContratoAprobado}" />
 
-                        <!-- Botón para aprobar contrato -->
+                        <!-- Botón para aprobar contrato SOLO si la cotización está aprobada -->
                         <p:commandButton value="Aprobar"
                                          icon="pi pi-check"
-                                         rendered="#{!c.isContratoAprobado}"
+                                         rendered="#{!c.isContratoAprobado and c.isCotizacionAprobada}"
                                          actionListener="#{cotizacionUI.mostrarDialogoAprobacionContrato(c)}"
                                          update=":formCotizaciones"
                                          oncomplete="PF('dlgAprobacionContrato').show()"
                                          process="@this"
                                          styleClass="btn-verde"/>
+
+                        <!-- Mensaje o badge si la cotización no está aprobada -->
+                        <h:outputText value="Debe aprobar la cotización"
+                                      styleClass="badge-warning"
+                                      rendered="#{!c.isCotizacionAprobada}" />
                     </h:panelGroup>
                 </p:column>
+
 
                 <p:column headerText="Acciones"
                           style="width:100px; text-align:center;">

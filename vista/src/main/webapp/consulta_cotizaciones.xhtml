@@ -161,10 +161,10 @@
                 <p:column headerText="Cotización">
                     <h:panelGroup>
                         <h:outputText value="Aprobado" styleClass="badge-success"
-                                      rendered="#{c.isCotizacionAprobado}"/>
+                                      rendered="#{c.isCotizacionAprobada}"/>
                         <p:commandButton value="Aprobar"
                                          icon="pi pi-check"
-                                         rendered="#{!c.isCotizacionAprobado}"
+                                         rendered="#{!c.isCotizacionAprobada}"
                                          actionListener="#{cotizacionUI.mostrarDialogoAprobacion(c)}"
                                          update=":formCotizaciones"
                                          oncomplete="PF('dlgAprobacion').show()"

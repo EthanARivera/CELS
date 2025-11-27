@@ -64,19 +64,19 @@
             }
 
             .form-control:focus{
-                border-bottom: 2px solid yellow;
+                border-bottom: 2px solid #E3D574;
                 outline: none;
                 box-shadow: none;
             }
             .btn-success{
                 text-shadow: none;
-                background-color: yellow;
-                color: #262F8D;
+                background-color: #E3D574;
+                color: #454545;
                 font-weight: bold;
             }
             .btn-success:hover{
-                background-color: #D9D930;
-                color: #262F8D;
+                background-color: #E3D574;
+                color: #454545;
                 font-weight: bold;
             }
 
@@ -104,11 +104,11 @@
                     <div class="panel-body">
                         <div class=" form-group-horizontal">
                             <label>Correo: </label>
-                            <p:inputText class ="form-control" autocomplete="false" value ="#{loginUI.datosFormulario.email}" />
+                            <p:inputText class ="form-control" autocomplete="false" value ="#{loginUI.datosFormulario.usDatosSensible.email}" />
                         </div>
                         <div class="form-group-horizontal">
                             <label>Contraseña: </label>
-                            <p:password class ="form-control" value="#{loginUI.datosFormulario.psswd}" />
+                            <p:password class ="form-control" value="#{loginUI.datosFormulario.usPsswd.psswd}" />
                         </div>
                         <p:commandButton update="messages" class = "btn btn-success" value ="Iniciar sesion" actionListener ="#{loginUI.login()}" ajax="false"/>
 

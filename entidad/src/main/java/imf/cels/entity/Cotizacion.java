@@ -3,6 +3,7 @@ package imf.cels.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "cotizacion")
@@ -68,12 +70,36 @@ public class Cotizacion {
     private Set<CotizacionMaterial> cotizacionMateriales = new LinkedHashSet<>();
 
     @NotNull
-    @Column(name = "is_cotizacion_aprobado", nullable = false)
-    private Boolean is_cotizacion_aprobado = false;
+    @Column(name = "is_cotizacion_aprobada", nullable = false)
+    private Boolean is_cotizacion_aprobada = false;
 
     @NotNull
     @Column (name = "is_contrato_aprobado", nullable = false)
     private Boolean is_contrato_aprobado = false;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "fecha_creacion")
+    private Instant fechaCreacion;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_folio")
+    private imf.cels.entity.PedidosTaller pedidosTaller;
+
+    public imf.cels.entity.PedidosTaller getPedidosTaller() {
+        return pedidosTaller;
+    }
+
+    public void setPedidosTaller(imf.cels.entity.PedidosTaller pedidosTaller) {
+        this.pedidosTaller = pedidosTaller;
+    }
+
+    public Instant getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Instant fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
 
     public Integer getId() {
         return id;
@@ -144,8 +170,8 @@ public class Cotizacion {
     }
 
     // PBI-CO-US18 Aprobación de Cotización
-    public Boolean getisCotizacionAprobado() { return is_cotizacion_aprobado; }
-    public void setisCotizacionAprobado(Boolean  isCotizacionAprobado) { this.is_cotizacion_aprobado =  isCotizacionAprobado; }
+    public Boolean getisCotizacionAprobada() { return is_cotizacion_aprobada; }
+    public void setIsCotizacionAprobada(Boolean  isCotizacionAprobada) { this.is_cotizacion_aprobada =  isCotizacionAprobada; }
 
     // PBI-CO-US20 Aprobación del Contrato
     public Boolean getisContratoAprobado() { return is_contrato_aprobado; }

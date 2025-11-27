@@ -2,9 +2,10 @@ package ui;
 
 import helper.UsuarioHelper;
 import imf.cels.delegate.DelegateUsuario;
+import imf.cels.entity.UsDatosSensible;
+import imf.cels.entity.UsPsswd;
 import imf.cels.entity.Usuario;
 import jakarta.annotation.PostConstruct;
-import jakarta.decorator.Delegate;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
@@ -30,6 +31,9 @@ public class UsuarioBeanUI implements Serializable {
 
     private final DelegateUsuario delegate = new DelegateUsuario(); // p/modify
 
+    private UsDatosSensible usDatosSensible;
+    private UsPsswd usPsswd;
+
     @PostConstruct
     public void init() {
         helper = new UsuarioHelper();
@@ -38,6 +42,8 @@ public class UsuarioBeanUI implements Serializable {
         ordenarPorNombre();
         listaFiltrada = new ArrayList<>(usuarios);
         usuarioSeleccionado = new Usuario();
+        usuarioSeleccionado.setUsDatosSensible(new UsDatosSensible());
+        usuarioSeleccionado.setUsPsswd(new UsPsswd());
     }
 
     //Ordenar por nombre para mantener consistencia visual
@@ -92,16 +98,16 @@ public class UsuarioBeanUI implements Serializable {
         idBusqueda = null;
     }
 
-    // --- Getters y Setters ---
-    public List<Usuario> getUsuarios() {
-        return usuarios;
-    }
-
     public List<Usuario> getListaFiltrada() {
         if (listaFiltrada == null) {
             listaFiltrada = new ArrayList<Usuario>(usuarios);
         }
         return listaFiltrada;
+    }
+    // --- Getters y Setters ---
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
     }
 
     public Usuario getUsuarioSeleccionado() {
@@ -110,6 +116,12 @@ public class UsuarioBeanUI implements Serializable {
 
     public void setUsuarioSeleccionado(Usuario usuarioSeleccionado) {
         this.usuarioSeleccionado = usuarioSeleccionado;
+
+        if (this.usuarioSeleccionado.getUsDatosSensible() == null)
+            this.usuarioSeleccionado.setUsDatosSensible(new UsDatosSensible());
+
+        if (this.usuarioSeleccionado.getUsPsswd() == null)
+            this.usuarioSeleccionado.setUsPsswd(new UsPsswd());
     }
 
     public String getNombreBusqueda() {
@@ -131,25 +143,30 @@ public class UsuarioBeanUI implements Serializable {
 
     // Modificacion
     public void guardarCambios() {
+        System.out.println("Entrada al metodo de bean guardarcambios");
         if (usuarioSeleccionado != null && usuarioSeleccionado.getId() != null) {
+            System.out.println("usuarioSeleccionado no es null");
             try {
                 delegate.modificarCorreoYContrasena(usuarioSeleccionado); //llamar delegate
                 recargarUsuarios();
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO,
                                 "Éxito", "Correo y contraseña actualizados correctamente"));
+                System.out.println("Correo y contraseña actualizados correctamente");
             } catch (IllegalArgumentException ex) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", ex.getMessage()));
+                System.out.println("Error: " + ex);
             }
         }
     }
 
     public void cancelarEdicion() {
-        usuarioSeleccionado = new Usuario(); // reset selection
+        recargarUsuarios(); // restaurar lista
+        usuarioSeleccionado = new Usuario();
+        usuarioSeleccionado.setUsDatosSensible(new UsDatosSensible());
+        usuarioSeleccionado.setUsPsswd(new UsPsswd());
     }
-
-
 
     // Activacion/Desactivacion
 

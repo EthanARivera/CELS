@@ -70,8 +70,12 @@ public class Cotizacion {
     private Set<CotizacionMaterial> cotizacionMateriales = new LinkedHashSet<>();
 
     @NotNull
-    @Column(name = "aprobado", nullable = false)
-    private Boolean aprobado = false;
+    @Column(name = "is_cotizacion_aprobado", nullable = false)
+    private Boolean is_cotizacion_aprobado = false;
+
+    @NotNull
+    @Column (name = "is_contrato_aprobado", nullable = false)
+    private Boolean is_contrato_aprobado = false;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "fecha_creacion")
@@ -190,7 +194,11 @@ public class Cotizacion {
     }
 
     // PBI-CO-US18 Aprobación de Cotización
-    public Boolean getisCotizacionAprobado() { return aprobado; }
-    public void setisCotizacionAprobado(Boolean aprobado) { this.aprobado = aprobado; }
+    public Boolean getisCotizacionAprobado() { return is_cotizacion_aprobado; }
+    public void setisCotizacionAprobado(Boolean  isCotizacionAprobado) { this.is_cotizacion_aprobado =  isCotizacionAprobado; }
+
+    // PBI-CO-US20 Aprobación del Contrato
+    public Boolean getisContratoAprobado() { return is_contrato_aprobado; }
+    public  void  setisContratoAprobado(Boolean isContratoAprobado) { this.is_contrato_aprobado = isContratoAprobado; }
 
 }

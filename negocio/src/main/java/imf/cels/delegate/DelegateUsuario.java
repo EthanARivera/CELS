@@ -2,6 +2,8 @@ package imf.cels.delegate;
 
 import imf.cels.dao.UsuarioDAO;
 import imf.cels.entity.Usuario;
+import imf.cels.entity.UsDatosSensible;
+import imf.cels.entity.UsPsswd;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.negocio.UsuarioNegocio;
 
@@ -14,34 +16,44 @@ import java.util.List;
 public class DelegateUsuario {
     private final UsuarioNegocio negocio = new imf.cels.negocio.UsuarioNegocio();
 
-    /*public Usuario login(String password, String correo){
-        Usuario usuario = new Usuario();
-        List<Usuario> usuarios = ServiceLocator.getInstanceUsuarioDAO().findAll();
-
-        for(Usuario us:usuarios){
-            if(us.getPsswd().equalsIgnoreCase(password) && us.getEmail().equalsIgnoreCase(correo)){
-                usuario = us;
-            }
-        }
-        return usuario;
-    }*/
-    public Usuario login(String password, String correo){
-        Usuario usuario = new Usuario();
-        List<Usuario> usuarios = ServiceLocator.getInstanceUsuarioDAO().findAll();
+    public Usuario login(String password, String correo) {
 
         String encryptedPassword = encryptPassword(password);
 
-        for(Usuario us : usuarios){
-            if(us.getPsswd().equals(encryptedPassword) && us.getEmail().equalsIgnoreCase(correo)){
-                usuario = us;
-                break;
+        List<Usuario> usuarios = ServiceLocator.getInstanceUsuarioDAO().findAll();
+
+        for (Usuario us : usuarios) {
+
+            String psswd = ServiceLocator.getInstanceUsuarioDAO().obtenerPsswd(us.getId());
+            String correoBD = ServiceLocator.getInstanceUsuarioDAO().obtenerCorreo(us.getId());
+
+            if (psswd.equals(encryptedPassword) && correoBD.equalsIgnoreCase(correo)) {
+                return us;
             }
         }
-        return usuario;
+
+        return null;
     }
 
-    public void saveUsario(Usuario usuario){
-        ServiceLocator.getInstanceUsuarioDAO().save(usuario);
+
+    public void saveUsuario(Usuario usuario) {
+
+        UsuarioDAO dao = ServiceLocator.getInstanceUsuarioDAO();
+
+        // 1. Guardar primero el usuario (genera id)
+        dao.save(usuario);
+
+        // 2. Asignar PK compartida a usDatosSensible
+        UsDatosSensible uds = usuario.getUsDatosSensible();
+        uds.setId(usuario.getId());
+        uds.setUsuario(usuario);
+        dao.saveDatosSensible(uds);
+
+        // 3. Asignar PK compartida a usPsswd
+        UsPsswd up = usuario.getUsPsswd();
+        up.setId(usuario.getId());
+        up.setUsuario(usuario);
+        dao.savePsswd(up);
     }
 
     public List<Usuario> obtenerUsuarios() {
@@ -59,6 +71,17 @@ public class DelegateUsuario {
 
     // Format y validacion de registro de usuario
     public void registrarUsuario(Usuario usuario){
+        //PARA REGISTRAR USUARIOS NUEVOS
+        //Si las clases hijas son null, se inicializan
+        if (usuario.getUsDatosSensible() == null)
+            usuario.setUsDatosSensible(new UsDatosSensible());
+
+        if (usuario.getUsPsswd() == null)
+            usuario.setUsPsswd(new UsPsswd());
+
+        usuario.getUsDatosSensible().setUsuario(usuario);
+        usuario.getUsPsswd().setUsuario(usuario);
+
         // Capitalize primer letra de nombres
         usuario.setNombre(capitalizeFirstLetter(usuario.getNombre()));
         usuario.setApellidoPrim(capitalizeFirstLetter(usuario.getApellidoPrim()));
@@ -67,26 +90,26 @@ public class DelegateUsuario {
         }
 
         // Convertire RFC en mayusculas
-        if (usuario.getRfc() != null ){
-            usuario.setRfc(usuario.getRfc().toUpperCase());
+        if (usuario.getUsDatosSensible().getRfc() != null ){
+            usuario.getUsDatosSensible().setRfc(usuario.getUsDatosSensible().getRfc().toUpperCase());
         }
 
         // Encripcion de contraseña antes de guardar
-        if (usuario.getPsswd() != null && usuario.getPsswd().length() < 64) {
-            usuario.setPsswd(encryptPassword(usuario.getPsswd()));
+        if (usuario.getUsPsswd().getPsswd() != null && usuario.getUsPsswd().getPsswd().length() < 64) {
+            usuario.getUsPsswd().setPsswd(encryptPassword(usuario.getUsPsswd().getPsswd()));
         }
 
         // Validacion
-        if(!negocio.validarCorreo(usuario.getEmail()))
+        if(!negocio.validarCorreo(usuario.getUsDatosSensible().getEmail()))
             throw new IllegalArgumentException("Correo Inválido");
 
         if(!negocio.validarRFC(usuario))
             throw new IllegalArgumentException("RFC no coincide con los datos");
 
-        if(ServiceLocator.getInstanceUsuarioDAO().existeCorreo(usuario.getEmail()))
+        if(ServiceLocator.getInstanceUsuarioDAO().existeCorreo(usuario.getUsDatosSensible().getEmail()))
             throw new IllegalArgumentException("Correo ya está registrado");
 
-        ServiceLocator.getInstanceUsuarioDAO().save(usuario); //guardar usuario
+        saveUsuario(usuario); //guardar usuario
     }
 
     // Metodo para capitalize
@@ -135,26 +158,38 @@ public class DelegateUsuario {
 
 
     // modificacion de correo y contraseña
-    public void modificarCorreoYContrasena(Usuario usuario){
-        // Validar formato de correo
-        if (!negocio.validarCorreo(usuario.getEmail())) {
+    public void modificarCorreoYContrasena(Usuario usuario) {
+        System.out.println("Entrada a delegate modificarCorreoYContrasena");
+
+        // Validar formato
+        if (!negocio.validarCorreo(usuario.getUsDatosSensible().getEmail())) {
             throw new IllegalArgumentException("Correo inválido");
         }
 
-        // Verificar que el correo no exista en otro usuario
         UsuarioDAO dao = ServiceLocator.getInstanceUsuarioDAO();
-        Usuario existing = dao.findByOneParameterUnique(usuario.getEmail(), "email");
+
+        // Buscar por email en la entidad hija
+        Usuario existing = dao.findByOneParameterUnique(
+                usuario.getUsDatosSensible().getEmail(),
+                "usDatosSensible.email"
+        );
+
         if (existing != null && !existing.getId().equals(usuario.getId())) {
             throw new IllegalArgumentException("El correo ya está registrado por otro usuario");
         }
 
-        // Encriptar nueva contraseña
-        usuario.setPsswd(encryptPassword(usuario.getPsswd()));
+        // Encriptar contraseña
+        usuario.getUsPsswd().setPsswd(encryptPassword(
+                usuario.getUsPsswd().getPsswd()
+        ));
 
-        // Guardar cambios en la base de datos
-        dao.actualizarCorreoYContrasena(usuario.getId(), usuario.getEmail(), usuario.getPsswd());
+        // Guardar en BD
+        dao.actualizarCorreoYContrasena(
+                usuario.getId(),
+                usuario.getUsDatosSensible().getEmail(),
+                usuario.getUsPsswd().getPsswd()
+        );
     }
-
 
 
     // Activacion/Desactivacion

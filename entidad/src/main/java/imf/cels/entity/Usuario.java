@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -16,6 +17,10 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario", nullable = false)
     private Integer id;
+
+    @NotNull
+    @Column(name = "codigo_tipo_usuario", nullable = false)
+    private Integer codigoTipoUsuario;
 
     @Size(max = 50)
     @NotNull
@@ -31,111 +36,53 @@ public class Usuario {
     @Column(name = "apellido_seg", length = 50)
     private String apellidoSeg;
 
-    @Size(max = 13)
-    @NotNull
-    @Column(name = "rfc", nullable = false, length = 13)
-    private String rfc;
-
-    @Size(max = 254)
-    @NotNull
-    @Column(name = "email", nullable = false, length = 254)
-    private String email;
-
-    @Size(max = 64)
-    @NotNull
-    @Column(name = "psswd", nullable = false, length = 64)
-    private String psswd;
-
     @NotNull
     @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
 
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "fecha_creacion_usuario")
+    private Instant fechaCreacionUsuario;
+
     @NotNull
     @ColumnDefault("1")
     @Column(name = "estado", nullable = false)
-    //private Boolean estado = false;
-    private Boolean estado = true; // activated automatically
+    private Boolean estado = true;
 
-    @OneToMany(mappedBy = "idUsuario")
+    @OneToMany
+    @JoinColumn(name = "id_usuario")
     private Set<Cotizacion> cotizacions = new LinkedHashSet<>();
 
-    public Integer getId() {
-        return id;
-    }
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UsDatosSensible usDatosSensible;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UsPsswd usPsswd;
 
-    public String getNombre() {
-        return nombre;
-    }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    // GETTERS / SETTERS
 
-    public String getApellidoPrim() {
-        return apellidoPrim;
-    }
+    public Integer getId() { return id; }
+    public Integer getCodigoTipoUsuario() { return codigoTipoUsuario; }
+    public String getNombre() { return nombre; }
+    public String getApellidoPrim() { return apellidoPrim; }
+    public String getApellidoSeg() { return apellidoSeg; }
+    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+    public Instant getFechaCreacionUsuario() { return fechaCreacionUsuario; }
+    public Boolean getEstado() { return estado; }
+    public Set<Cotizacion> getCotizacions() { return cotizacions; }
+    public UsDatosSensible getUsDatosSensible() { return usDatosSensible; }
+    public UsPsswd getUsPsswd() { return usPsswd; }
 
-    public void setApellidoPrim(String apellidoPrim) {
-        this.apellidoPrim = apellidoPrim;
-    }
-
-    public String getApellidoSeg() {
-        return apellidoSeg;
-    }
-
-    public void setApellidoSeg(String apellidoSeg) {
-        this.apellidoSeg = apellidoSeg;
-    }
-
-    public String getRfc() {
-        return rfc;
-    }
-
-    public void setRfc(String rfc) {
-        this.rfc = rfc;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPsswd() {
-        return psswd;
-    }
-
-    public void setPsswd(String psswd) {
-        this.psswd = psswd;
-    }
-
-    public LocalDate getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public Boolean getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Boolean estado) {
-        this.estado = estado;
-    }
-
-    public Set<Cotizacion> getCotizacions() {
-        return cotizacions;
-    }
-
-    public void setCotizacions(Set<Cotizacion> cotizacions) {
-        this.cotizacions = cotizacions;
-    }
+    public void setId(Integer id) { this.id = id; }
+    public void setCodigoTipoUsuario(Integer codigoTipoUsuario) { this.codigoTipoUsuario = codigoTipoUsuario; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setApellidoPrim(String apellidoPrim) { this.apellidoPrim = apellidoPrim; }
+    public void setApellidoSeg(String apellidoSeg) { this.apellidoSeg = apellidoSeg; }
+    public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento;  }
+    public void setFechaCreacionUsuario(Instant fechaCreacionUsuario) { this.fechaCreacionUsuario = fechaCreacionUsuario; }
+    public void setCotizacions(Set<Cotizacion> cotizacions) { this.cotizacions = cotizacions; }
+    public void setEstado(Boolean estado) { this.estado = estado; }
+    public void setUsDatosSensible(UsDatosSensible usDatosSensible) { this.usDatosSensible = usDatosSensible; }
+    public void setUsPsswd(UsPsswd usPsswd) { this.usPsswd = usPsswd; }
 }

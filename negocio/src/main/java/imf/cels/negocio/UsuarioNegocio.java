@@ -1,6 +1,7 @@
 package imf.cels.negocio;
 
 import imf.cels.entity.Usuario;
+
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
@@ -37,9 +38,9 @@ public class UsuarioNegocio {
 
     // Valida que el RFC del usuario coincida con el generado
     public boolean validarRFC(Usuario u) {
-        if (u.getRfc() == null || u.getFechaNacimiento() == null) return false;
+        if (u.getUsDatosSensible().getRfc() == null || u.getFechaNacimiento() == null) return false;
         String esperado = generarRFC(u);
-        return u.getRfc().toUpperCase().startsWith(esperado.substring(0, 10));
+        return u.getUsDatosSensible().getRfc().toUpperCase().startsWith(esperado.substring(0, 10));
     }
 
     private String primeraVocal(String palabra) {

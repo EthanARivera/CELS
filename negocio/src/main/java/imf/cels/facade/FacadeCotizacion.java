@@ -4,8 +4,7 @@ import imf.cels.dao.CotizacionDAO;
 import imf.cels.delegate.DelegateCotizacion;
 import imf.cels.entity.Cotizacion;
 import imf.cels.entity.CotizacionManoDeObra;
-import imf.cels.entity.CotizacionMaterial;
-import imf.cels.integration.ServiceLocator;
+
 import java.util.List;
 
 //Imports para la generación y edición del PDF
@@ -19,6 +18,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import java.io.ByteArrayOutputStream;
 
 //Imports para la generación y edicion del XML
+import imf.cels.entity.CotizacionMaterial;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 

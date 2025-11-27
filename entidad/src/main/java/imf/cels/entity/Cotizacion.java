@@ -3,6 +3,7 @@ package imf.cels.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "cotizacion")
@@ -70,6 +72,54 @@ public class Cotizacion {
     @NotNull
     @Column(name = "aprobado", nullable = false)
     private Boolean aprobado = false;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "fecha_creacion")
+    private Instant fechaCreacion;
+
+    @ColumnDefault("0")
+    @Column(name = "is_cotizacion_aprobada")
+    private Boolean isCotizacionAprobada;
+
+    @ColumnDefault("0")
+    @Column(name = "is_contrato_aprobado")
+    private Boolean isContratoAprobado;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_folio")
+    private imf.cels.entity.PedidosTaller pedidosTaller;
+
+    public imf.cels.entity.PedidosTaller getPedidosTaller() {
+        return pedidosTaller;
+    }
+
+    public void setPedidosTaller(imf.cels.entity.PedidosTaller pedidosTaller) {
+        this.pedidosTaller = pedidosTaller;
+    }
+
+    public Boolean getIsContratoAprobado() {
+        return isContratoAprobado;
+    }
+
+    public void setIsContratoAprobado(Boolean isContratoAprobado) {
+        this.isContratoAprobado = isContratoAprobado;
+    }
+
+    public Boolean getIsCotizacionAprobada() {
+        return isCotizacionAprobada;
+    }
+
+    public void setIsCotizacionAprobada(Boolean isCotizacionAprobada) {
+        this.isCotizacionAprobada = isCotizacionAprobada;
+    }
+
+    public Instant getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Instant fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
 
     public Integer getId() {
         return id;

@@ -11,10 +11,14 @@
         <class>imf.cels.entity.Cotizacion</class>
         <class>imf.cels.entity.CotizacionManoDeObra</class>
         <class>imf.cels.entity.CotizacionManoDeObraId</class>
+        <class>imf.cels.entity.DatosEncuesta</class>
         <class>imf.cels.entity.CotizacionMaterial</class>
         <class>imf.cels.entity.CotizacionMaterialId</class>
         <class>imf.cels.entity.Material</class>
+        <class>imf.cels.entity.PedidosTaller</class>
         <class>imf.cels.entity.Usuario</class>
+        <class>imf.cels.entity.UsDatosSensible</class>
+        <class>imf.cels.entity.UsPsswd</class>
 
 
         <properties>

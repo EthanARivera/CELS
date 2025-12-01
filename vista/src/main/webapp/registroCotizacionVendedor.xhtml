@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<!-- Verificación de sesión -->
+<f:metadata>
+    <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"></f:event>
+</f:metadata>
+
+<h:head>
+    <title>Nueva Cotización</title>
+    <h:outputStylesheet name="style.css"/>
+    <h:outputScript name="funct.js"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Awesomplete -->
+    <h:outputStylesheet name="awesomplete.css"/>
+    <h:outputScript name="awesomplete.js"/>
+
+</h:head>
+
+<h:body class="cotizacion-page">
+
+    <div class="header">
+        <h:link outcome="consulta_cotizaciones_vendedor.xhtml" styleClass="back ui-button-success">
+            <i class="pi pi-arrow-left"></i>
+        </h:link>
+        <span>Nueva Cotización</span>
+        <p:commandButton class="menu" icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;" />
+    </div>
+
+    <!-- Menú superior oculto -->
+    <div id="menuPanel" class="menu-panel">
+        <h:link outcome="indexVendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-box"></i> Indice
+        </h:link>
+
+        <h:link outcome="consulta_cotizaciones_vendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-users"></i> Consulta Cotizaciones
+        </h:link>
+
+        <h:link outcome="registroCotizacionVendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Registrar Cotizacion
+        </h:link>
+    </div>
+
+    <h:form id="formCotizacion">
+
+        <div class="cotz-container">
+
+            <div class="cotz-header">
+                <div class="cotz-left">
+                    <div class="cotz-field">
+                        <p:outputLabel value="Usuario: " />
+                        <p:outputLabel value="#{altaCotizacionUI.obtenerNombreUsuarioEnSesion()}" />
+                    </div>
+
+                    <div class="cotz-field">
+                        <label>Nombre del Cliente:</label>
+                        <p:inputText value="#{altaCotizacionUI.cotizacion.cliente}" placeholder="[Nombre]" styleClass="input-cot"/>
+                    </div>
+
+                    <div class="cotz-field">
+                        <label>Tipo de Proyecto:</label>
+                        <p:selectOneMenu
+                                value="#{altaCotizacionUI.tipoProyecto}"
+                                required="true"
+                                placeholder="Seleccione un tipo de proyecto">
+
+                            <f:selectItem itemLabel="Seleccione..." itemValue="" />
+                            <f:selectItems value="#{altaCotizacionUI.tiposProyecto}" />
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+
+                <div class="cotz-right">
+                    <label>Fecha:</label>
+                    <h:outputText value="#{altaCotizacionUI.obtenerFechaDeCotizacion()}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"
+                                           type="localDate"
+                                           dateStyle="short" />
+                    </h:outputText>
+                </div>
+            </div>
+
+            <div class="cotz-section">
+                <h2 class="cotz-title">Descripción</h2>
+                <p:inputTextarea value="#{altaCotizacionUI.cotizacion.descripcion}" rows="4"
+                                 placeholder="Ingrese una descripción sobre el proyecto a cotizar"
+                                 styleClass="input-desc"/>
+            </div>
+
+            <!-- === AGREGAR MATERIALES === -->
+            <p:remoteCommand name="rcActualizarMateriales"
+                             actionListener="#{altaCotizacionUI.actualizarMaterialesDesdeFrontend}"
+                             process="@form"
+                             update=":formCotizacion:totalMateriales
+                                     :formCotizacion:costoBruto
+                                     :formCotizacion:costoFinal
+                                     :formCotizacion:totalSection"
+                             oncomplete="restaurarTablaMateriales()"
+            />
+
+            <div class="cotz-section">
+                <h2 class="cotz-title">Cálculo de costo por materiales</h2>
+
+                <div class="cotz-subtitle">Lista de Materiales:</div>
+
+                <div class="scroll-container" id="materialesContainer">
+
+                    <h:panelGroup id="panelMateriales">
+
+                        <h:outputText value="Materiales"
+                                      style="font-weight:bold; font-size:16px;"/>
+
+                        <!-- TABLA CONTROLADA 100% POR JAVASCRIPT -->
+                        <table id="tablaMateriales" class="table"
+                               style="width:100%; border-collapse: collapse; margin-top:10px;">
+                            <thead>
+                            <tr>
+                                <th style="width:35%;">Material</th>
+                                <th style="width:15%;">Cantidad</th>
+                                <th style="width:15%;">Precio Unit.</th>
+                                <th style="width:15%;">Subtotal</th>
+                                <th style="width:10%;"></th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="tbodyMateriales"></tbody>
+                        </table>
+
+                        <!-- Botón agregar fila -->
+                        <button type="button"
+                                onclick="agregarFilaMaterial();"
+                                class="btn btn-primary">
+                            + Agregar Material
+                        </button>
+
+
+                    </h:panelGroup>
+
+                </div>
+            </div>
+
+            <!-- Sección Cálculo de mano de obra -->
+            <p:remoteCommand name="rcActualizarMDO"
+                             actionListener="#{altaCotizacionUI.actualizarManoDeObraDesdeFrontend}"
+                             process="@form"
+                             update=":formCotizacion:totalManoObra
+                                     :formCotizacion:costoBruto
+                                     :formCotizacion:costoFinal
+                                     :formCotizacion:totalSection"
+            />
+
+            <div class="cotz-section">
+                <h2 class="cotz-title">Cálculo de mano de obra</h2>
+
+                <div class="scroll-container" id="manoObraContainer">
+
+                    <!-- Botón agregar fila -->
+                    <button type="button"
+                            onclick="agregarFilaMDO();"
+                            class="btn btn-primary">
+                        + Agregar Responsable
+                    </button>
+
+                    <br/><br/>
+
+                    <table id="tablaMDO" class="tablaMDO" style="width:100%;">
+                        <thead>
+                        <tr>
+                            <th style="width:15%;"># Responsable</th>
+                            <th style="width:25%;">Costo por hora</th>
+                            <th style="width:25%;">Horas</th>
+                            <th style="width:20%;">Subtotal</th>
+                            <th style="width:10%;"></th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="tbodyMDO"></tbody>
+                    </table>
+
+                    <!-- Campo oculto donde JS enviará el JSON -->
+                    <h:inputHidden id="jsonManoObraHidden"
+                                   value="#{altaCotizacionUI.jsonTablaManoObra}" />
+                    <h:inputHidden id="jsonMaterialesHidden"
+                                   value="#{altaCotizacionUI.jsonMateriales}" />
+                    <h:inputHidden id="jsonTablaMateriales"
+                                   value="#{altaCotizacionUI.jsonTablaMateriales}"/>
+
+                </div>
+            </div>
+
+            <!-- Totales y facturación -->
+            <div class="cotz-section">
+                <h2 class="cotz-title">Totales y Facturación</h2>
+
+                <h:panelGroup id="totalSection" layout="block">
+
+                    <div class="totales-container">
+                        <div class="totales-left">
+
+                            <div class="total-row">
+                                <div class="total-item">
+                                    <label>Subtotal Materiales:</label>
+                                    <p:inputText id="totalMateriales"
+                                                 value="#{altaCotizacionUI.totalMateriales}"
+                                                 readonly="true"
+                                                 styleClass="input-cot small"/>
+                                </div>
+
+                                <div class="total-item">
+                                    <label>Subtotal Mano de Obra:</label>
+                                    <p:inputText id="totalManoObra"
+                                                 value="#{altaCotizacionUI.totalManoDeObra}"
+                                                 readonly="true"
+                                                 styleClass="input-cot small"/>
+                                </div>
+                            </div>
+
+                            <div class="total-item">
+                                <label>Costo Final Bruto:</label>
+                                <p:inputText id="costoBruto"
+                                             value="#{altaCotizacionUI.costoBruto}"
+                                             readonly="true"
+                                             styleClass="input-cot small"/>
+                            </div>
+
+                            <div class="total-item">
+                                <label>Índice de Ganancia:</label>
+                                <div class="ganancia-group">
+                                    <p:inputText id="indiceGanancia"
+                                                 value="#{altaCotizacionUI.gananciaPercent}"
+                                                 styleClass="input-cot small">
+                                        <p:ajax event="keyup"
+                                                listener="#{altaCotizacionUI.aplicarGanancia}"
+                                                process="@this"
+                                                update=":formCotizacion:costoFinal
+                                                    :formCotizacion:costoBruto
+                                                    :formCotizacion:totalMateriales
+                                                    :formCotizacion:totalSection" />
+                                    </p:inputText>
+                                    <span>%</span>
+                                </div>
+                            </div>
+
+                            <div class="total-item">
+                                <label>Costo Final:</label>
+                                <p:inputText id="costoFinal"
+                                             value="#{altaCotizacionUI.precioFinal}"
+                                             readonly="true"
+                                             styleClass="input-cot small"/>
+                            </div>
+
+                        </div>
+
+                        <div class="totales-right">
+                            <div class="total-item">
+                                <label>
+                                    <input type="checkbox" id="requiereFactCheckbox"
+                                           onchange="actualizarTotales()">
+                                    ¿Requiere Facturación? (+8%)
+                                    </input>
+                                </label>
+                            </div>
+
+                            <p:commandButton value="Generar Cotización"
+                                             actionListener="#{altaCotizacionUI.registrarCotizacion}"
+                                             onclick="prepararJSONMateriales(); prepararJSONManoDeObra(); return validarFormularioCotizacion();"
+                                             update="msgs :formCotizacion:totalSection"
+                                             process="@form"
+                                             styleClass="btn-blue"/>
+                        </div>
+                    </div>
+                </h:panelGroup>
+
+            </div>
+
+            <p:messages id="msgs" showDetail="true" closable="true" autoUpdate="true"/>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                restaurarTablaMateriales(); // restaura las filas guardadas
+            });
+
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Enter") {
+                    // Evita el comportamiento por defecto del formulario
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        </script>
+
+    </h:form>
+
+</h:body>
+</html>

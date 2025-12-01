@@ -19,7 +19,7 @@
     <!-- Encabezado con botones -->
     <div class="header">
         <!-- Link para regresar -->
-        <h:link outcome="indexGerente.xhtml" styleClass="back ui-button-success">
+        <h:link outcome="indexVendedor.xhtml" styleClass="back ui-button-success">
             <i class="pi pi-arrow-left"></i>
         </h:link>
 
@@ -32,16 +32,16 @@
 
     <!-- Menú superior oculto -->
     <div id="menuPanel" class="menu-panel">
-        <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
-            <i class="pi pi-box"></i> Consulta Materiales
+        <h:link outcome="indexVendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-box"></i> Indice
         </h:link>
 
-        <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
-            <i class="pi pi-users"></i> Consulta Usuarios
+        <h:link outcome="consulta_cotizaciones_vendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-users"></i> Consulta Cotizaciones
         </h:link>
 
-        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
-            <i class="pi pi-file"></i> Consulta Cotizaciones
+        <h:link outcome="registroCotizacionVendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Registrar Cotizacion
         </h:link>
     </div>
 
@@ -55,24 +55,7 @@
             <h:link outcome="registroCotizacion.xhtml" styleClass="menu-option">
                 <i class="pi pi-box"></i> Agregar Cotización
             </h:link>
-
-            <!-- Barra de búsqueda -->
-            <div class="searchbar">
-                <i class="pi pi-search">    </i>
-
-                <p:inputText id="idBusqueda"
-                             value="#{cotizacionUI.idBusqueda}"
-                             placeholder="Buscar cotización por id"
-                             styleClass="search-input">
-                    <p:ajax event="keyup"
-                            process="@form"
-                            listener="#{cotizacionUI.buscarPorId}"
-                            update="tablaCotizaciones"
-                            delay="500"/>
-                </p:inputText>
-
-                <br/><br/>
-            </div>
+            <br/>
             <br/>
 
             <!-- Filtros -->
@@ -90,11 +73,6 @@
                                      update="tablaCotizaciones"
                                      styleClass="btn-azul-iconoblanco"/>
 
-                    <p:commandButton value="Ordenar por vendedor"
-                                     icon="pi pi-user"
-                                     actionListener="#{cotizacionUI.consultarPorVendedor}"
-                                     update="tablaCotizaciones"
-                                     styleClass="btn-azul-iconoblanco"/>
                 </div>
 
                 <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-top:8px;">

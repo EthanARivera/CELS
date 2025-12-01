@@ -375,7 +375,12 @@ function actualizarTotales() {
 //  FUNCIONES EXCLUSIVAS PARA PBI-CO-US13
 function verificarYcargarEdicion() {
 
-
+// --- NUEVO: REVISIÓN DE SEGURIDAD ---
+    // Si por alguna razón el catálogo está vacío, intentamos cargarlo de nuevo
+    if (catalogoMateriales.length === 0) {
+        console.log("El catálogo estaba vacío, intentando recargar...");
+        cargarCatalogo();
+    }
     // Para Materiales
     const hiddenMat = document.getElementById("formCotizacion:jsonTablaMateriales");
 

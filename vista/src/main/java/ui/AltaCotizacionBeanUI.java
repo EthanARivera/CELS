@@ -530,38 +530,7 @@ public class AltaCotizacionBeanUI implements Serializable {
     }
 
     //Para actualización de cotización
-    /*private void cargarDatosEnPantalla(Cotizacion c) {
-        try {
-            // Campos simples
-            cotizacion.setCliente(c.getCliente());
-            cotizacion.setDescripcion(c.getDescripcion());
-            cotizacion.setFecha(c.getFecha());
-            tipoProyecto = c.getTipoProyecto();
-
-            // Materiales
-            listaMateriales = new ArrayList<>();
-            for (CotizacionMaterial cm : c.getCotizacionMateriales()) {
-                listaMateriales.add(cm);
-            }
-
-            // Mano de obra
-            listaManoDeObra = new ArrayList<>();
-            for (CotizacionManoDeObra mo : c.getCotizacionManoDeObras()) {
-                listaManoDeObra.add(mo);
-            }
-
-            recalcularTotales();
-
-            // Convertir a JSON para que el JS rellene las tablas
-            Gson g = new Gson();
-            jsonTablaMateriales = g.toJson(c.getCotizacionMateriales());
-            jsonTablaManoObra = g.toJson(c.getCotizacionManoDeObras());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-    private void cargarDatosEnPantalla(Cotizacion c) {
+   /* private void cargarDatosEnPantalla(Cotizacion c) {
         try {
             // Cmpos simples
             cotizacion.setCliente(c.getCliente());
@@ -615,11 +584,106 @@ public class AltaCotizacionBeanUI implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }*/
+
+    private void cargarDatosEnPantalla(Cotizacion c) {
+        try {
+            System.out.println("--- CARGANDO DATOS ---");
+            System.out.println("Cotizacion ID: " + c.getId());
+
+            // 1. CAMPOS SIMPLES
+            cotizacion.setCliente(c.getCliente());
+            cotizacion.setDescripcion(c.getDescripcion());
+            cotizacion.setFecha(c.getFecha());
+            tipoProyecto = c.getTipoProyecto();
+
+            // 2. MATERIALES
+            listaMateriales = new ArrayList<>();
+            List<MaterialFila> filasMat = new ArrayList<>();
+
+            if (c.getCotizacionMateriales() != null) {
+                for (CotizacionMaterial cm : c.getCotizacionMateriales()) {
+
+                    // --- INICIO DEL CHALECO ANTIBALAS ---
+                    try {
+                        // 1. Agregamos a la lista interna
+                        listaMateriales.add(cm);
+
+                        MaterialFila fila = new MaterialFila();
+
+                        // Obtenemos ID de forma segura
+                        Integer idMat = (cm.getIdMaterial() != null) ? cm.getIdMaterial().getId() : 0;
+                        fila.setIdMaterial(idMat);
+                        fila.setCantidad(cm.getCantidad());
+                        fila.setSubtotal(cm.getSubtotal());
+
+                        // INTENTO DE OBTENER COSTO (Aquí es donde solía tronar)
+                        BigDecimal costoSeguro = BigDecimal.ZERO;
+
+                        if (cm.getIdMaterial() != null && cm.getIdMaterial().getCosto() != null) {
+                            // Opción A: Viene directo
+                            costoSeguro = cm.getIdMaterial().getCosto();
+                        } else {
+                            // Opción B: Si falla, lo buscamos manual (Rescate)
+                            try {
+                                Material rescate = materialHelper.buscarPorId(idMat);
+                                if (rescate != null) costoSeguro = rescate.getCosto();
+                            } catch (Exception ex) {
+                                System.out.println("No se pudo rescatar costo material " + idMat);
+                            }
+                        }
+
+                        fila.setCosto(costoSeguro);
+                        filasMat.add(fila);
+
+                    } catch (Exception exLoop) {
+                        System.out.println("Error al procesar un material individual (saltando...): " + exLoop.getMessage());
+                        // Si falla un material, el ciclo CONTINÚA con el siguiente. La tabla no se muere.
+                    }
+                    // --- FIN DEL CHALECO ANTIBALAS ---
+                }
+            }
+            jsonTablaMateriales = gson.toJson(filasMat);
+            System.out.println("JSON Materiales: " + jsonTablaMateriales);
+
+
+            // 3. MANO DE OBRA
+            listaManoDeObra = new ArrayList<>();
+            List<CotizacionManoObraDTO> filasMo = new ArrayList<>();
+
+            if (c.getCotizacionManoDeObras() != null) {
+                for (CotizacionManoDeObra mo : c.getCotizacionManoDeObras()) {
+                    try {
+                        listaManoDeObra.add(mo);
+
+                        CotizacionManoObraDTO dto = new CotizacionManoObraDTO();
+                        Integer numResp = (mo.getId() != null) ? mo.getId().getNumResponsable() : 0;
+
+                        dto.setNumResponsable(numResp);
+                        dto.setCostoHora(mo.getCostoHora());
+                        dto.setCantidadHoras(mo.getCantidadHoras());
+                        dto.setSubtotal(mo.getSubtotal());
+
+                        filasMo.add(dto);
+                    } catch (Exception exMo) {
+                        System.out.println("Error procesando mano de obra individual");
+                    }
+                }
+            }
+            jsonTablaManoObra = gson.toJson(filasMo);
+
+            // 4. RECÁLCULO
+            recalcularTotales();
+
+        } catch (Exception e) {
+            System.out.println("ERROR FATAL EN CARGA: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
     // Para actualización de cotización
-    private void registrarCotizacionComoNuevaVersion() {
+   /* private void registrarCotizacionComoNuevaVersion() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
@@ -700,6 +764,92 @@ public class AltaCotizacionBeanUI implements Serializable {
                     "Error",
                     "No se pudo crear la nueva versión."
             ));
+        }
+    }*/
+
+    private void registrarCotizacionComoNuevaVersion() {
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        try {
+            // 1. Preparamos datos
+            reconstruirDesdeJsonTablaMateriales();
+            reconstruirDesdeJsonTablaManoObra();
+            aplicarGanancia();
+
+            // 2. Creamos la "cáscara" de la nueva cotización
+            Cotizacion nueva = new Cotizacion();
+            nueva.setCliente(cotizacion.getCliente());
+            nueva.setDescripcion(cotizacion.getDescripcion());
+            nueva.setFecha(LocalDate.now());
+            nueva.setIdUsuario(usuarioActivo);
+            nueva.setTipoProyecto(tipoProyecto);
+            nueva.setPrecioFinal(precioFinal);
+
+            // IMPORTANTE: Inicializamos las listas vacías para que Java sepa que existen
+            nueva.setCotizacionMateriales(new LinkedHashSet<>());
+            nueva.setCotizacionManoDeObras(new LinkedHashSet<>());
+
+            // 3. Guardamos la cáscara para obtener el ID
+            cotizacionHelper.saveCotizacion(nueva);
+            Integer idFolio = nueva.getId();
+
+            // --- AQUÍ EMPIEZA LA MAGIA PARA LA CACHÉ ---
+
+            // Listas temporales para actualizar la "foto" en memoria
+            List<CotizacionMaterial> nuevosMaterialesParaCache = new ArrayList<>();
+            List<CotizacionManoDeObra> nuevaManoObraParaCache = new ArrayList<>();
+
+            // 4. Guardamos materiales (y los agregamos a la lista temporal)
+            for (CotizacionMaterial cmViejito : listaMateriales) {
+                CotizacionMaterial cmNuevo = new CotizacionMaterial();
+                CotizacionMaterialId pk = new CotizacionMaterialId();
+
+                pk.setIdFolio(idFolio);
+                pk.setIdMaterial(cmViejito.getIdMaterial().getId());
+
+                cmNuevo.setId(pk);
+                cmNuevo.setIdMaterial(cmViejito.getIdMaterial());
+                cmNuevo.setCantidad(cmViejito.getCantidad());
+                cmNuevo.setSubtotal(cmViejito.getSubtotal());
+                cmNuevo.setIdFolio(nueva);
+
+                cotizacionHelper.saveCotizacionMaterial(cmNuevo); // Guarda en BD
+
+                nuevosMaterialesParaCache.add(cmNuevo); // Guarda en Memoria Local
+            }
+
+            // 5. Guardamos mano de obra (y la agregamos a la lista temporal)
+            for (CotizacionManoDeObra moViejito : listaManoDeObra) {
+                CotizacionManoDeObra moNuevo = new CotizacionManoDeObra();
+                CotizacionManoDeObraId pk = new CotizacionManoDeObraId();
+
+                pk.setIdFolio(idFolio);
+                int numResp = (moViejito.getId() != null) ? moViejito.getId().getNumResponsable() : 0;
+                pk.setNumResponsable(numResp);
+
+                moNuevo.setId(pk);
+                moNuevo.setCostoHora(moViejito.getCostoHora());
+                moNuevo.setCantidadHoras(moViejito.getCantidadHoras());
+                moNuevo.setSubtotal(moViejito.getSubtotal());
+                moNuevo.setIdFolio(nueva);
+
+                cotizacionHelper.saveCotizacionManoDeObra(moNuevo); // Guarda en BD
+
+                nuevaManoObraParaCache.add(moNuevo); // Guarda en Memoria Local
+            }
+
+            // 6. ¡EL PASO FINAL! Actualizamos la cotización "nueva" en memoria
+            // Esto evita que Java piense que está vacía.
+            nueva.setCotizacionMateriales(new LinkedHashSet<>(nuevosMaterialesParaCache));
+            nueva.setCotizacionManoDeObras(new LinkedHashSet<>(nuevaManoObraParaCache));
+
+            // (Opcional) Volvemos a guardar la cotización para asegurar que Hibernate sincronice todo
+            // cotizacionHelper.saveCotizacion(nueva);
+
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualización exitosa", "Se creó una nueva versión de la cotización."));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo crear la nueva versión."));
         }
     }
 

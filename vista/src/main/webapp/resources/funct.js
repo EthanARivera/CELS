@@ -31,6 +31,8 @@ let contadorMDO = 1;
 let manoDeObraItems = [];
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Solo cargamos el catálogo aquí.
+    // La carga de la edición la manejamos desde el script del XHTML
     cargarCatalogo();
 });
 
@@ -368,4 +370,95 @@ function actualizarTotales() {
 
     const finalEl = document.getElementById("formCotizacion:costoFinal");
     if (finalEl) finalEl.value = costoConGan.toFixed(2);
+}
+
+//  FUNCIONES EXCLUSIVAS PARA PBI-CO-US13
+function verificarYcargarEdicion() {
+
+
+    // Para Materiales
+    const hiddenMat = document.getElementById("formCotizacion:jsonTablaMateriales");
+
+    // Para Mano de Obra
+    const hiddenMdo = document.getElementById("formCotizacion:jsonManoObraHidden");
+
+    // --- VALIDACIÓN DE SEGURIDAD ---
+    // Si estamos en "Altas", estos inputs tendrán "[]" o estarán vacíos.
+    // Si es así, NO HACEMOS NADA. Así no rompemos nada.
+
+    if (hiddenMat && hiddenMat.value && hiddenMat.value !== "[]" && hiddenMat.value.length > 2) {
+        console.log("Modo Edición Detectado: Cargando materiales...");
+        _cargarMaterialesExclusivo(hiddenMat.value);
+    }
+
+    if (hiddenMdo && hiddenMdo.value && hiddenMdo.value !== "[]" && hiddenMdo.value.length > 2) {
+        console.log("Modo Edición Detectado: Cargando mano de obra...");
+        _cargarManoObraExclusivo(hiddenMdo.value);
+    }
+}
+
+// Función para cargar materiales
+function _cargarMaterialesExclusivo(jsonTexto) {
+    try {
+        const lista = JSON.parse(jsonTexto);
+        const tbody = document.getElementById("tbodyMateriales");
+
+        // Limpiamos tabla
+        tbody.innerHTML = "";
+
+        lista.forEach(item => {
+            agregarFilaMaterial(); // Usamos la función original de Altas para crear el hueco
+            const tr = tbody.lastElementChild;
+
+            // Llenamos visualmente
+            // Nota: Agregamos el "?" para evitar error si el ID no existe en catalogo
+            const nombreMaterial = catalogoMateriales.find(m => m.id === item.idMaterial)?.nombre || "Material Guardado";
+
+            tr.querySelector(".material-input").value = nombreMaterial;
+            tr.querySelector(".cantidad").value = item.cantidad;
+            tr.querySelector(".precio").value = item.costo;
+            tr.querySelector(".subtotal").value = item.subtotal;
+
+            // Llenamos datos ocultos (dataset)
+            tr.querySelector(".mat-id").textContent = item.idMaterial;
+            tr.dataset.id = item.idMaterial;
+            tr.dataset.costo = item.costo;
+
+            materialesUsados.add(item.idMaterial);
+
+            // Reactivamos listeners
+            tr.querySelector(".cantidad").addEventListener("input", () => {
+                calcularSubtotalMaterial(tr);
+            });
+        });
+        actualizarTotales();
+    } catch (e) {
+        console.error("Error (Materiales):", e);
+    }
+}
+
+// Función Mano Obra
+function _cargarManoObraExclusivo(jsonTexto) {
+    try {
+        const lista = JSON.parse(jsonTexto);
+        const tbody = document.getElementById("tbodyMDO");
+        tbody.innerHTML = "";
+
+        lista.forEach(item => {
+            agregarFilaMDO();
+            const tr = tbody.lastElementChild;
+
+            tr.querySelector(".num-responsable").value = item.numResponsable;
+            tr.querySelector(".costo-hora").value = item.costoHora;
+            tr.querySelector(".cantidad-horas").value = item.cantidadHoras;
+            tr.querySelector(".subtotal-mdo").value = item.subtotal;
+
+            if(item.numResponsable >= contadorMDO) {
+                contadorMDO = item.numResponsable + 1;
+            }
+        });
+        actualizarTotales();
+    } catch (e) {
+        console.error("Error (Mano Obra):", e);
+    }
 }

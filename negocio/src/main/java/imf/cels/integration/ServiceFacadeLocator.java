@@ -28,7 +28,6 @@ public class ServiceFacadeLocator {
         }
     }
 
-    //Se usa paara actualización de cotización también
     public static FacadeCotizacion getInstanceFacadeCotizacion() {
         if (facadeCotizacion == null) {
             facadeCotizacion = new FacadeCotizacion();

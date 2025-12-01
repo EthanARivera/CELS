@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 
 //Imports para la generación y edicion del XML
 import imf.cels.entity.CotizacionMaterial;
+import imf.cels.integration.ServiceLocator;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 
@@ -41,6 +42,10 @@ public class FacadeCotizacion {
 
     public FacadeCotizacion(){
         this.delegateCotizacion = new DelegateCotizacion();
+    }
+
+    public List<Cotizacion> buscarPorId(int id){
+        return delegateCotizacion.buscarPorId(id);
     }
 
     public List<Cotizacion> obtenerTodosPorFecha(){
@@ -69,6 +74,31 @@ public class FacadeCotizacion {
 
     public List<Integer> obtenerMesesDisponibles(){
         return delegateCotizacion.obtenerMesesDisponibles();
+    }
+
+    // Consultas por usuario vendedor
+    public List<Cotizacion> obtenerTodosPorFecha(Integer idUsuario){
+        return delegateCotizacion.obtenerTodosPorFecha(idUsuario);
+    }
+
+    public List<Cotizacion> obtenerPorFolio(Integer idUsuario){
+        return delegateCotizacion.obtenerPorFolio(idUsuario);
+    }
+
+    public List<Cotizacion> obtenerPorAnio(Integer idUsuario, int anio){
+        return delegateCotizacion.obtenerPorAnio(idUsuario, anio);
+    }
+
+    public List<Cotizacion> obtenerPorMes(Integer idUsuario, int mes){
+        return delegateCotizacion.obtenerPorMes(idUsuario, mes);
+    }
+
+    public List<Integer> obtenerAniosDisponibles(Integer idUsuario){
+        return delegateCotizacion.obtenerAniosDisponibles(idUsuario);
+    }
+
+    public List<Integer> obtenerMesesDisponibles(Integer idUsuario){
+        return delegateCotizacion.obtenerMesesDisponibles(idUsuario);
     }
 
     public void saveCotizacion(Cotizacion cotizacion){ delegateCotizacion.saveCotizacion(cotizacion); }

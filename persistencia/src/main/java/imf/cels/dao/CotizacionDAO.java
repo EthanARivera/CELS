@@ -78,6 +78,61 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
                 .getResultList();
     }
 
+    // Mismos métodos para la búsqueda pero del usuario vendedor
+
+    public List<Cotizacion> obtenerTodosPorFecha(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY c.fecha DESC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    public List<Cotizacion> obtenerPorFolio(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY c.id ASC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    public List<Cotizacion> obtenerPorAnio(Integer idUsuario, int anio) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND YEAR(c.fecha) = :anio ORDER BY c.fecha DESC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .setParameter("anio", anio)
+                .getResultList();
+    }
+
+    public List<Cotizacion> obtenerPorMes(Integer idUsuario, int mes) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND MONTH(c.fecha) = :mes ORDER BY c.fecha DESC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .setParameter("mes", mes)
+                .getResultList();
+    }
+
+    public List<Cotizacion> buscarPorId(Integer idUsuario, int id) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.id = :id AND c.idUsuario.id = :idUsuario", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    public List<Integer> obtenerAniosDisponibles(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT DISTINCT YEAR(c.fecha) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY YEAR(c.fecha) DESC", Integer.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    public List<Integer> obtenerMesesDisponibles(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT DISTINCT MONTH(c.fecha) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY MONTH(c.fecha)", Integer.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+
 
     //Registro de cotizaciones
 

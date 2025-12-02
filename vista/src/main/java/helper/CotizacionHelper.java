@@ -64,4 +64,12 @@ public class CotizacionHelper {
     public void aprobarContrato(Integer idFolio) {
         ServiceFacadeLocator.getInstanceFacadeCotizacion().aprobarContrato(idFolio);
     }
+
+    //actualización de cotización PBI-CO-US13
+    public Cotizacion obtenerCotizacionPorId(int id) {
+        return ServiceFacadeLocator.getInstanceFacadeCotizacion()
+                .buscarPorIdUnico(id);
+    }
+
+
 }

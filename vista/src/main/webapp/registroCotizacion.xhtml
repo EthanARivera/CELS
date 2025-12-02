@@ -20,7 +20,6 @@
     <!-- Awesomplete -->
     <h:outputStylesheet name="awesomplete.css"/>
     <h:outputScript name="awesomplete.js"/>
-
 </h:head>
 
 <h:body class="cotizacion-page">
@@ -297,6 +296,18 @@
             });
         </script>
 
+        <!--PBI-CO-US13-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Esperamos 500ms para no chocar con la carga original
+                setTimeout(function() {
+                    // Llamamos a la funcion para editar (Carga las tablas)
+                    if (typeof verificarYcargarEdicion === "function") {
+                        verificarYcargarEdicion();
+                    }
+                }, 500);
+            });
+        </script>
     </h:form>
 
 </h:body>

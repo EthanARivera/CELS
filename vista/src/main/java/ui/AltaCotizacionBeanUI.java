@@ -194,9 +194,13 @@ public class AltaCotizacionBeanUI implements Serializable {
 
     // CARGA DE NOMBRE DE USUARIO EN SESION Y FECHA
 
-    public String obtenerNombreUsuarioEnSesion() { return loginUI.obtenerNombreUsuarioEnSesion(); }
+    public String obtenerNombreUsuarioEnSesion() {
+        return loginUI.obtenerNombreUsuarioEnSesion();
+    }
 
-    public LocalDate obtenerFechaDeCotizacion() { return LocalDate.now(); }
+    public LocalDate obtenerFechaDeCotizacion() {
+        return LocalDate.now();
+    }
 
     // CARGA CATÁLOGO
 
@@ -217,14 +221,14 @@ public class AltaCotizacionBeanUI implements Serializable {
     }
 
 
-
     // RECONSTRUIR DESDE JSON
 
     public void reconstruirDesdeJsonTablaMateriales() {
         try {
             System.out.println("JSON Tabla Materiales (bean): " + jsonTablaMateriales);
 
-            Type type = new TypeToken<List<MaterialFila>>() {}.getType();
+            Type type = new TypeToken<List<MaterialFila>>() {
+            }.getType();
             List<MaterialFila> filas = gson.fromJson(jsonTablaMateriales, type);
 
             listaMateriales.clear();
@@ -269,7 +273,8 @@ public class AltaCotizacionBeanUI implements Serializable {
 
             System.out.println("JSON Tabla ManoObra (bean): " + jsonTablaManoObra);
 
-            Type listType = new TypeToken<List<CotizacionManoObraDTO>>() {}.getType();
+            Type listType = new TypeToken<List<CotizacionManoObraDTO>>() {
+            }.getType();
             List<CotizacionManoObraDTO> dtoList = gson.fromJson(jsonTablaManoObra, listType);
 
             listaManoDeObra.clear();
@@ -316,9 +321,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         reconstruirDesdeJsonTablaMateriales();
         recalcularTotales();
     }
- 
+
     // RECÁLCULOS
- 
+
 
     public void recalcularTotales() {
         totalMateriales = BigDecimal.ZERO;
@@ -529,8 +534,8 @@ public class AltaCotizacionBeanUI implements Serializable {
         }
     }
 
-    //Para actualización de cotización
-   /* private void cargarDatosEnPantalla(Cotizacion c) {
+    //  AQUÍ COMIENZAN LAS FUNCIONES PARA PBI-CO-US13
+    private void cargarDatosEnPantalla(Cotizacion c) {
         try {
             // Cmpos simples
             cotizacion.setCliente(c.getCliente());
@@ -584,106 +589,11 @@ public class AltaCotizacionBeanUI implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
-
-    private void cargarDatosEnPantalla(Cotizacion c) {
-        try {
-            System.out.println("--- CARGANDO DATOS ---");
-            System.out.println("Cotizacion ID: " + c.getId());
-
-            // 1. CAMPOS SIMPLES
-            cotizacion.setCliente(c.getCliente());
-            cotizacion.setDescripcion(c.getDescripcion());
-            cotizacion.setFecha(c.getFecha());
-            tipoProyecto = c.getTipoProyecto();
-
-            // 2. MATERIALES
-            listaMateriales = new ArrayList<>();
-            List<MaterialFila> filasMat = new ArrayList<>();
-
-            if (c.getCotizacionMateriales() != null) {
-                for (CotizacionMaterial cm : c.getCotizacionMateriales()) {
-
-                    // --- INICIO DEL CHALECO ANTIBALAS ---
-                    try {
-                        // 1. Agregamos a la lista interna
-                        listaMateriales.add(cm);
-
-                        MaterialFila fila = new MaterialFila();
-
-                        // Obtenemos ID de forma segura
-                        Integer idMat = (cm.getIdMaterial() != null) ? cm.getIdMaterial().getId() : 0;
-                        fila.setIdMaterial(idMat);
-                        fila.setCantidad(cm.getCantidad());
-                        fila.setSubtotal(cm.getSubtotal());
-
-                        // INTENTO DE OBTENER COSTO (Aquí es donde solía tronar)
-                        BigDecimal costoSeguro = BigDecimal.ZERO;
-
-                        if (cm.getIdMaterial() != null && cm.getIdMaterial().getCosto() != null) {
-                            // Opción A: Viene directo
-                            costoSeguro = cm.getIdMaterial().getCosto();
-                        } else {
-                            // Opción B: Si falla, lo buscamos manual (Rescate)
-                            try {
-                                Material rescate = materialHelper.buscarPorId(idMat);
-                                if (rescate != null) costoSeguro = rescate.getCosto();
-                            } catch (Exception ex) {
-                                System.out.println("No se pudo rescatar costo material " + idMat);
-                            }
-                        }
-
-                        fila.setCosto(costoSeguro);
-                        filasMat.add(fila);
-
-                    } catch (Exception exLoop) {
-                        System.out.println("Error al procesar un material individual (saltando...): " + exLoop.getMessage());
-                        // Si falla un material, el ciclo CONTINÚA con el siguiente. La tabla no se muere.
-                    }
-                    // --- FIN DEL CHALECO ANTIBALAS ---
-                }
-            }
-            jsonTablaMateriales = gson.toJson(filasMat);
-            System.out.println("JSON Materiales: " + jsonTablaMateriales);
-
-
-            // 3. MANO DE OBRA
-            listaManoDeObra = new ArrayList<>();
-            List<CotizacionManoObraDTO> filasMo = new ArrayList<>();
-
-            if (c.getCotizacionManoDeObras() != null) {
-                for (CotizacionManoDeObra mo : c.getCotizacionManoDeObras()) {
-                    try {
-                        listaManoDeObra.add(mo);
-
-                        CotizacionManoObraDTO dto = new CotizacionManoObraDTO();
-                        Integer numResp = (mo.getId() != null) ? mo.getId().getNumResponsable() : 0;
-
-                        dto.setNumResponsable(numResp);
-                        dto.setCostoHora(mo.getCostoHora());
-                        dto.setCantidadHoras(mo.getCantidadHoras());
-                        dto.setSubtotal(mo.getSubtotal());
-
-                        filasMo.add(dto);
-                    } catch (Exception exMo) {
-                        System.out.println("Error procesando mano de obra individual");
-                    }
-                }
-            }
-            jsonTablaManoObra = gson.toJson(filasMo);
-
-            // 4. RECÁLCULO
-            recalcularTotales();
-
-        } catch (Exception e) {
-            System.out.println("ERROR FATAL EN CARGA: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
 
-    // Para actualización de cotización
-   /* private void registrarCotizacionComoNuevaVersion() {
+    // Para registrar la nueva versión
+    private void registrarCotizacionComoNuevaVersion() {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
@@ -705,7 +615,7 @@ public class AltaCotizacionBeanUI implements Serializable {
 
             Integer idFolio = nueva.getId();
 
-            // 1. Guardar materiales (CLONANDO, no reciclando)
+            // Guardar materiales
             for (CotizacionMaterial cmViejito : listaMateriales) {
 
                 // Creamos un objeto 100% NUEVO
@@ -736,9 +646,8 @@ public class AltaCotizacionBeanUI implements Serializable {
                 CotizacionManoDeObraId pk = new CotizacionManoDeObraId();
                 pk.setIdFolio(idFolio);
 
-                // Asumiendo que ya traes datos:
+                // Numero de responsable
                 int numResp = (moViejito.getId() != null) ? moViejito.getId().getNumResponsable() : 0;
-                // Si numResp es 0, deberíamos generar uno, pero usemos el del objeto por ahora:
                 pk.setNumResponsable(numResp);
 
                 // Llenamos el objeto nuevo con los datos del viejito
@@ -754,7 +663,7 @@ public class AltaCotizacionBeanUI implements Serializable {
             ctx.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_INFO,
                     "Actualización exitosa",
-                    "Se creó una nueva versión de la cotización."
+                    "Se creó una nueva versión de la cotización con el folio " + idFolio
             ));
 
         } catch (Exception e) {
@@ -765,119 +674,81 @@ public class AltaCotizacionBeanUI implements Serializable {
                     "No se pudo crear la nueva versión."
             ));
         }
-    }*/
-
-    private void registrarCotizacionComoNuevaVersion() {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        try {
-            // 1. Preparamos datos
-            reconstruirDesdeJsonTablaMateriales();
-            reconstruirDesdeJsonTablaManoObra();
-            aplicarGanancia();
-
-            // 2. Creamos la "cáscara" de la nueva cotización
-            Cotizacion nueva = new Cotizacion();
-            nueva.setCliente(cotizacion.getCliente());
-            nueva.setDescripcion(cotizacion.getDescripcion());
-            nueva.setFecha(LocalDate.now());
-            nueva.setIdUsuario(usuarioActivo);
-            nueva.setTipoProyecto(tipoProyecto);
-            nueva.setPrecioFinal(precioFinal);
-
-            // IMPORTANTE: Inicializamos las listas vacías para que Java sepa que existen
-            nueva.setCotizacionMateriales(new LinkedHashSet<>());
-            nueva.setCotizacionManoDeObras(new LinkedHashSet<>());
-
-            // 3. Guardamos la cáscara para obtener el ID
-            cotizacionHelper.saveCotizacion(nueva);
-            Integer idFolio = nueva.getId();
-
-            // --- AQUÍ EMPIEZA LA MAGIA PARA LA CACHÉ ---
-
-            // Listas temporales para actualizar la "foto" en memoria
-            List<CotizacionMaterial> nuevosMaterialesParaCache = new ArrayList<>();
-            List<CotizacionManoDeObra> nuevaManoObraParaCache = new ArrayList<>();
-
-            // 4. Guardamos materiales (y los agregamos a la lista temporal)
-            for (CotizacionMaterial cmViejito : listaMateriales) {
-                CotizacionMaterial cmNuevo = new CotizacionMaterial();
-                CotizacionMaterialId pk = new CotizacionMaterialId();
-
-                pk.setIdFolio(idFolio);
-                pk.setIdMaterial(cmViejito.getIdMaterial().getId());
-
-                cmNuevo.setId(pk);
-                cmNuevo.setIdMaterial(cmViejito.getIdMaterial());
-                cmNuevo.setCantidad(cmViejito.getCantidad());
-                cmNuevo.setSubtotal(cmViejito.getSubtotal());
-                cmNuevo.setIdFolio(nueva);
-
-                cotizacionHelper.saveCotizacionMaterial(cmNuevo); // Guarda en BD
-
-                nuevosMaterialesParaCache.add(cmNuevo); // Guarda en Memoria Local
-            }
-
-            // 5. Guardamos mano de obra (y la agregamos a la lista temporal)
-            for (CotizacionManoDeObra moViejito : listaManoDeObra) {
-                CotizacionManoDeObra moNuevo = new CotizacionManoDeObra();
-                CotizacionManoDeObraId pk = new CotizacionManoDeObraId();
-
-                pk.setIdFolio(idFolio);
-                int numResp = (moViejito.getId() != null) ? moViejito.getId().getNumResponsable() : 0;
-                pk.setNumResponsable(numResp);
-
-                moNuevo.setId(pk);
-                moNuevo.setCostoHora(moViejito.getCostoHora());
-                moNuevo.setCantidadHoras(moViejito.getCantidadHoras());
-                moNuevo.setSubtotal(moViejito.getSubtotal());
-                moNuevo.setIdFolio(nueva);
-
-                cotizacionHelper.saveCotizacionManoDeObra(moNuevo); // Guarda en BD
-
-                nuevaManoObraParaCache.add(moNuevo); // Guarda en Memoria Local
-            }
-
-            // 6. ¡EL PASO FINAL! Actualizamos la cotización "nueva" en memoria
-            // Esto evita que Java piense que está vacía.
-            nueva.setCotizacionMateriales(new LinkedHashSet<>(nuevosMaterialesParaCache));
-            nueva.setCotizacionManoDeObras(new LinkedHashSet<>(nuevaManoObraParaCache));
-
-            // (Opcional) Volvemos a guardar la cotización para asegurar que Hibernate sincronice todo
-            // cotizacionHelper.saveCotizacion(nueva);
-
-            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Actualización exitosa", "Se creó una nueva versión de la cotización."));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se pudo crear la nueva versión."));
-        }
     }
 
 
     // GETTERS Y SETTERS
 
 
-    public String getJsonMateriales() { return jsonMateriales; }
-    public void setJsonMateriales(String jsonMateriales) { this.jsonMateriales = jsonMateriales; }
-    public String getJsonTablaMateriales() { return jsonTablaMateriales; }
-    public void setJsonTablaMateriales(String jsonTablaMateriales) { this.jsonTablaMateriales = jsonTablaMateriales; }
+    public String getJsonMateriales() {
+        return jsonMateriales;
+    }
 
-    public String getJsonTablaManoObra() { return jsonTablaManoObra; }
-    public void setJsonTablaManoObra(String jsonTablaManoObra) { this.jsonTablaManoObra = jsonTablaManoObra; }
+    public void setJsonMateriales(String jsonMateriales) {
+        this.jsonMateriales = jsonMateriales;
+    }
 
-    public BigDecimal getTotalMateriales() { return totalMateriales; }
-    public BigDecimal getTotalManoDeObra() { return totalManoDeObra; }
-    public BigDecimal getCostoBruto() { return costoBruto; }
-    public BigDecimal getPrecioFinal() { return precioFinal; }
-    public BigDecimal getGananciaPercent() { return gananciaPercent; }
-    public void setGananciaPercent(BigDecimal gananciaPercent) { this.gananciaPercent = gananciaPercent; }
+    public String getJsonTablaMateriales() {
+        return jsonTablaMateriales;
+    }
 
-    public Cotizacion getCotizacion() { return cotizacion; }
-    public void setCotizacion(Cotizacion cotizacion) { this.cotizacion = cotizacion; }
+    public void setJsonTablaMateriales(String jsonTablaMateriales) {
+        this.jsonTablaMateriales = jsonTablaMateriales;
+    }
 
-    public TipoProyecto getTipoProyecto() { return tipoProyecto; }
-    public void setTipoProyecto(TipoProyecto tipoProyecto) { this.tipoProyecto = tipoProyecto; }
+    public String getJsonTablaManoObra() {
+        return jsonTablaManoObra;
+    }
 
-    public TipoProyecto[] getTiposProyecto() { return tiposProyecto; }
-    public void setTiposProyecto(TipoProyecto[] tiposProyecto) { this.tiposProyecto = tiposProyecto; }
+    public void setJsonTablaManoObra(String jsonTablaManoObra) {
+        this.jsonTablaManoObra = jsonTablaManoObra;
+    }
+
+    public BigDecimal getTotalMateriales() {
+        return totalMateriales;
+    }
+
+    public BigDecimal getTotalManoDeObra() {
+        return totalManoDeObra;
+    }
+
+    public BigDecimal getCostoBruto() {
+        return costoBruto;
+    }
+
+    public BigDecimal getPrecioFinal() {
+        return precioFinal;
+    }
+
+    public BigDecimal getGananciaPercent() {
+        return gananciaPercent;
+    }
+
+    public void setGananciaPercent(BigDecimal gananciaPercent) {
+        this.gananciaPercent = gananciaPercent;
+    }
+
+    public Cotizacion getCotizacion() {
+        return cotizacion;
+    }
+
+    public void setCotizacion(Cotizacion cotizacion) {
+        this.cotizacion = cotizacion;
+    }
+
+    public TipoProyecto getTipoProyecto() {
+        return tipoProyecto;
+    }
+
+    public void setTipoProyecto(TipoProyecto tipoProyecto) {
+        this.tipoProyecto = tipoProyecto;
+    }
+
+    public TipoProyecto[] getTiposProyecto() {
+        return tiposProyecto;
+    }
+
+    public void setTiposProyecto(TipoProyecto[] tiposProyecto) {
+        this.tiposProyecto = tiposProyecto;
+    }
 }

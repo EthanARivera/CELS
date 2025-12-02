@@ -372,15 +372,9 @@ function actualizarTotales() {
     if (finalEl) finalEl.value = costoConGan.toFixed(2);
 }
 
-//  FUNCIONES EXCLUSIVAS PARA PBI-CO-US13
+//  AQUÍ COMIENZAN LAS FUNCIONES EXCLUSIVAS PARA PBI-CO-US13
 function verificarYcargarEdicion() {
 
-// --- NUEVO: REVISIÓN DE SEGURIDAD ---
-    // Si por alguna razón el catálogo está vacío, intentamos cargarlo de nuevo
-    if (catalogoMateriales.length === 0) {
-        console.log("El catálogo estaba vacío, intentando recargar...");
-        cargarCatalogo();
-    }
     // Para Materiales
     const hiddenMat = document.getElementById("formCotizacion:jsonTablaMateriales");
 
@@ -390,7 +384,6 @@ function verificarYcargarEdicion() {
     // --- VALIDACIÓN DE SEGURIDAD ---
     // Si estamos en "Altas", estos inputs tendrán "[]" o estarán vacíos.
     // Si es así, NO HACEMOS NADA. Así no rompemos nada.
-
     if (hiddenMat && hiddenMat.value && hiddenMat.value !== "[]" && hiddenMat.value.length > 2) {
         console.log("Modo Edición Detectado: Cargando materiales...");
         _cargarMaterialesExclusivo(hiddenMat.value);
@@ -466,4 +459,4 @@ function _cargarManoObraExclusivo(jsonTexto) {
     } catch (e) {
         console.error("Error (Mano Obra):", e);
     }
-}
+    }

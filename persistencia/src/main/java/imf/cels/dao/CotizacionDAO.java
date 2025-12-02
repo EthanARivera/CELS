@@ -105,6 +105,10 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     //actualización de cotización
     public Cotizacion buscarPorIdUnico(int id) {
+        // Esto limpia la memoria caché del EntityManager.
+        // Obliga al sistema a olvidar cualquier versión vieja/incompleta de la cotización
+        // y a traer los datos REALES (incluyendo las tablas nuevas) desde la Base de Datos.
+        entityManager.clear();
 
         try { //carga los materiales y mano de obra al editar.
             Cotizacion cot = entityManager.createQuery(

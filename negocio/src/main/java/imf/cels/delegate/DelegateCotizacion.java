@@ -5,11 +5,23 @@ import imf.cels.entity.Cotizacion;
 import imf.cels.entity.CotizacionManoDeObra;
 import imf.cels.entity.CotizacionMaterial;
 import imf.cels.integration.ServiceLocator;
+import imf.cels.mail.EmailCotizaciones;
+
 import java.util.List;
 
 public class DelegateCotizacion {
 
     private CotizacionDAO cotizacionDAO = ServiceLocator.getInstanceCotizacionDAO();
+    private EmailCotizaciones emailCotizaciones;
+
+    public DelegateCotizacion() {
+        this.emailCotizaciones = new EmailCotizaciones(this);
+    }
+
+
+    public void setEmailCotizaciones(EmailCotizaciones emailCotizaciones) {
+        this.emailCotizaciones = emailCotizaciones;
+    }
 
     public List<Cotizacion> buscarPorId(int id){
         return ServiceLocator.getInstanceCotizacionDAO().buscarPorId(id);
@@ -100,7 +112,12 @@ public class DelegateCotizacion {
 
     public Integer ultimoFolio() { return ServiceLocator.getInstanceCotizacionDAO().ultimoFolio(); }
 
-    public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
-        return cotizacionDAO.enviarContratoPorCorreo(idCotizacion);
+    public boolean enviarContratoPorCorreo(String correoUsuario, Integer idCotizacion) throws Exception {
+        return emailCotizaciones.enviarContratoPorCorreo(correoUsuario, idCotizacion);
     }
+
+    public void enviarCotizacionPorCorreo(String correoUsuario, Integer idCotizacion) throws Exception {
+        emailCotizaciones.enviarCotizacionPorCorreo(correoUsuario, idCotizacion);
+    }
+
 }

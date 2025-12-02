@@ -22,20 +22,21 @@ CREATE TABLE cotizacion (
     id_usuario INT(5) NOT NULL,
     fecha DATE NOT NULL,
     tipo_proyecto ENUM(
-        'Caja Luminosa', 
-        'Channel Letters', 
+        'Caja Luminosa',
+        'Channel Letters',
         'Letreros Luminosos',
-        'Fachada', 
-        'Rotulación Vehicular', 
+        'Fachada',
+        'Rotulación Vehicular',
         'Rotulación Comercial',
-        'Impresión de Lona', 
-        'Impresión de Vinil', 
+        'Impresión de Lona',
+        'Impresión de Vinil',
         'Otro'
     ) NOT NULL,
     descripcion MEDIUMTEXT,
     cliente VARCHAR(64) NOT NULL,
     precio_final DECIMAL(10,2) NOT NULL,
     is_cotizacion_aprobado BOOLEAN NOT NULL DEFAULT FALSE,
+    is_contrato_aprobado BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
         ON UPDATE CASCADE
         ON DELETE RESTRICT
@@ -73,4 +74,11 @@ CREATE TABLE cotizacion_mano_de_obra (
     CONSTRAINT fk_cotizacion_mano FOREIGN KEY (id_folio) REFERENCES cotizacion(id_folio)
         ON UPDATE CASCADE
         ON DELETE CASCADE
+);
+
+CREATE TABLE datos_encuesta (
+    id_encuesta INT(8) PRIMARY KEY AUTO_INCREMENT,
+    q1 BOOL,
+    q2 VARCHAR(50),
+    q3 INT(1)
 );

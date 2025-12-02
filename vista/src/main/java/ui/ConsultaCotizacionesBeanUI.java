@@ -1,7 +1,6 @@
 package ui;
 
 import helper.CotizacionHelper;
-import imf.cels.delegate.DelegateCotizacion;
 import imf.cels.entity.*;
 
 import jakarta.annotation.PostConstruct;
@@ -22,8 +21,6 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
 
     private CotizacionHelper cotizacionHelper;
 
-    private final DelegateCotizacion delegateCotizacion = new DelegateCotizacion();
-
     //Filtros y Busqueda de cotizaciones
     private List<Cotizacion> cotizaciones;
     private int anioFiltro;
@@ -41,6 +38,11 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
     private String textoConfirmacion;
     private Integer idCotizacionSeleccionada;
 
+    // Aprobación de Contrato
+    private boolean dialogAprobacionContratoVisible;
+    private String textoConfirmacionContrato;
+    private Integer idContratoSeleccionado;
+
 
     @PostConstruct
     public void init(){
@@ -50,9 +52,18 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
-        aniosDisponibles = delegateCotizacion.obtenerAniosDisponibles();
-        mesesDisponibles = delegateCotizacion.obtenerMesesDisponibles();
+
+        cotizacionHelper = new CotizacionHelper();
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+            cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+            aniosDisponibles = cotizacionHelper.obtenerAniosDisponibles();
+            mesesDisponibles = cotizacionHelper.obtenerMesesDisponibles();
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+            aniosDisponibles = cotizacionHelper.obtenerAniosDisponibles(loginUI.getUsuario().getId());
+            mesesDisponibles = cotizacionHelper.obtenerMesesDisponibles(loginUI.getUsuario().getId());
+        }
     }
 
     public String obtenerNombreMes(int mes){
@@ -92,7 +103,12 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
             dialogAprobacionVisible = false;
 
             // Refresh list of cotizaciones
-            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+            if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+            }
+            else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+            }
 
             // Success message
             context.addMessage(null, new FacesMessage(
@@ -115,6 +131,62 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         textoConfirmacion = "";
     }
 
+
+    // Aprobación de Contrato
+    // Mostrar diálogo
+    public void mostrarDialogoAprobacionContrato(Cotizacion cotizacion) {
+        this.idContratoSeleccionado = cotizacion.getId();
+        this.textoConfirmacionContrato = "";
+        this.dialogAprobacionContratoVisible = true;
+    }
+
+    // Aprobar contrato
+    public void aprobarContrato() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            if (textoConfirmacionContrato == null ||
+                    !"Aprobado".equalsIgnoreCase(textoConfirmacionContrato.trim())) {
+
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Confirmación incorrecta",
+                        "Debe escribir exactamente 'Aprobado' para confirmar."
+                ));
+                return;
+            }
+
+            cotizacionHelper.aprobarContrato(idContratoSeleccionado);
+            dialogAprobacionContratoVisible = false;
+
+            // actualizar tabla
+            if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+            }
+            else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+            }
+
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Contrato aprobado",
+                    "El contrato del folio " + idContratoSeleccionado + " fue aprobado correctamente."
+            ));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error al aprobar contrato",
+                    e.getMessage()
+            ));
+        }
+    }
+
+    public void cancelarAprobacionContrato() {
+        dialogAprobacionContratoVisible = false;
+        textoConfirmacionContrato = "";
+    }
+
     /**************************************************
      *         Envío de Correos (Brayan Leon)
      **************************************************/
@@ -131,7 +203,7 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
 
         try {
 
-            cotizacionHelper.enviarCotizacionPorCorreo(cotizacion.getId());
+            cotizacionHelper.enviarCotizacionPorCorreo(loginUI.getUsuario().getUsDatosSensible().getEmail(), cotizacion.getId());
 
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Éxito", "Correo enviado para el Folio #" + cotizacion.getId()));
@@ -143,21 +215,91 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         }
     }
 
+    public void enviarContrato(Cotizacion cotizacion) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        //validación
+        if (cotizacion == null || cotizacion.getId() == null) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
+                    "Error", "No se pudo seleccionar la cotización."));
+            return;
+        }
+
+        if (!cotizacion.getisCotizacionAprobada()) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_WARN,
+                    "Cotización no aprobada",
+                    "Debe aprobar la cotización antes de enviar el contrato."
+            ));
+            return;
+        }
+
+        try {
+            boolean enviado = cotizacionHelper.enviarContratoPorCorreo(loginUI.getUsuario().getUsDatosSensible().getEmail(),cotizacion.getId());
+
+            if (enviado) {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_INFO,
+                        "Éxito",
+                        "El contrato ha sido enviado al correo del cliente para el Folio #" + cotizacion.getId()
+                ));
+            } else {
+                context.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_ERROR,
+                        "Error",
+                        "No se pudo enviar el contrato."
+                ));
+            }
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Error al enviar", "No se pudo enviar el contrato: " + e.getMessage()));
+            e.printStackTrace();
+        }
+    }
+
     //Setters/Getters
-    public void buscarPorId(){ cotizaciones = delegateCotizacion.buscarPorId(idBusqueda); }
+    public void buscarPorId(){ cotizaciones = cotizacionHelper.buscarPorId(idBusqueda); }
 
     public int getIdBusqueda() { return idBusqueda; }
     public void setIdBusqueda(int idBusqueda) { this.idBusqueda = idBusqueda; }
 
-    public void consultarPorFecha(){ cotizaciones = delegateCotizacion.obtenerTodosPorFecha(); }
+    public void consultarPorFecha()
+    {
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+        cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+        }
+    }
 
-    public void consultarPorFolio(){ cotizaciones = delegateCotizacion.obtenerPorFolio(); }
+    public void consultarPorFolio(){
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+            cotizaciones = cotizacionHelper.obtenerPorFolio();
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerPorFolio(loginUI.getUsuario().getId());
+        }
+    }
 
-    public void consultarPorVendedor(){ cotizaciones = delegateCotizacion.obtenerPorVendedor(); }
+    public void consultarPorVendedor(){ cotizaciones = cotizacionHelper.obtenerPorVendedor(); }
 
-    public void obtenerPorAnio(){ cotizaciones = delegateCotizacion.obtenerPorAnio(anioFiltro); }
+    public void obtenerPorAnio(){ if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+        cotizaciones = cotizacionHelper.obtenerPorAnio(anioFiltro);
+    }
+    else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+        cotizaciones = cotizacionHelper.obtenerPorAnio(loginUI.getUsuario().getId(), anioFiltro);
+    } }
 
-    public void obtenerPorMes(){ cotizaciones = delegateCotizacion.obtenerPorMes(mesFiltro); }
+    public void obtenerPorMes(){
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+            cotizaciones = cotizacionHelper.obtenerPorMes(mesFiltro);
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerPorMes(loginUI.getUsuario().getId(), mesFiltro);
+        }
+    }
 
     public List<Cotizacion> getCotizaciones() { return cotizaciones; }
 
@@ -181,4 +323,15 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
 
     public Integer getIdCotizacionSeleccionada() { return idCotizacionSeleccionada; }
     public void  setIdCotizacionSeleccionada(Integer idCotizacionSeleccionada) { this.idCotizacionSeleccionada = idCotizacionSeleccionada; }
+
+
+    public boolean isDialogAprobacionContratoVisible() { return dialogAprobacionContratoVisible; }
+    public void setDialogAprobacionContratoVisible(boolean v) { this.dialogAprobacionContratoVisible = v; }
+
+    public String getTextoConfirmacionContrato() { return textoConfirmacionContrato; }
+    public void setTextoConfirmacionContrato(String t) { this.textoConfirmacionContrato = t; }
+
+    public Integer getIdContratoSeleccionado() { return idContratoSeleccionado; }
+    public void setIdContratoSeleccionado(Integer idContratoSeleccionado) { this.idContratoSeleccionado = idContratoSeleccionado; }
+
 }

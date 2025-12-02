@@ -1,7 +1,10 @@
 package ui;
 
+import imf.cels.entity.UsDatosSensible;
+import imf.cels.entity.UsPsswd;
 import imf.cels.entity.Usuario;
 import imf.cels.integration.ServiceFacadeLocator;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -12,7 +15,16 @@ import java.io.Serializable;
 @SessionScoped
 public class RegistroBeanUI implements Serializable {
 
-    private Usuario usuario = new Usuario();
+    private Usuario usuario;
+
+
+    @PostConstruct
+    public void init() {
+        usuario = new Usuario();
+        usuario.setUsDatosSensible(new UsDatosSensible());
+        usuario.setUsPsswd(new UsPsswd());
+    }
+
     //feedback
     public void confirmarRegistro() {
         FacesContext context = FacesContext.getCurrentInstance();
@@ -30,8 +42,8 @@ public class RegistroBeanUI implements Serializable {
                     usuario.getNombre(),
                     usuario.getApellidoPrim(),
                     (usuario.getApellidoSeg() != null ? usuario.getApellidoSeg() : ""),
-                    usuario.getRfc(),
-                    usuario.getEmail()
+                    usuario.getUsDatosSensible().getRfc(),
+                    usuario.getUsDatosSensible().getEmail()
             );
 
             context.addMessage(null,
@@ -42,7 +54,7 @@ public class RegistroBeanUI implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error de validación", ex.getMessage()));
         } catch (Exception e) {
             context.addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error interno", "No se pudo registrar el usuario."));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error interno", e.getMessage()));
         }
     }
 

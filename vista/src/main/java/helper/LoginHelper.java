@@ -6,8 +6,8 @@
 package helper;
 
 
-import imf.cels.integration.ServiceFacadeLocator;
 import imf.cels.entity.Usuario;
+import imf.cels.integration.ServiceFacadeLocator;
 
 import java.io.Serializable;
 

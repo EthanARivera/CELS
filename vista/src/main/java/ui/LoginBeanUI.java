@@ -1,12 +1,15 @@
 package ui;
 
 import helper.LoginHelper;
+import imf.cels.entity.UsDatosSensible;
+import imf.cels.entity.UsPsswd;
+import imf.cels.entity.Usuario;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
-import imf.cels.entity.Usuario;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -16,7 +19,9 @@ public class LoginBeanUI implements Serializable{
     private LoginHelper loginHelper;
     private Usuario usuario;
     private Usuario datosFormulario;
-    
+    private UsDatosSensible usDatosSensible;
+    private UsPsswd usPsswd;
+
     public LoginBeanUI() {
         loginHelper = new LoginHelper();
     }
@@ -28,13 +33,16 @@ public class LoginBeanUI implements Serializable{
     @PostConstruct
     public void init(){
         usuario= null;
-        datosFormulario= new Usuario();
+        datosFormulario = new Usuario();
+        datosFormulario.setUsDatosSensible(new UsDatosSensible());
+        datosFormulario.setUsPsswd(new UsPsswd());
+
     }
 
     public String login() {
         try {
-            String email = datosFormulario.getEmail() != null ? datosFormulario.getEmail().trim() : "";
-            String password = datosFormulario.getPsswd() != null ? datosFormulario.getPsswd().trim() : "";
+            String email = datosFormulario.getUsDatosSensible().getEmail() != null ? datosFormulario.getUsDatosSensible().getEmail().trim() : "";
+            String password = datosFormulario.getUsPsswd().getPsswd() != null ? datosFormulario.getUsPsswd().getPsswd().trim() : "";
 
             if (email.isEmpty() || password.isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage(null,
@@ -59,8 +67,28 @@ public class LoginBeanUI implements Serializable{
             usuario = us;
             setUsuario(usuario);
             datosFormulario = new Usuario();
-            FacesContext.getCurrentInstance().getExternalContext().redirect(
-                    FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/index.xhtml");
+            datosFormulario.setUsDatosSensible(new UsDatosSensible());
+            datosFormulario.setUsPsswd(new UsPsswd());
+            System.out.println("Se inició sesión correctamente con el usuairo: " + usuario.getNombre());
+            Integer tipoUsuario = usuario.getCodigoTipoUsuario();
+            switch (tipoUsuario) {
+                case 0:
+                    FacesContext.getCurrentInstance().getExternalContext().redirect(
+                            FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/indexGerente.xhtml");
+                    break;
+                case 1:
+                    FacesContext.getCurrentInstance().getExternalContext().redirect(
+                            FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/indexVendedor.xhtml");
+                    break;
+                case 2:
+                    FacesContext.getCurrentInstance().getExternalContext().redirect(
+                            FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/indexProductor.xhtml");
+                    break;
+                default:
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                    "Tipo de usuario no asignado.", "Intente de con otro usuario, o asigne el tipo de usuario"));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +106,7 @@ public class LoginBeanUI implements Serializable{
     /* Corroborar que la sesión esté abierta */
     public void verificarSesion() throws IOException{
         FacesContext context = FacesContext.getCurrentInstance();
-        if(usuario==null || usuario.getEmail()==null || usuario.getId()==null){
+        if(usuario==null || usuario.getUsDatosSensible().getEmail()==null || usuario.getId()==null){
             context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath()+"/login.xhtml");
         }
     }
@@ -93,9 +121,9 @@ public class LoginBeanUI implements Serializable{
             return;
         }
 
-        if (usuario != null && usuario.getEmail() != null && usuario.getId() != null) {
+        if (usuario != null && usuario.getUsDatosSensible().getEmail() != null && usuario.getId() != null) {
             context.getExternalContext()
-                    .redirect(context.getExternalContext().getRequestContextPath() + "/index.xhtml");
+                    .redirect(context.getExternalContext().getRequestContextPath() + "/indexGerente.xhtml");
         }
     }
 
@@ -111,7 +139,6 @@ public class LoginBeanUI implements Serializable{
         }
     }
 
-    
     /* getters y setters */
 
     public Usuario getUsuario() {
@@ -129,4 +156,12 @@ public class LoginBeanUI implements Serializable{
     public void setDatosFormulario(Usuario datosFormulario) {
         this.datosFormulario = datosFormulario;
     }
+
+    public UsDatosSensible getUsDatosSensible() { return usDatosSensible; }
+
+    public void setUsDatosSensible(UsDatosSensible usDatosSensible) { this.usDatosSensible = usDatosSensible; }
+
+    public UsPsswd getUsPsswd() { return usPsswd; }
+
+    public void setUsPsswd(UsPsswd usPsswd) { this.usPsswd = usPsswd; }
 }

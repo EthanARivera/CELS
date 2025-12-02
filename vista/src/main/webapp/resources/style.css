@@ -16,7 +16,7 @@
         align-items: center;
         height: 15%;
         justify-content: space-between;
-        background: #F7FF00;
+        background: #FFBB54;
         color: #262F8D;
         padding: 0 20px;
         margin: 0;
@@ -83,6 +83,74 @@
         text-decoration: underline;
     }
 
+    /*  Cartas para los index */
+
+    /* Contenedor general */
+    .card-container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 50px;
+        flex-wrap: wrap;
+    }
+
+    /* Tarjeta principal */
+    .card {
+        width: 280px;
+        height: 380px;
+        background: #ffffff;
+        border-radius: 25px;
+        border: 8px solid #FFBB54;
+        display: flex;
+        text-decoration: none;
+        color: #1a237e; /* azul oscuro */
+        box-shadow: 0 0 6px rgba(0,0,0,0.25);
+        transition: transform .2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.03);
+    }
+
+    /* Contenido interno alineado */
+    .card-content {
+        border: 4px solid #1a237e; /* borde azul interno */
+        border-radius: 20px;
+        width: 100%;
+        height: 100%;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Título */
+    .card-title {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #1a237e;
+        margin-top: 10px;
+    }
+
+    /* Icono */
+    .card-icon {
+        font-size: 6rem !important;
+        color: #1a237e;
+        margin: 20px 0;
+    }
+
+    /* Botón inferior */
+    .card-btn {
+        background: #FFBB54;
+        color: #1a237e;
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+
     /*MENUS DE GESTION*/
 
     .cuerpo-gestores {
@@ -97,7 +165,7 @@
         width: 100% !important;
         border-collapse: collapse !important;
         font-family: 'Segoe UI', sans-serif !important;
-        border: 2px solid #262F8D !important;
+        border: 1px solid #404040 !important;
         border-radius: 8px !important;
         overflow: hidden !important;
         background-color: #f8f9fa !important;
@@ -105,7 +173,7 @@
 
     /* === Cabecera de la tabla === */
     body .custom-table-skin .user-table .p-datatable-thead > tr > th {
-        background-color: #262F8D !important;
+        background-color: #404040 !important;
         color: #ffffff !important;
         text-align: center !important;
         font-weight: bold !important;
@@ -163,7 +231,7 @@
         left: 0;
         width: 100%;
         height: 15%;
-        background: yellow;
+        background: #FFBB54;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         padding-top: 0;
         margin: 0;
@@ -180,7 +248,7 @@
         left: 0;
         width: 100%;
         height: 15%;
-        background: yellow;
+        background: #FFBB54;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         padding-top: 0;
         margin: 0;
@@ -194,7 +262,7 @@
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        color: yellow !important;
+        color: #FFBB54 !important;
     }
 
     .menu .ui-icon,
@@ -222,7 +290,7 @@
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        color: yellow !important;
+        color: #FFBB54 !important;
     }
 
     .menuin.ui-button:hover {
@@ -357,7 +425,7 @@
 
     body a:hover,
     body .ui-link:hover {
-        color: yellow !important;
+        color: #262F8D !important;
     }
 
     .headerprin .link-btn .pi {
@@ -400,20 +468,20 @@
     /*Paginación de tablas*/
     body .ui-paginator,
     body .p-paginator {
-        background: #f8f9fa !important;
-        border: 1px solid #262F8D !important;
+        background: #404040 !important;
+        border: 1px solid #FFFFFF !important;
         border-radius: 0 0 10px 10px !important;
     }
 
     body .ui-paginator-page.ui-state-active,
     body .p-paginator-page.p-highlight {
-        background: #262F8D !important;
+        background: #404040 !important;
         color: #fff !important;
     }
 
     body .ui-paginator-page:hover,
     body .p-paginator-page:hover {
-        background: #1f2575 !important;
+        background: #404040 !important;
         color: #fff !important;
     }
 
@@ -456,7 +524,7 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    color: yellow !important; /* Cambia este color al que quieras */
+    color: #FFBB54 !important; /* Cambia este color al que quieras */
 }
 
 /* Si el botón tiene ícono (como el pi-bars), ajustamos el color del ícono */
@@ -480,7 +548,7 @@
 
 /*-----------------------------------------------------------------------------*/
 body {
-    background-color: #262F8D;
+    background-color: #454545;
     font-family: Tahoma, Verdana, Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -489,8 +557,8 @@ body {
 /* 🔹 Header bar */
 .header-bar {
     margin-top: 25px;
-    background-color: #F7FF00;
-    color: #262F8D;
+    background-color: #FFBB54;
+    color: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -546,7 +614,6 @@ body {
 .form-row .form-control {
     flex: 1;
     font-size: 15px;
-    padding: 10px;
     box-sizing: border-box;
 }
 
@@ -626,8 +693,6 @@ body {
         width: 100%;
         height: 38px;
         border-radius: 6px;
-        border: 1px solid #ccc;
-        padding-left: 10px;
         font-size: 15px;
     }
 
@@ -690,7 +755,6 @@ body {
     .ui-selectonemenu-label {
         color: #555 !important;
         font-size: 15px !important;
-        padding-left: 10px !important;
     }
 
     /*Resalta el campo en error */
@@ -885,7 +949,7 @@ body {
     }
 
     .cotizacion-page .btn-mat:hover {
-        background-color: #1e2474 !important;
+        background-color: #404040 !important;
     }
 
     /* === SECCIONN DE CALCULO DE MANO DE OBRA ===*/

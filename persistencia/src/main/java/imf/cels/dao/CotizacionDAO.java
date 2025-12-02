@@ -3,12 +3,24 @@ package imf.cels.dao;
 import imf.cels.entity.Cotizacion;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.persistence.AbstractDAO;
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import jakarta.persistence.EntityManager;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 
 public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     private final EntityManager entityManager;
@@ -65,6 +77,61 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
                 .createQuery("SELECT DISTINCT MONTH(c.fecha) FROM Cotizacion c ORDER BY MONTH(c.fecha)", Integer.class)
                 .getResultList();
     }
+
+    // Mismos métodos para la búsqueda pero del usuario vendedor
+
+    public List<Cotizacion> obtenerTodosPorFecha(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY c.fecha DESC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    public List<Cotizacion> obtenerPorFolio(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY c.id ASC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    public List<Cotizacion> obtenerPorAnio(Integer idUsuario, int anio) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND YEAR(c.fecha) = :anio ORDER BY c.fecha DESC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .setParameter("anio", anio)
+                .getResultList();
+    }
+
+    public List<Cotizacion> obtenerPorMes(Integer idUsuario, int mes) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND MONTH(c.fecha) = :mes ORDER BY c.fecha DESC", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .setParameter("mes", mes)
+                .getResultList();
+    }
+
+    public List<Cotizacion> buscarPorId(Integer idUsuario, int id) {
+        return entityManager
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.id = :id AND c.idUsuario.id = :idUsuario", Cotizacion.class)
+                .setParameter("idUsuario", idUsuario)
+                .setParameter("id", id)
+                .getResultList();
+    }
+
+    public List<Integer> obtenerAniosDisponibles(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT DISTINCT YEAR(c.fecha) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY YEAR(c.fecha) DESC", Integer.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    public List<Integer> obtenerMesesDisponibles(Integer idUsuario) {
+        return entityManager
+                .createQuery("SELECT DISTINCT MONTH(c.fecha) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY MONTH(c.fecha)", Integer.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
 
 
     //Registro de cotizaciones
@@ -137,7 +204,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
             throw new IllegalArgumentException("No se encontró la cotización con el folio especificado.");
         }
 
-        if (Boolean.TRUE.equals(cotizacion.getisCotizacionAprobado())) {
+        if (Boolean.TRUE.equals(cotizacion.getisCotizacionAprobada())) {
             throw new IllegalStateException("La cotización ya fue aprobada y no puede desaprobarse.");
         }
 
@@ -147,7 +214,37 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         });*/
         try {
             entityManager.getTransaction().begin();
-            cotizacion.setisCotizacionAprobado(true);
+            cotizacion.setIsCotizacionAprobada(true);
+            entityManager.merge(cotizacion);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw e;
+        }
+    }
+
+
+    // Aprobación de Contrato
+    public void aprobarContrato(Integer idFolio) {
+        Cotizacion cotizacion = entityManager.find(Cotizacion.class, idFolio);
+
+        if (cotizacion == null) {
+            throw new IllegalArgumentException("No se encontró el contrato con el folio especificado.");
+        }
+
+        if (Boolean.TRUE.equals(cotizacion.getisContratoAprobado())) {
+            throw new IllegalStateException("El contrato ya fue aprobada y no puede desaprobarse.");
+        }
+
+        /*executeInsideTransaction(em -> {
+            cotizacion.setAprobado(true);
+            em.merge(cotizacion);
+        });*/
+        try {
+            entityManager.getTransaction().begin();
+            cotizacion.setisContratoAprobado(true);
             entityManager.merge(cotizacion);
             entityManager.getTransaction().commit();
         } catch (Exception e) {

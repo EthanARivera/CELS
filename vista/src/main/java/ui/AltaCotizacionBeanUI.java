@@ -54,7 +54,7 @@ public class AltaCotizacionBeanUI implements Serializable {
     // Datos principales
     private Cotizacion cotizacion;
 
-    // ===== PARA ACTUALIZAR (PBI-CO-US13) =====
+    // Variables para PBI-CO-US13
     private boolean modoActualizar = false;
     private Integer idCotizacionOriginal;
     private Cotizacion cotizacionOriginal;

@@ -58,7 +58,7 @@
             <div class="form-row">
                 <label>RFC:</label>
                 <p:inputText styleClass="form-control" placeholder="XXXXXXXXXXXXX"
-                             value="#{registroUI.usuario.rfc}" required="true"
+                             value="#{registroUI.usuario.usDatosSensible.rfc}" required="true"
                              requiredMessage="El RFC es obligatorio"/>
             </div>
 
@@ -66,15 +66,25 @@
             <div class="form-row">
                 <label>Correo Electrónico:</label>
                 <p:inputText styleClass="form-control" placeholder="usuario@gmail.com"
-                             value="#{registroUI.usuario.email}" required="true"
+                             value="#{registroUI.usuario.usDatosSensible.email}" required="true"
                              requiredMessage="El correo es obligatorio"/>
+            </div>
+
+            <!-- Tipo de Usuario -->
+            <div class="form-row">
+                <label>Tipo de Usuario:</label>
+                <p:selectOneMenu value="#{registroUI.usuario.codigoTipoUsuario}" styleClass="form-control" required="true">
+                    <f:selectItem itemValue="0" itemLabel="Gerente" />
+                    <f:selectItem itemValue="1" itemLabel="Vendedor" />
+                    <f:selectItem itemValue="2" itemLabel="Productor" />
+                </p:selectOneMenu>
             </div>
 
             <!-- Contraseña -->
             <div class="form-row">
                 <label>Contraseña:</label>
                 <p:password styleClass="form-control" placeholder="Contraseña"
-                            value="#{registroUI.usuario.psswd}" required="true"
+                            value="#{registroUI.usuario.usPsswd.psswd}" required="true"
                             requiredMessage="La contraseña es obligatoria"/>
             </div>
 

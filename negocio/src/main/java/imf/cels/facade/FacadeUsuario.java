@@ -19,7 +19,7 @@ public class FacadeUsuario {
     }
 
     public void saveUsario(Usuario usuario){
-        if (usuario.getPsswd() == null || usuario.getPsswd().isEmpty() || usuario.getPsswd().equals("1")) {
+        if (usuario.getUsPsswd().getPsswd() == null || usuario.getUsPsswd().getPsswd().isEmpty() || usuario.getUsPsswd().getPsswd().equals("1")) {
             throw new IllegalArgumentException("Contraseña inválida: no se puede guardar valor vacío o '1'");
         }
         ServiceLocator.getInstanceUsuarioDAO().save(usuario);

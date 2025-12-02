@@ -103,22 +103,24 @@
                 </p:column>
 
                 <p:column headerText="RFC">
-                    <h:outputText value="#{usuario.rfc}" />
+                    <h:outputText value="#{usuario.usDatosSensible.rfc}" />
                 </p:column>
 
                 <p:column headerText="Correo Electrónico">
-                    <h:outputText value="#{usuario.email}" />
+                    <h:outputText value="#{usuario.usDatosSensible.email}" />
                 </p:column>
 
                 <p:column headerText="Acciones" style="width:100px; text-align:center;">
                     <div class="action-buttons">
                         <!-- Modificacion: abre diálogo -->
+
                         <p:commandButton icon="pi pi-pencil"
                                          title="Editar"
                                          styleClass="ui-button-flat pencil-icon"
                                          actionListener="#{usuarioBean.setUsuarioSeleccionado(usuario)}"
-                                         update=":formDialog:editDialogForm"
+                                         update=":formDialog"
                                          oncomplete="PF('dlgEditar').show()"/>
+
                         <p:commandButton icon="pi pi-times"
                                          title="Activar/Desactivar"
                                          styleClass="ui-button-flat delete-icon"
@@ -147,11 +149,11 @@
                 <p:messages id="msgs" autoUpdate="true"/>
 
                 <h:outputLabel for="email" value="Correo Electrónico:"/>
-                <p:inputText id="email" value="#{usuarioBean.usuarioSeleccionado.email}"
+                <p:inputText id="email" value="#{usuarioBean.usuarioSeleccionado.usDatosSensible.email}"
                              placeholder="Correo electrónico" required="true"/>
 
                 <h:outputLabel for="psswd" value="Contraseña:"/>
-                <p:password id="psswd" value="#{usuarioBean.usuarioSeleccionado.psswd}"
+                <p:password id="psswd" value="#{usuarioBean.usuarioSeleccionado.usPsswd.psswd}"
                             placeholder="Contraseña" feedback="true" required="true"/> <!-- feedback: if its weak or strong password -->
 
                 <div style="margin-top:10px;">

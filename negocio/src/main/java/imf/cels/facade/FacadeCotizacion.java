@@ -19,6 +19,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import java.io.ByteArrayOutputStream;
 
 //Imports para la generación y edicion del XML
+import imf.cels.entity.CotizacionMaterial;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
 
@@ -147,10 +148,16 @@ public class FacadeCotizacion {
 
     private void privateEnviarCorreo(String asunto, String cuerpo, byte[] adjuntoPdfBytes, String nombrePdf, byte[] adjuntoXmlBytes, String nombreXml) throws MessagingException {
 
-        final String remitente = "CorreoUABC@uabc.edu.mx";
-        final String psswd = "XXXX XXXX XXXX XXXX";
+        // Ejemplo
+        // final String remitente = "luis.cedillo@uabc.edu.mx";
+        // final String psswd = "zdsv woaa azxy adrg";
 
-        final String destinatario = "CORREO@gmail.com";
+        // final String destinatario = "lfcedillocamacho@gmail.com";
+
+        final String remitente = "CORREO";
+        final String psswd = "CONTRASEÑA APLICACION";
+
+        final String destinatario = "CORREO";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -198,7 +205,6 @@ public class FacadeCotizacion {
         System.out.println("Mensaje enviado correctamente a " + destinatario);
     }
 
-
     public void enviarCotizacionPorCorreo(Integer idCotizacion) throws Exception{
 
         //Obtención de datos
@@ -227,7 +233,14 @@ public class FacadeCotizacion {
 
     public void aprobarCotizacion(Integer idFolio) {delegateCotizacion.aprobarCotizacion(idFolio);} // PBI-CO-US18
 
-    //actualización de cotización
+    public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
+        return delegateCotizacion.enviarContratoPorCorreo(idCotizacion);
+    }
+
+    public void aprobarContrato(Integer idFolio) {delegateCotizacion.aprobarContrato(idFolio);} // PBI-CO-US20
+
+
+    //PBI-CO-US13
     public Cotizacion buscarPorIdUnico(int id) {
         return delegateCotizacion.buscarPorIdUnico(id);
     }

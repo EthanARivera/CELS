@@ -31,8 +31,6 @@ let contadorMDO = 1;
 let manoDeObraItems = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Solo cargamos el catálogo aquí.
-    // La carga de la edición la manejamos desde el script del XHTML
     cargarCatalogo();
 });
 

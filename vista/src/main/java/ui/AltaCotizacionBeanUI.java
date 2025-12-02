@@ -597,7 +597,17 @@ public class AltaCotizacionBeanUI implements Serializable {
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
-        try {
+        try { //Valida si hay cambios
+            // Si el metodo devuelve false (no hay cambios), mostramos aviso y nos salimos.
+            if (!hayCambios()) {
+                ctx.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Sin Cambios",
+                        "No ha realizado ninguna modificación respecto a la cotización original. No se creó una nueva versión."
+                ));
+                return;
+            }
+
             reconstruirDesdeJsonTablaMateriales();
             reconstruirDesdeJsonTablaManoObra();
 
@@ -660,6 +670,17 @@ public class AltaCotizacionBeanUI implements Serializable {
                 cotizacionHelper.saveCotizacionManoDeObra(moNuevo);
             }
 
+            //Para que no deje guaradar una actualizacion sin cambios en la misma vista
+            //Actualizamos la vista con la cotización nueva (para que tenga el ID nuevo)
+            this.cotizacion = nueva;
+
+            // Actualizamos la referencia "Original"
+            // Ahora la "Original" es esta nueva que acabamos de crear.
+            // Si das clic otra vez en guardar, el sistema comparará "Nueva vs Nueva"
+            this.idCotizacionOriginal = nueva.getId();
+
+            this.cotizacionOriginal = cotizacionHelper.obtenerCotizacionPorId(this.idCotizacionOriginal);
+
             ctx.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_INFO,
                     "Actualización exitosa",
@@ -675,6 +696,67 @@ public class AltaCotizacionBeanUI implements Serializable {
             ));
         }
     }
+
+    // --- METODO PARA DETECTAR SI HUBO CAMBIOS REALES ---
+    private boolean hayCambios() {
+        // IMPORTANTE: Actualizamos los datos de memoria con lo que hay en pantalla (JSONs)
+        reconstruirDesdeJsonTablaMateriales();
+        reconstruirDesdeJsonTablaManoObra();
+        aplicarGanancia(); // Recalcula el precioFinal basado en los nuevos datos
+
+        // Comparar Encabezados (Cliente, Descripcion, Tipo)
+        // Usamos !equals para ver si son DIFERENTES.
+        if (!cotizacion.getCliente().trim().equals(cotizacionOriginal.getCliente().trim())) return true;
+        if (!cotizacion.getDescripcion().trim().equals(cotizacionOriginal.getDescripcion().trim())) return true;
+        if (tipoProyecto != cotizacionOriginal.getTipoProyecto()) return true;
+
+        // Comparar Totales (Si cambió el precio final, algo cambió)
+        // Usamos compareTo != 0 porque BigDecimal no siempre funciona bien con equals()
+        if (precioFinal.compareTo(cotizacionOriginal.getPrecioFinal()) != 0) return true;
+
+        // Comparar Cantidad de elementos (Si antes había 3 materiales y ahora hay 2)
+        if (listaMateriales.size() != cotizacionOriginal.getCotizacionMateriales().size()) return true;
+        if (listaManoDeObra.size() != cotizacionOriginal.getCotizacionManoDeObras().size()) return true;
+
+        // Comparación profunda de Materiales (Contenido)
+        // Verificamos si para cada material nuevo, existe uno idéntico en la original
+        for (CotizacionMaterial nuevo : listaMateriales) {
+            boolean matchEncontrado = false;
+
+            for (CotizacionMaterial original : cotizacionOriginal.getCotizacionMateriales()) {
+                // Comparamos IDs de material
+                if (nuevo.getIdMaterial().getId().equals(original.getIdMaterial().getId())) {
+                    // Si es el mismo material, verificamos la cantidad
+                    if (nuevo.getCantidad().compareTo(original.getCantidad()) == 0) {
+                        matchEncontrado = true;
+                    }
+                    break; // Ya encontramos el material, dejamos de buscar en la original
+                }
+            }
+            // Si recorrimos toda la lista original y no encontramos un match exacto quiere decir que hubo cambio
+            if (!matchEncontrado) return true;
+        }
+
+        // Comparación profunda de Mano de Obra
+        for (CotizacionManoDeObra nuevo : listaManoDeObra) {
+            boolean matchEncontrado = false;
+
+            for (CotizacionManoDeObra original : cotizacionOriginal.getCotizacionManoDeObras()) {
+                // Aquí comparamos Costo y Horas (ya que los IDs de fila pueden variar o regenerarse)
+                // Si el costo O las horas son diferentes, no es el mismo registro.
+                if (nuevo.getCostoHora().compareTo(original.getCostoHora()) == 0 &&
+                        nuevo.getCantidadHoras().compareTo(original.getCantidadHoras()) == 0) {
+                    matchEncontrado = true;
+                    break;
+                }
+            }
+            if (!matchEncontrado) return true;
+        }
+
+        // Si pasó todas las pruebas y no retornó true, significa que es IDÉNTICA.
+        return false;
+    }
+
 
 
     // GETTERS Y SETTERS

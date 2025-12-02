@@ -103,4 +103,10 @@ public class DelegateCotizacion {
     public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
         return cotizacionDAO.enviarContratoPorCorreo(idCotizacion);
     }
+
+    //actualización de cotización PBI-CO-US13
+    public Cotizacion buscarPorIdUnico(int id) {
+        return ServiceLocator.getInstanceCotizacionDAO().buscarPorIdUnico(id);
+    }
+
 }

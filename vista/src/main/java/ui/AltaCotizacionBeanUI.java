@@ -53,6 +53,12 @@ public class AltaCotizacionBeanUI implements Serializable {
 
     // Datos principales
     private Cotizacion cotizacion;
+
+    // ===== PARA ACTUALIZAR (PBI-CO-US13) =====
+    private boolean modoActualizar = false;
+    private Integer idCotizacionOriginal;
+    private Cotizacion cotizacionOriginal;
+
     private Usuario usuarioActivo;
     private TipoProyecto tipoProyecto;
     private TipoProyecto[] tiposProyecto = TipoProyecto.values();
@@ -79,9 +85,9 @@ public class AltaCotizacionBeanUI implements Serializable {
     private String manoObraSeleccionada;
 
     // INIT
+    // INIT ORIGINAL
 
-
-    @PostConstruct
+  /*  @PostConstruct
     public void init() {
 
         // Construimos el Gson personalizado
@@ -111,13 +117,90 @@ public class AltaCotizacionBeanUI implements Serializable {
         cargarCatalogoMateriales();
         jsonTablaMateriales = "[]";
         jsonTablaManoObra = "[]";
+    }*/
+
+    //Init
+    @PostConstruct
+    public void init() {
+
+        // Construimos el Gson personalizado
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .create();
+
+        try {
+            loginUI.verificarSesion();
+            usuarioActivo = loginUI.getUsuario();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Usuario activo: " + usuarioActivo);
+
+        //      DETECTAR SI VENIMOS DE "Actualizar"
+        try {
+            String idParam = FacesContext.getCurrentInstance()
+                    .getExternalContext()
+                    .getRequestParameterMap()
+                    .get("idCotizacion");
+
+            if (idParam != null && !idParam.trim().isEmpty()) {
+
+                modoActualizar = true;
+                idCotizacionOriginal = Integer.parseInt(idParam);
+
+                // Traer cotización original desde DB
+                cotizacionOriginal = cotizacionHelper.obtenerCotizacionPorId(idCotizacionOriginal);
+
+                // Crear una cotización NUEVA
+                cotizacion = new Cotizacion();
+                cotizacion.setFecha(LocalDate.now());
+                cotizacion.setIdUsuario(usuarioActivo);
+
+                listaMateriales = new ArrayList<>();
+                listaManoDeObra = new ArrayList<>();
+                materialesSeleccionados = new ArrayList<>();
+
+                cargarCatalogoMateriales();
+
+                // Rellenar campos
+                cargarDatosEnPantalla(cotizacionOriginal);
+
+                return; // IMPORTANTE (no ejecuta el init normal)
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            modoActualizar = false;
+        }
+
+
+        //      FLUJO NORMAL (NUEVA COTIZACIÓN)
+        cotizacion = new Cotizacion();
+        cotizacion.setFecha(LocalDate.now());
+        cotizacion.setIdUsuario(usuarioActivo);
+        cotizacion.setCotizacionMateriales(new LinkedHashSet<>());
+        cotizacion.setCotizacionManoDeObras(new LinkedHashSet<>());
+
+        listaMateriales = new ArrayList<>();
+        materialesSeleccionados = new ArrayList<>();
+        listaManoDeObra = new ArrayList<>();
+
+        cargarCatalogoMateriales();
+        jsonTablaMateriales = "[]";
+        jsonTablaManoObra = "[]";
     }
+
 
     // CARGA DE NOMBRE DE USUARIO EN SESION Y FECHA
 
-    public String obtenerNombreUsuarioEnSesion() { return loginUI.obtenerNombreUsuarioEnSesion(); }
+    public String obtenerNombreUsuarioEnSesion() {
+        return loginUI.obtenerNombreUsuarioEnSesion();
+    }
 
-    public LocalDate obtenerFechaDeCotizacion() { return LocalDate.now(); }
+    public LocalDate obtenerFechaDeCotizacion() {
+        return LocalDate.now();
+    }
 
     // CARGA CATÁLOGO
 
@@ -138,14 +221,14 @@ public class AltaCotizacionBeanUI implements Serializable {
     }
 
 
-
     // RECONSTRUIR DESDE JSON
 
     public void reconstruirDesdeJsonTablaMateriales() {
         try {
             System.out.println("JSON Tabla Materiales (bean): " + jsonTablaMateriales);
 
-            Type type = new TypeToken<List<MaterialFila>>() {}.getType();
+            Type type = new TypeToken<List<MaterialFila>>() {
+            }.getType();
             List<MaterialFila> filas = gson.fromJson(jsonTablaMateriales, type);
 
             listaMateriales.clear();
@@ -190,7 +273,8 @@ public class AltaCotizacionBeanUI implements Serializable {
 
             System.out.println("JSON Tabla ManoObra (bean): " + jsonTablaManoObra);
 
-            Type listType = new TypeToken<List<CotizacionManoObraDTO>>() {}.getType();
+            Type listType = new TypeToken<List<CotizacionManoObraDTO>>() {
+            }.getType();
             List<CotizacionManoObraDTO> dtoList = gson.fromJson(jsonTablaManoObra, listType);
 
             listaManoDeObra.clear();
@@ -237,9 +321,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         reconstruirDesdeJsonTablaMateriales();
         recalcularTotales();
     }
- 
+
     // RECÁLCULOS
- 
+
 
     public void recalcularTotales() {
         totalMateriales = BigDecimal.ZERO;
@@ -271,11 +355,17 @@ public class AltaCotizacionBeanUI implements Serializable {
         precioFinal = costoBruto.multiply(multiplicador);
     }
 
- 
+
     // REGISTRAR COTIZACIÓN
 
 
     public void registrarCotizacion() {
+
+        // Detecta si es actualización PBI-CO-US13
+        if (modoActualizar) {
+            registrarCotizacionComoNuevaVersion();
+            return;
+        }
 
         FacesContext ctx = FacesContext.getCurrentInstance();
 
@@ -366,9 +456,9 @@ public class AltaCotizacionBeanUI implements Serializable {
             ));
         }
     }
- 
+
     // DTO PARA JSON
- 
+
 
     @Data
     public static class MaterialFila {
@@ -378,9 +468,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         private BigDecimal subtotal;
     }
 
- 
+
     // AUTOCOMPLETE CON FILTRO
- 
+
 
     public List<Material> buscarMateriales(String nombre) {
 
@@ -404,9 +494,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         return filtrados;
     }
 
- 
+
     // RESPONSE JSON DIRECTO
- 
+
 
     public void buscar() throws IOException {
 
@@ -427,9 +517,9 @@ public class AltaCotizacionBeanUI implements Serializable {
         context.responseComplete();
     }
 
- 
+
     // ADAPTADOR PARA LOCALDATE
- 
+
 
     public static class LocalDateAdapter extends TypeAdapter<LocalDate> {
 
@@ -444,32 +534,303 @@ public class AltaCotizacionBeanUI implements Serializable {
         }
     }
 
+    //  AQUÍ COMIENZAN LAS FUNCIONES PARA PBI-CO-US13
+    private void cargarDatosEnPantalla(Cotizacion c) {
+        try {
+            // Cmpos simples
+            cotizacion.setCliente(c.getCliente());
+            cotizacion.setDescripcion(c.getDescripcion());
+            cotizacion.setFecha(c.getFecha());
+            tipoProyecto = c.getTipoProyecto();
+
+            // Materiales
+            listaMateriales = new ArrayList<>();
+            List<MaterialFila> filasMat = new ArrayList<>();
+
+            for (CotizacionMaterial cm : c.getCotizacionMateriales()) {
+
+                listaMateriales.add(cm); // para backend
+
+                MaterialFila fila = new MaterialFila();
+                fila.setIdMaterial(cm.getIdMaterial().getId());
+                fila.setCantidad(cm.getCantidad());
+                fila.setCosto(cm.getIdMaterial().getCosto());
+                fila.setSubtotal(cm.getSubtotal());
+
+                filasMat.add(fila);
+            }
+
+            jsonTablaMateriales = gson.toJson(filasMat);
+
+
+            // Mano de obra
+            listaManoDeObra = new ArrayList<>();
+            List<CotizacionManoObraDTO> filasMo = new ArrayList<>();
+
+            for (CotizacionManoDeObra mo : c.getCotizacionManoDeObras()) {
+
+                listaManoDeObra.add(mo); // para backend
+
+                CotizacionManoObraDTO dto = new CotizacionManoObraDTO();
+                dto.setNumResponsable(mo.getId().getNumResponsable());
+                dto.setCostoHora(mo.getCostoHora());
+                dto.setCantidadHoras(mo.getCantidadHoras());
+                dto.setSubtotal(mo.getSubtotal());
+
+                filasMo.add(dto);
+            }
+
+            jsonTablaManoObra = gson.toJson(filasMo);
+
+
+            // Recalculo de totales
+            recalcularTotales();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    // Para registrar la nueva versión
+    private void registrarCotizacionComoNuevaVersion() {
+
+        FacesContext ctx = FacesContext.getCurrentInstance();
+
+        try { //Valida si hay cambios
+            // Si el metodo devuelve false (no hay cambios), mostramos aviso y nos salimos.
+            if (!hayCambios()) {
+                ctx.addMessage(null, new FacesMessage(
+                        FacesMessage.SEVERITY_WARN,
+                        "Sin Cambios",
+                        "No ha realizado ninguna modificación respecto a la cotización original. No se creó una nueva versión."
+                ));
+                return;
+            }
+
+            reconstruirDesdeJsonTablaMateriales();
+            reconstruirDesdeJsonTablaManoObra();
+
+            aplicarGanancia();
+
+            Cotizacion nueva = new Cotizacion();
+            nueva.setCliente(cotizacion.getCliente());
+            nueva.setDescripcion(cotizacion.getDescripcion());
+            nueva.setFecha(LocalDate.now());
+            nueva.setIdUsuario(usuarioActivo);
+            nueva.setTipoProyecto(tipoProyecto);
+            nueva.setPrecioFinal(precioFinal);
+
+            cotizacionHelper.saveCotizacion(nueva);
+
+            Integer idFolio = nueva.getId();
+
+            // Guardar materiales
+            for (CotizacionMaterial cmViejito : listaMateriales) {
+
+                // Creamos un objeto 100% NUEVO
+                CotizacionMaterial cmNuevo = new CotizacionMaterial();
+
+                // Creamos su ID
+                CotizacionMaterialId pk = new CotizacionMaterialId();
+                pk.setIdFolio(idFolio);
+                pk.setIdMaterial(cmViejito.getIdMaterial().getId());
+
+                // Llenamos el objeto nuevo con los datos del viejito
+                cmNuevo.setId(pk);
+                cmNuevo.setIdMaterial(cmViejito.getIdMaterial());
+                cmNuevo.setCantidad(cmViejito.getCantidad());
+                cmNuevo.setSubtotal(cmViejito.getSubtotal());
+                cmNuevo.setIdFolio(nueva); // Lo amarramos a la cotización nueva
+
+                cotizacionHelper.saveCotizacionMaterial(cmNuevo);
+            }
+
+            // Guardar mano de obra
+            for (CotizacionManoDeObra moViejito : listaManoDeObra) {
+
+                // Creamos un objeto 100% NUEVO
+                CotizacionManoDeObra moNuevo = new CotizacionManoDeObra();
+
+                // Creamos su ID
+                CotizacionManoDeObraId pk = new CotizacionManoDeObraId();
+                pk.setIdFolio(idFolio);
+
+                // Numero de responsable
+                int numResp = (moViejito.getId() != null) ? moViejito.getId().getNumResponsable() : 0;
+                pk.setNumResponsable(numResp);
+
+                // Llenamos el objeto nuevo con los datos del viejito
+                moNuevo.setId(pk);
+                moNuevo.setCostoHora(moViejito.getCostoHora());
+                moNuevo.setCantidadHoras(moViejito.getCantidadHoras());
+                moNuevo.setSubtotal(moViejito.getSubtotal());
+                moNuevo.setIdFolio(nueva); // Lo amarramos a la cotización nueva
+
+                cotizacionHelper.saveCotizacionManoDeObra(moNuevo);
+            }
+
+            //Para que no deje guaradar una actualizacion sin cambios en la misma vista
+            //Actualizamos la vista con la cotización nueva (para que tenga el ID nuevo)
+            this.cotizacion = nueva;
+
+            // Actualizamos la referencia "Original"
+            // Ahora la "Original" es esta nueva que acabamos de crear.
+            // Si das clic otra vez en guardar, el sistema comparará "Nueva vs Nueva"
+            this.idCotizacionOriginal = nueva.getId();
+
+            this.cotizacionOriginal = cotizacionHelper.obtenerCotizacionPorId(this.idCotizacionOriginal);
+
+            ctx.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Actualización exitosa",
+                    "Se creó una nueva versión de la cotización con el folio " + idFolio
+            ));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error",
+                    "No se pudo crear la nueva versión."
+            ));
+        }
+    }
+
+    // --- METODO PARA DETECTAR SI HUBO CAMBIOS REALES ---
+    private boolean hayCambios() {
+        // IMPORTANTE: Actualizamos los datos de memoria con lo que hay en pantalla (JSONs)
+        reconstruirDesdeJsonTablaMateriales();
+        reconstruirDesdeJsonTablaManoObra();
+        aplicarGanancia(); // Recalcula el precioFinal basado en los nuevos datos
+
+        // Comparar Encabezados (Cliente, Descripcion, Tipo)
+        // Usamos !equals para ver si son DIFERENTES.
+        if (!cotizacion.getCliente().trim().equals(cotizacionOriginal.getCliente().trim())) return true;
+        if (!cotizacion.getDescripcion().trim().equals(cotizacionOriginal.getDescripcion().trim())) return true;
+        if (tipoProyecto != cotizacionOriginal.getTipoProyecto()) return true;
+
+        // Comparar Totales (Si cambió el precio final, algo cambió)
+        // Usamos compareTo != 0 porque BigDecimal no siempre funciona bien con equals()
+        if (precioFinal.compareTo(cotizacionOriginal.getPrecioFinal()) != 0) return true;
+
+        // Comparar Cantidad de elementos (Si antes había 3 materiales y ahora hay 2)
+        if (listaMateriales.size() != cotizacionOriginal.getCotizacionMateriales().size()) return true;
+        if (listaManoDeObra.size() != cotizacionOriginal.getCotizacionManoDeObras().size()) return true;
+
+        // Comparación profunda de Materiales (Contenido)
+        // Verificamos si para cada material nuevo, existe uno idéntico en la original
+        for (CotizacionMaterial nuevo : listaMateriales) {
+            boolean matchEncontrado = false;
+
+            for (CotizacionMaterial original : cotizacionOriginal.getCotizacionMateriales()) {
+                // Comparamos IDs de material
+                if (nuevo.getIdMaterial().getId().equals(original.getIdMaterial().getId())) {
+                    // Si es el mismo material, verificamos la cantidad
+                    if (nuevo.getCantidad().compareTo(original.getCantidad()) == 0) {
+                        matchEncontrado = true;
+                    }
+                    break; // Ya encontramos el material, dejamos de buscar en la original
+                }
+            }
+            // Si recorrimos toda la lista original y no encontramos un match exacto quiere decir que hubo cambio
+            if (!matchEncontrado) return true;
+        }
+
+        // Comparación profunda de Mano de Obra
+        for (CotizacionManoDeObra nuevo : listaManoDeObra) {
+            boolean matchEncontrado = false;
+
+            for (CotizacionManoDeObra original : cotizacionOriginal.getCotizacionManoDeObras()) {
+                // Aquí comparamos Costo y Horas (ya que los IDs de fila pueden variar o regenerarse)
+                // Si el costo O las horas son diferentes, no es el mismo registro.
+                if (nuevo.getCostoHora().compareTo(original.getCostoHora()) == 0 &&
+                        nuevo.getCantidadHoras().compareTo(original.getCantidadHoras()) == 0) {
+                    matchEncontrado = true;
+                    break;
+                }
+            }
+            if (!matchEncontrado) return true;
+        }
+
+        // Si pasó todas las pruebas y no retornó true, significa que es IDÉNTICA.
+        return false;
+    }
+
+
 
     // GETTERS Y SETTERS
- 
 
-    public String getJsonMateriales() { return jsonMateriales; }
-    public void setJsonMateriales(String jsonMateriales) { this.jsonMateriales = jsonMateriales; }
-    public String getJsonTablaMateriales() { return jsonTablaMateriales; }
-    public void setJsonTablaMateriales(String jsonTablaMateriales) { this.jsonTablaMateriales = jsonTablaMateriales; }
 
-    public String getJsonTablaManoObra() { return jsonTablaManoObra; }
-    public void setJsonTablaManoObra(String jsonTablaManoObra) { this.jsonTablaManoObra = jsonTablaManoObra; }
+    public String getJsonMateriales() {
+        return jsonMateriales;
+    }
 
-    public BigDecimal getTotalMateriales() { return totalMateriales; }
-    public BigDecimal getTotalManoDeObra() { return totalManoDeObra; }
-    public BigDecimal getCostoBruto() { return costoBruto; }
-    public BigDecimal getPrecioFinal() { return precioFinal; }
-    public BigDecimal getGananciaPercent() { return gananciaPercent; }
-    public void setGananciaPercent(BigDecimal gananciaPercent) { this.gananciaPercent = gananciaPercent; }
+    public void setJsonMateriales(String jsonMateriales) {
+        this.jsonMateriales = jsonMateriales;
+    }
 
-    public Cotizacion getCotizacion() { return cotizacion; }
-    public void setCotizacion(Cotizacion cotizacion) { this.cotizacion = cotizacion; }
+    public String getJsonTablaMateriales() {
+        return jsonTablaMateriales;
+    }
 
-    public TipoProyecto getTipoProyecto() { return tipoProyecto; }
-    public void setTipoProyecto(TipoProyecto tipoProyecto) { this.tipoProyecto = tipoProyecto; }
+    public void setJsonTablaMateriales(String jsonTablaMateriales) {
+        this.jsonTablaMateriales = jsonTablaMateriales;
+    }
 
-    public TipoProyecto[] getTiposProyecto() { return tiposProyecto; }
-    public void setTiposProyecto(TipoProyecto[] tiposProyecto) { this.tiposProyecto = tiposProyecto; }
+    public String getJsonTablaManoObra() {
+        return jsonTablaManoObra;
+    }
+
+    public void setJsonTablaManoObra(String jsonTablaManoObra) {
+        this.jsonTablaManoObra = jsonTablaManoObra;
+    }
+
+    public BigDecimal getTotalMateriales() {
+        return totalMateriales;
+    }
+
+    public BigDecimal getTotalManoDeObra() {
+        return totalManoDeObra;
+    }
+
+    public BigDecimal getCostoBruto() {
+        return costoBruto;
+    }
+
+    public BigDecimal getPrecioFinal() {
+        return precioFinal;
+    }
+
+    public BigDecimal getGananciaPercent() {
+        return gananciaPercent;
+    }
+
+    public void setGananciaPercent(BigDecimal gananciaPercent) {
+        this.gananciaPercent = gananciaPercent;
+    }
+
+    public Cotizacion getCotizacion() {
+        return cotizacion;
+    }
+
+    public void setCotizacion(Cotizacion cotizacion) {
+        this.cotizacion = cotizacion;
+    }
+
+    public TipoProyecto getTipoProyecto() {
+        return tipoProyecto;
+    }
+
+    public void setTipoProyecto(TipoProyecto tipoProyecto) {
+        this.tipoProyecto = tipoProyecto;
+    }
+
+    public TipoProyecto[] getTiposProyecto() {
+        return tiposProyecto;
+    }
+
+    public void setTiposProyecto(TipoProyecto[] tiposProyecto) {
+        this.tiposProyecto = tiposProyecto;
+    }
 }
-

@@ -123,4 +123,12 @@ public class CotizacionHelper {
     public List<Integer> obtenerMesesDisponibles(Integer idUsuario){
         return ServiceFacadeLocator.getInstanceFacadeCotizacion().obtenerMesesDisponibles(idUsuario);
     }
+  
+    //actualización de cotización PBI-CO-US13
+    public Cotizacion obtenerCotizacionPorId(int id) {
+        return ServiceFacadeLocator.getInstanceFacadeCotizacion()
+                .buscarPorIdUnico(id);
+    }
+
+
 }

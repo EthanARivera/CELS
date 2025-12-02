@@ -4,7 +4,8 @@ import imf.cels.dao.CotizacionDAO;
 import imf.cels.delegate.DelegateCotizacion;
 import imf.cels.entity.Cotizacion;
 import imf.cels.entity.CotizacionManoDeObra;
-
+import imf.cels.entity.CotizacionMaterial;
+import imf.cels.integration.ServiceLocator;
 import java.util.List;
 
 //Imports para la generación y edición del PDF
@@ -267,5 +268,11 @@ public class FacadeCotizacion {
     }
 
     public void aprobarContrato(Integer idFolio) {delegateCotizacion.aprobarContrato(idFolio);} // PBI-CO-US20
+
+
+    //PBI-CO-US13
+    public Cotizacion buscarPorIdUnico(int id) {
+        return delegateCotizacion.buscarPorIdUnico(id);
+    }
 
 }

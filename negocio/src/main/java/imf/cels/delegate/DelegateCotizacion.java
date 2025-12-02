@@ -43,12 +43,36 @@ public class DelegateCotizacion {
         return  ServiceLocator.getInstanceCotizacionDAO().obtenerMesesDisponibles();
     }
 
+    // Consultas para usuario vendedor
+    public List<Cotizacion> obtenerTodosPorFecha(Integer idUsuario){
+        return ServiceLocator.getInstanceCotizacionDAO().obtenerTodosPorFecha(idUsuario);
+    }
+
+    public List<Cotizacion> obtenerPorFolio(Integer idUsuario){
+        return ServiceLocator.getInstanceCotizacionDAO().obtenerPorFolio(idUsuario);
+    }
+
+    public List<Cotizacion> obtenerPorAnio(Integer idUsuario, int anio){
+        return ServiceLocator.getInstanceCotizacionDAO().obtenerPorAnio(idUsuario, anio);
+    }
+
+    public List<Cotizacion> obtenerPorMes(Integer idUsuario, int mes){
+        return ServiceLocator.getInstanceCotizacionDAO().obtenerPorMes(idUsuario, mes);
+    }
+
+    public List<Integer> obtenerAniosDisponibles(Integer idUsuario){
+        return ServiceLocator.getInstanceCotizacionDAO().obtenerAniosDisponibles(idUsuario);
+    }
+
+    public List<Integer> obtenerMesesDisponibles(Integer idUsuario){
+        return  ServiceLocator.getInstanceCotizacionDAO().obtenerMesesDisponibles(idUsuario);
+    }
+
     //Guardado de entidad Cotizacion
     //Llamando a CotizacionDAO desde ServiceLocator
     public void saveCotizacion(Cotizacion cotizacion){
         ServiceLocator.getInstanceCotizacionDAO().registrarCotizacion(cotizacion);
     }
-
 
     //Guardado de entidad CotizacionMaterial
     //Llamando a CotizacionMaterialDAO desde ServiceLocator

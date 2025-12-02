@@ -16,7 +16,7 @@
         align-items: center;
         height: 15%;
         justify-content: space-between;
-        background: #FFE185;
+        background: #FFBB54;
         color: #262F8D;
         padding: 0 20px;
         margin: 0;
@@ -81,6 +81,74 @@
     .link-btn:hover {
         opacity: 0.85;
         text-decoration: underline;
+    }
+
+    /*  Cartas para los index */
+
+    /* Contenedor general */
+    .card-container {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 50px;
+        flex-wrap: wrap;
+    }
+
+    /* Tarjeta principal */
+    .card {
+        width: 280px;
+        height: 380px;
+        background: #ffffff;
+        border-radius: 25px;
+        border: 8px solid #FFBB54;
+        display: flex;
+        text-decoration: none;
+        color: #1a237e; /* azul oscuro */
+        box-shadow: 0 0 6px rgba(0,0,0,0.25);
+        transition: transform .2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: scale(1.03);
+    }
+
+    /* Contenido interno alineado */
+    .card-content {
+        border: 4px solid #1a237e; /* borde azul interno */
+        border-radius: 20px;
+        width: 100%;
+        height: 100%;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Título */
+    .card-title {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: #1a237e;
+        margin-top: 10px;
+    }
+
+    /* Icono */
+    .card-icon {
+        font-size: 6rem !important;
+        color: #1a237e;
+        margin: 20px 0;
+    }
+
+    /* Botón inferior */
+    .card-btn {
+        background: #FFBB54;
+        color: #1a237e;
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 1rem;
     }
 
     /*MENUS DE GESTION*/
@@ -163,7 +231,7 @@
         left: 0;
         width: 100%;
         height: 15%;
-        background: #FFE185;
+        background: #FFBB54;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         padding-top: 0;
         margin: 0;
@@ -180,7 +248,7 @@
         left: 0;
         width: 100%;
         height: 15%;
-        background: #FFE185;
+        background: #FFBB54;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         padding-top: 0;
         margin: 0;
@@ -194,7 +262,7 @@
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        color: #FFE185 !important;
+        color: #FFBB54 !important;
     }
 
     .menu .ui-icon,
@@ -222,7 +290,7 @@
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        color: #FFE185 !important;
+        color: #FFBB54 !important;
     }
 
     .menuin.ui-button:hover {
@@ -456,7 +524,7 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-    color: #FFE185 !important; /* Cambia este color al que quieras */
+    color: #FFBB54 !important; /* Cambia este color al que quieras */
 }
 
 /* Si el botón tiene ícono (como el pi-bars), ajustamos el color del ícono */
@@ -489,7 +557,7 @@ body {
 /* 🔹 Header bar */
 .header-bar {
     margin-top: 25px;
-    background-color: #FFE185;
+    background-color: #FFBB54;
     color: #FFFFFF;
     display: flex;
     align-items: center;

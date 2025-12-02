@@ -1,7 +1,6 @@
 package ui;
 
 import helper.CotizacionHelper;
-import imf.cels.delegate.DelegateCotizacion;
 import imf.cels.entity.*;
 
 import jakarta.annotation.PostConstruct;
@@ -21,8 +20,6 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
     private LoginBeanUI loginUI;
 
     private CotizacionHelper cotizacionHelper;
-
-    private final DelegateCotizacion delegateCotizacion = new DelegateCotizacion();
 
     //Filtros y Busqueda de cotizaciones
     private List<Cotizacion> cotizaciones;
@@ -57,9 +54,16 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         }
 
         cotizacionHelper = new CotizacionHelper();
-        cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
-        aniosDisponibles = delegateCotizacion.obtenerAniosDisponibles();
-        mesesDisponibles = delegateCotizacion.obtenerMesesDisponibles();
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+            cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+            aniosDisponibles = cotizacionHelper.obtenerAniosDisponibles();
+            mesesDisponibles = cotizacionHelper.obtenerMesesDisponibles();
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+            aniosDisponibles = cotizacionHelper.obtenerAniosDisponibles(loginUI.getUsuario().getId());
+            mesesDisponibles = cotizacionHelper.obtenerMesesDisponibles(loginUI.getUsuario().getId());
+        }
     }
 
     public String obtenerNombreMes(int mes){
@@ -99,7 +103,12 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
             dialogAprobacionVisible = false;
 
             // Refresh list of cotizaciones
-            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+            if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+            }
+            else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+            }
 
             // Success message
             context.addMessage(null, new FacesMessage(
@@ -151,7 +160,12 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
             dialogAprobacionContratoVisible = false;
 
             // actualizar tabla
-            cotizaciones = delegateCotizacion.obtenerTodosPorFecha();
+            if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+            }
+            else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+                cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+            }
 
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_INFO,
@@ -245,20 +259,47 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
     }
 
     //Setters/Getters
-    public void buscarPorId(){ cotizaciones = delegateCotizacion.buscarPorId(idBusqueda); }
+    public void buscarPorId(){ cotizaciones = cotizacionHelper.buscarPorId(idBusqueda); }
 
     public int getIdBusqueda() { return idBusqueda; }
     public void setIdBusqueda(int idBusqueda) { this.idBusqueda = idBusqueda; }
 
-    public void consultarPorFecha(){ cotizaciones = delegateCotizacion.obtenerTodosPorFecha(); }
+    public void consultarPorFecha()
+    {
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+        cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerTodosPorFecha(loginUI.getUsuario().getId());
+        }
+    }
 
-    public void consultarPorFolio(){ cotizaciones = delegateCotizacion.obtenerPorFolio(); }
+    public void consultarPorFolio(){
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+            cotizaciones = cotizacionHelper.obtenerPorFolio();
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerPorFolio(loginUI.getUsuario().getId());
+        }
+    }
 
-    public void consultarPorVendedor(){ cotizaciones = delegateCotizacion.obtenerPorVendedor(); }
+    public void consultarPorVendedor(){ cotizaciones = cotizacionHelper.obtenerPorVendedor(); }
 
-    public void obtenerPorAnio(){ cotizaciones = delegateCotizacion.obtenerPorAnio(anioFiltro); }
+    public void obtenerPorAnio(){ if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+        cotizaciones = cotizacionHelper.obtenerPorAnio(anioFiltro);
+    }
+    else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+        cotizaciones = cotizacionHelper.obtenerPorAnio(loginUI.getUsuario().getId(), anioFiltro);
+    } }
 
-    public void obtenerPorMes(){ cotizaciones = delegateCotizacion.obtenerPorMes(mesFiltro); }
+    public void obtenerPorMes(){
+        if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+            cotizaciones = cotizacionHelper.obtenerPorMes(mesFiltro);
+        }
+        else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
+            cotizaciones = cotizacionHelper.obtenerPorMes(loginUI.getUsuario().getId(), mesFiltro);
+        }
+    }
 
     public List<Cotizacion> getCotizaciones() { return cotizaciones; }
 

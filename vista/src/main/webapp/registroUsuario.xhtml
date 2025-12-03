@@ -18,6 +18,8 @@
 
 <h:body>
 
+    <p:growl id="growl" showDetail="true" life="4000"/> <!-- the message in the top right -->
+
     <!-- HEADER -->
     <div class="header-bar">
 
@@ -92,13 +94,14 @@
             <div class="btn-group">
                 <p:commandButton value="Agregar" styleClass="btn btn-primary"
                                  process="@form" actionListener="#{registroUI.confirmarRegistro}"
-                                 update="messages"/>
+                                 update="@form growl"/>
                 <p:commandButton value="Cancelar" styleClass="btn btn-danger" type="reset"/>
             </div>
 
-            <p:messages id="messages" showDetail="true" closable="true"/>
+            <!-- <p:messages id="messages" showDetail="true" closable="true"/> -->
         </div>
     </h:form>
+
 
 </h:body>
 </html>

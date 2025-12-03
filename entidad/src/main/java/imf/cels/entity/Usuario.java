@@ -49,6 +49,13 @@ public class Usuario {
     @Column(name = "estado", nullable = false)
     private Boolean estado = true;
 
+    // que sea visible en la lista si el usuario está habilitado o deshabilitado
+    @Transient
+    public String getEstadoTextoHtml() {
+        return Boolean.TRUE.equals(estado)
+                ? "<span style='color:green; font-weight:bold '>ACTIVO</span>"
+                : "<span style='color:red; font-weighted:bold '>INACTIVO</span>";     }
+
     @OneToMany
     @JoinColumn(name = "id_usuario")
     private Set<Cotizacion> cotizacions = new LinkedHashSet<>();
@@ -59,9 +66,7 @@ public class Usuario {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private UsPsswd usPsswd;
 
-
     // GETTERS / SETTERS
-
     public Integer getId() { return id; }
     public Integer getCodigoTipoUsuario() { return codigoTipoUsuario; }
     public String getNombre() { return nombre; }

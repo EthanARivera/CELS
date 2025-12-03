@@ -4,6 +4,7 @@ import helper.LoginHelper;
 import imf.cels.entity.UsDatosSensible;
 import imf.cels.entity.UsPsswd;
 import imf.cels.entity.Usuario;
+import imf.cels.respaldos.ServicioRespaldo;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -70,8 +71,25 @@ public class LoginBeanUI implements Serializable{
             datosFormulario.setUsDatosSensible(new UsDatosSensible());
             datosFormulario.setUsPsswd(new UsPsswd());
             System.out.println("Se inició sesión correctamente con el usuairo: " + usuario.getNombre());
-            FacesContext.getCurrentInstance().getExternalContext().redirect(
-                    FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/index.xhtml");
+            Integer tipoUsuario = usuario.getCodigoTipoUsuario();
+            switch (tipoUsuario) {
+                case 0:
+                    FacesContext.getCurrentInstance().getExternalContext().redirect(
+                            FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/indexGerente.xhtml");
+                    break;
+                case 1:
+                    FacesContext.getCurrentInstance().getExternalContext().redirect(
+                            FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/indexVendedor.xhtml");
+                    break;
+                case 2:
+                    FacesContext.getCurrentInstance().getExternalContext().redirect(
+                            FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath() + "/indexProductor.xhtml");
+                    break;
+                default:
+                    FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_WARN,
+                                    "Tipo de usuario no asignado.", "Intente de con otro usuario, o asigne el tipo de usuario"));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +124,7 @@ public class LoginBeanUI implements Serializable{
 
         if (usuario != null && usuario.getUsDatosSensible().getEmail() != null && usuario.getId() != null) {
             context.getExternalContext()
-                    .redirect(context.getExternalContext().getRequestContextPath() + "/index.xhtml");
+                    .redirect(context.getExternalContext().getRequestContextPath() + "/indexGerente.xhtml");
         }
     }
 
@@ -147,4 +165,20 @@ public class LoginBeanUI implements Serializable{
     public UsPsswd getUsPsswd() { return usPsswd; }
 
     public void setUsPsswd(UsPsswd usPsswd) { this.usPsswd = usPsswd; }
+
+    //prueba de respaldo
+
+    public void probarRespaldoManual() {
+        try {
+            ServicioRespaldo servicio = new ServicioRespaldo();
+            servicio.ejecutarRespaldo();
+
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Éxito", "Respaldo generado en C:/Respaldos"));
+
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Fallo: " + e.getMessage()));
+        }
+    }
 }

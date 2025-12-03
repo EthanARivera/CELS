@@ -21,7 +21,7 @@
     <!-- Encabezado con botones -->
     <div class="header">
         <!-- Link para regresar -->
-        <h:link outcome="index.xhtml" styleClass="back ui-button-success">
+        <h:link outcome="indexGerente.xhtml" styleClass="back ui-button-success">
             <i class="pi pi-arrow-left"></i>
         </h:link>
 
@@ -136,14 +136,14 @@
                         <p:commandButton icon="pi pi-pencil"
                                          title="Editar"
                                          styleClass="ui-button-flat pencil-icon"
-                                         actionListener="#{materialBean.prepararEdicion(material)}"
+                                         actionListener="#{materialUI.prepararEdicion(material)}"
                                          update=":formEditar"
                                          oncomplete="PF('dlgEditar').show()"
                                          />
                         <p:commandButton icon="pi pi-trash"
                                          title="Eliminar"
                                          styleClass="ui-button-flat delete-icon"
-                                         actionListener="#{materialBean.eliminarMaterial(material)}"
+                                         actionListener="#{materialUI.eliminarMaterial(material)}"
                                          update=":formMateriales:tablaMateriales growl">
                             <p:confirm header = "Confirmar eliminación"
                                        message="¿Estás seguro de eliminar el material '#{material.nombre}'?"
@@ -174,16 +174,16 @@
                          columnClasses="label-column, input-column">
 
                 <h:outputLabel value="ID:" />
-                <h:inputText value="#{materialBean.materialSeleccionado.id}" disabled="true" style="width:100%"/>
+                <h:inputText value="#{materialUI.materialSeleccionado.id}" disabled="true" style="width:100%"/>
 
                 <h:outputLabel value="Nombre:" />
-                <h:inputText value="#{materialBean.materialSeleccionado.nombre}" disabled="true" style="width:100%"/>
+                <h:inputText value="#{materialUI.materialSeleccionado.nombre}" disabled="true" style="width:100%"/>
 
                 <h:outputLabel value="Tipo de material:" />
-                <h:inputText value="#{materialBean.materialSeleccionado.tipoMaterial}" disabled="true" style="width:100%"/>
+                <h:inputText value="#{materialUI.materialSeleccionado.tipoMaterial}" disabled="true" style="width:100%"/>
 
                 <h:outputLabel value="Costo:" />
-                <p:inputNumber value="#{materialBean.materialSeleccionado.costo}"
+                <p:inputNumber value="#{materialUI.materialSeleccionado.costo}"
                                symbol=" $" symbolPosition="s"
                                decimalPlaces="2"
                                required="true"
@@ -192,7 +192,7 @@
 
                 <h:outputLabel value="Tipo de unidad:" />
                 <h:inputText id="tipoUnidad"
-                             value="#{materialBean.materialSeleccionado.tipoUnidad}"
+                             value="#{materialUI.materialSeleccionado.tipoUnidad}"
                              disabled="true"
                              style="width:100%"
                 />
@@ -201,7 +201,7 @@
             <div style="text-align:center; margin-top:10px;">
                 <p:commandButton value="Guardar"
                                  icon="pi pi-save"
-                                 actionListener="#{materialBean.guardarCambios}"
+                                 actionListener="#{materialUI.guardarCambios}"
                                  update=":formMateriales:tablaMateriales"
                                  oncomplete="PF('dlgEditar').hide();"
                                  styleClass="btn-azul-iconoblanco"/>

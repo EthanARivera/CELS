@@ -37,30 +37,24 @@
     <!-- Menú superior oculto -->
     <div id="menuPanel" class="menu-panel">
         <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
-            <i class="pi pi-box"></i> Consulta Materiales
+            <i class="pi pi-home"></i> Índice
         </h:link>
 
-        <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
-            <i class="pi pi-users"></i> Consulta Usuarios
+        <h:link outcome="consulta_pedidos_productor.xhtml" styleClass="menu-option">
+            <i class="pi pi-hammer"></i> Consultar pedidos
         </h:link>
 
-        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
-            <i class="pi pi-file"></i> Consulta Cotizaciones
-        </h:link>
     </div>
 
     <!-- Links de navegación -->
-    <div class="nav-links">
-        <h:link class="link-btn" outcome="consulta_materiales.xhtml">
-            <i class="pi pi-box"></i> Consulta Materiales
-        </h:link>
-
-        <h:link class="link-btn" outcome="consulta_usuarios.xhtml">
-            <i class="pi pi-users"></i> Consulta Usuarios
-        </h:link>
-
-        <h:link class="link-btn" outcome="consulta_cotizaciones.xhtml">
-            <i class="pi pi-file"></i> Consulta Cotizaciones
+    <div class="card-container">
+        <!-- Tarjeta Control Pedidos -->
+        <h:link outcome="consulta_pedidos_productor.xhtml" styleClass="card">
+            <div class="card-content">
+                <div class="card-title">Control de<br/>Pedidos</div>
+                <i class="pi pi-hammer card-icon"></i>
+                <div class="card-btn">Entrar</div>
+            </div>
         </h:link>
     </div>
 </h:body>

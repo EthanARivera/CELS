@@ -120,4 +120,9 @@ public class DelegateCotizacion {
         emailCotizaciones.enviarCotizacionPorCorreo(correoUsuario, idCotizacion);
     }
 
+    //actualización de cotización PBI-CO-US13
+    public Cotizacion buscarPorIdUnico(int id) {
+        return ServiceLocator.getInstanceCotizacionDAO().buscarPorIdUnico(id);
+    }
+
 }

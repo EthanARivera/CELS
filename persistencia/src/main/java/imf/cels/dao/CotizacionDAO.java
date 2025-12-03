@@ -170,6 +170,30 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         return (ultimoIdFolio != null) ? ultimoIdFolio : 0;
     }
 
+    //actualización de cotización
+    public Cotizacion buscarPorIdUnico(int id) {
+        // Esto limpia la memoria caché del EntityManager.
+        // Obliga al sistema a olvidar cualquier versión vieja/incompleta de la cotización
+        // y a traer los datos REALES (incluyendo las tablas nuevas) desde la Base de Datos.
+        entityManager.clear();
+
+        try { //carga los materiales y mano de obra al editar.
+            Cotizacion cot = entityManager.createQuery(
+                            "SELECT c FROM Cotizacion c " +
+                                    "LEFT JOIN FETCH c.cotizacionMateriales " +
+                                    "LEFT JOIN FETCH c.cotizacionManoDeObras " +
+                                    "WHERE c.id = :id", Cotizacion.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            return cot;
+
+        } catch (Exception e) {
+            System.out.println("Error al cargar materiales y mndos");
+            return null; // si no existe, regresamos null
+        }
+    }
+
     @Override
     public EntityManager getEntityManager() {
         return entityManager;

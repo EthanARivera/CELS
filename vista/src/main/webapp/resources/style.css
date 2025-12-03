@@ -676,16 +676,20 @@ body {
     /* Grid responsiva */
     .form-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-gap: 15px 20px;
+        grid-template-columns: max-content 400px;
+        justify-content: center;
+        align-items: center;
+        column-gap: 20px;
+        row-gap: 15px;
+        width: 100%;
     }
 
     .form-grid label {
         text-align: right;
-        font-weight: normal;
-        font-size: 22px;
+        font-weight: bold !important;
+        font-size: 16px !important;
         color: #222;
-        align-self: center;
+        margin: 0;
     }
 
     .form-grid input,
@@ -714,7 +718,10 @@ body {
 
     /* Botones */
     .btn-container {
-        text-align: right;
+        display: flex;
+        justify-content: right;
+        text-align: center;
+        gap: 10px !important;
         margin-top: 30px;
     }
 
@@ -722,11 +729,11 @@ body {
         background-color: #1a1aa8 !important;
         border: none !important;
         color: white !important;
-        padding: 10px 25px !important;
+        padding: 5px 30px !important;
         border-radius: 6px !important;
-        font-weight: 500 !important;
+        font-weight: 600 !important;
         font-size: 15px !important;
-        margin-left: 10px !important;
+        margin: 0 !important;
         box-shadow: none !important;
     }
 
@@ -737,6 +744,8 @@ body {
     /* Quita un asterisco visual automático de campos requeridos */
     .ui-outputlabel-rfi {
         display: none !important;
+        transform: scale(1.05);
+        transition: 0.2s;
     }
 
     /* Responsividad */

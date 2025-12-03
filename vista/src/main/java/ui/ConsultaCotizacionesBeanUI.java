@@ -203,7 +203,7 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
 
         try {
 
-            cotizacionHelper.enviarCotizacionPorCorreo(cotizacion.getId());
+            cotizacionHelper.enviarCotizacionPorCorreo(loginUI.getUsuario().getUsDatosSensible().getEmail(), cotizacion.getId());
 
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                     "Éxito", "Correo enviado para el Folio #" + cotizacion.getId()));
@@ -235,7 +235,7 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         }
 
         try {
-            boolean enviado = cotizacionHelper.enviarContratoPorCorreo(cotizacion.getId());
+            boolean enviado = cotizacionHelper.enviarContratoPorCorreo(loginUI.getUsuario().getUsDatosSensible().getEmail(),cotizacion.getId());
 
             if (enviado) {
                 context.addMessage(null, new FacesMessage(

@@ -48,12 +48,12 @@ public class CotizacionHelper {
         return materialesAux;
     }
 
-    public void enviarCotizacionPorCorreo(Integer idCotizacion) throws Exception {
-        ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarCotizacionPorCorreo(idCotizacion);
+    public void enviarCotizacionPorCorreo(String correoUsuario, Integer idCotizacion) throws Exception {
+        ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarCotizacionPorCorreo(correoUsuario, idCotizacion);
     }
 
-    public boolean enviarContratoPorCorreo(Integer idCotizacion) throws Exception {
-        return ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarContratoPorCorreo(idCotizacion);
+    public boolean enviarContratoPorCorreo(String correoUsuario, Integer idCotizacion) throws Exception {
+        return ServiceFacadeLocator.getInstanceFacadeCotizacion().enviarContratoPorCorreo(correoUsuario, idCotizacion);
     }
 
     // Aprobación de Cotización

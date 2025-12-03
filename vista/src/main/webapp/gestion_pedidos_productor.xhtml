@@ -19,7 +19,7 @@
     <!-- Encabezado con botones -->
     <div class="header">
         <!-- Link para regresar -->
-        <h:link outcome="index.xhtml" styleClass="back ui-button-success">
+        <h:link outcome="indexProductor.xhtml" styleClass="back ui-button-success">
             <i class="pi pi-arrow-left"></i>
         </h:link>
 
@@ -117,6 +117,10 @@
 
             <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
                 <h:outputText value="Para pasar al estado Terminado, escriba 'Terminado':"/>
+
+                <p:inputText value="#{cotizacionUI.textoConfirmacionContrato}"
+                             placeholder="Escriba aquí"
+                             style="width:100%; text-align:center;"/>
 
                 <p:commandButton value="Aceptar"
                                  icon="pi pi-check"

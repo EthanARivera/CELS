@@ -227,10 +227,10 @@ public class EmailCotizaciones {
         //Se prepara y envia el correo
         String nombrePdf = "Cotizacion_Folio_" + cotizacion.getId() + ".pdf";
         String nombreXml = "Cotizacion_Folio_" + cotizacion.getId() + ".xml";
-        String asunto = "Detalle de su Cotización (Folio: " + cotizacion.getId() + ")";
-        String cuerpo = "Estimado " + cotizacion.getCliente() + ",\n\n" +
-                "Adjuntamos el detalle de su cotización.\n\n" +
-                "Saludos cordiales.";
+        String asunto = "Detalle de Cotización (Folio: " + cotizacion.getId() + ")";
+        String cuerpo = "Detalle de cotización.\n\n"
+                        + "Cliente: " + cotizacion.getCliente()
+                        + "\n\nCon descripción: " + cotizacion.getDescripcion() + "\n\n";
 
         privateEnviarCorreo(correoUsuario, asunto, cuerpo, pdfBytes, nombrePdf, xmlBytes, nombreXml);
     }

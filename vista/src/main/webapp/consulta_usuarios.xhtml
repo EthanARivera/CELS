@@ -110,6 +110,11 @@
                     <h:outputText value="#{usuario.usDatosSensible.email}" />
                 </p:column>
 
+                <!-- Estado visible -->
+                <p:column headerText="Estado">
+                    <h:outputText value="#{usuario.estadoTextoHtml}" escape="false"/>
+                </p:column>
+
                 <p:column headerText="Acciones" style="width:100px; text-align:center;">
                     <div class="action-buttons">
                         <!-- Modificacion: abre diálogo -->

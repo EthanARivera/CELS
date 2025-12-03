@@ -304,6 +304,7 @@ public class AltaCotizacionBeanUI implements Serializable {
                         dto.getSubtotal() != null ? dto.getSubtotal() : BigDecimal.ZERO
                 );
             }
+            recalcularTotales();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,7 +6,8 @@ import imf.cels.entity.CotizacionMaterial;
 import imf.cels.entity.Material;
 import imf.cels.integration.ServiceFacadeLocator;
 import imf.cels.integration.ServiceLocator;
-
+import imf.cels.persistence.HibernateUtil;
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,5 +131,20 @@ public class CotizacionHelper {
                 .buscarPorIdUnico(id);
     }
 
+    public List<Cotizacion> obtenerCotizacionesContratoAprobado() {
+        return ServiceLocator.getInstanceCotizacionDAO().obtenerCotizacionesContratoAprobado();
+    }
+
+    public List<Cotizacion> obtenerCotizacionesContratoAprobado(Integer idUsuario) {
+        return ServiceLocator.getInstanceCotizacionDAO().obtenerCotizacionesContratoAprobadoPorUsuario(idUsuario);
+    }
+
+    public List<Cotizacion> obtenerCotizacionesConPedido() {
+        EntityManager em = HibernateUtil.getEntityManager();
+        return em.createQuery(
+                "SELECT c FROM Cotizacion c WHERE c.pedidosTaller IS NOT NULL ORDER BY c.id DESC",
+                Cotizacion.class
+        ).getResultList();
+    }
 
 }

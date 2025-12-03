@@ -85,6 +85,17 @@ public class Cotizacion {
     @JoinColumn(name = "id_folio")
     private imf.cels.entity.PedidosTaller pedidosTaller;
 
+    @Transient
+    private String prioridadSeleccionada = "Baja";
+
+    public String getPrioridadSeleccionada() {
+        return prioridadSeleccionada;
+    }
+
+    public void setPrioridadSeleccionada(String prioridadSeleccionada) {
+        this.prioridadSeleccionada = prioridadSeleccionada;
+    }
+
     public imf.cels.entity.PedidosTaller getPedidosTaller() {
         return pedidosTaller;
     }

@@ -1,8 +1,8 @@
 package ui;
 
 import helper.CotizacionHelper;
+import helper.PedidosHelper;
 import imf.cels.entity.*;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -18,6 +18,12 @@ import java.util.List;
 public class ConsultaCotizacionesBeanUI implements Serializable {
     @Inject
     private LoginBeanUI loginUI;
+
+    @Inject
+    private PedidosHelper pedidosHelper;
+
+    @Inject
+    private PedidosBeanUI pedidosUI;
 
     private CotizacionHelper cotizacionHelper;
 
@@ -54,6 +60,23 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         }
 
         cotizacionHelper = new CotizacionHelper();
+
+        String viewId = FacesContext.getCurrentInstance().getViewRoot().getViewId();
+        if (viewId.contains("gestion_pedidos_productor")) {
+            cargarPedidos();
+            return;
+        }
+
+        if (viewId.contains("gestion_pedidos_vendedor")) {
+            cargarPedidosVendedor();
+            return;
+        }
+
+        if (viewId.contains("gestion_pedidos") && loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
+            cargarPedidosGerente();
+            return;
+        }
+
         if (loginUI.getUsuario().getCodigoTipoUsuario() == 0) {
             cotizaciones = cotizacionHelper.obtenerTodosPorFecha();
             aniosDisponibles = cotizacionHelper.obtenerAniosDisponibles();
@@ -298,6 +321,43 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         }
         else if (loginUI.getUsuario().getCodigoTipoUsuario() == 1) {
             cotizaciones = cotizacionHelper.obtenerPorMes(loginUI.getUsuario().getId(), mesFiltro);
+        }
+    }
+
+    public void seleccionarCotizacion(Cotizacion c) {
+        this.cotizacionSeleccionada = c;
+    }
+
+    public void cargarPedidos() {
+        cotizaciones = cotizacionHelper.obtenerCotizacionesConPedido();
+    }
+
+    public void cargarPedidosVendedor() {
+        cotizaciones = cotizacionHelper.obtenerCotizacionesContratoAprobado(loginUI.getUsuario().getId());
+    }
+
+    public void cargarPedidosGerente() {
+        cotizaciones = cotizacionHelper.obtenerCotizacionesContratoAprobado();
+    }
+
+    public void darDeAltaPedido() {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            pedidosHelper.darDeAltaPedido(cotizacionSeleccionada, cotizacionSeleccionada.getPrioridadSeleccionada());
+
+            cargarPedidos();
+
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Pedido dado de alta", "Ahora es visible para el productor."
+            ));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error al dar de alta", e.getMessage()
+            ));
         }
     }
 

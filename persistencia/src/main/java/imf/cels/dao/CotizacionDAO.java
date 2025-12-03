@@ -1,6 +1,7 @@
 package imf.cels.dao;
 
 import imf.cels.entity.Cotizacion;
+import imf.cels.entity.PedidosTaller;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.persistence.AbstractDAO;
 import jakarta.activation.DataHandler;
@@ -259,4 +260,37 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
         }
     }
 
+    public List<Cotizacion> obtenerCotizacionesContratoAprobado() {
+        return entityManager.createQuery(
+                "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true ORDER BY c.fecha DESC",
+                Cotizacion.class
+        ).getResultList();
+    }
+
+    public List<Cotizacion> obtenerCotizacionesContratoAprobadoPorUsuario(Integer idUsuario) {
+        return entityManager.createQuery(
+                        "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true AND c.idUsuario.id = :id ORDER BY c.fecha DESC",
+                        Cotizacion.class
+                )
+                .setParameter("id", idUsuario)
+                .getResultList();
+    }
+
+    public void darDeAltaPedido(Integer idFolio, String prioridadSeleccionada) {
+        Cotizacion cot = entityManager.find(Cotizacion.class, idFolio);
+        if (cot == null) {
+            throw new IllegalArgumentException("No existe una cotización con ese folio.");
+        }
+
+        PedidosTaller pedido = new PedidosTaller();
+        pedido.setCotizacion(cot);
+        pedido.setEstadoEnTaller("Por iniciar");
+        pedido.setPrioridad(prioridadSeleccionada);
+
+        entityManager.getTransaction().begin();
+        entityManager.persist(pedido);
+        cot.setPedidosTaller(pedido);
+        entityManager.merge(cot);
+        entityManager.getTransaction().commit();
+    }
 }

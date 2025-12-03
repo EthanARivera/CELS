@@ -43,7 +43,7 @@ public class MaterialBeanUI implements Serializable {
 
     public void guardar() {
         try {
-            // Validaciones
+            // Validaciones de campos vacios
             if (material.getNombre() == null || material.getNombre().isBlank() ||
                     material.getTipoMaterial() == null || material.getTipoMaterial().isBlank() ||
                     material.getCosto() == null || material.getCosto().compareTo(BigDecimal.ZERO) <= 0 ||
@@ -56,13 +56,32 @@ public class MaterialBeanUI implements Serializable {
                 return;
             }
 
+            //Validación para duplicados
+            String nombreLimpios = material.getNombre().trim();
+            List<Material> existentes = helper.buscarPorNombre(nombreLimpios);
+
+            if (existentes != null && !existentes.isEmpty()) {
+                for (Material m : existentes) {
+                    // Comparamos ignorando mayúsculas/minúsculas
+                    if (m.getNombre().equalsIgnoreCase(nombreLimpios)) {
+                        FacesContext.getCurrentInstance().addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                        "Material duplicado:",
+                                        "El material '" + nombreLimpios + "' ya existe en el sistema."));
+
+                        FacesContext.getCurrentInstance().validationFailed(); //Para que no se redireccione si hay duplicado
+                        return;
+                    }
+                }
+            }
+
             // Guarda correctamente usando el Converter
             helper.saveMaterial(material.getNombre(), material.getTipoMaterial(),
                     material.getCosto(), material.getTipoUnidad());
 
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Éxito",
+                            "Éxito:",
                             "Material guardado correctamente."));
 
             // Limpia el formulario
@@ -72,6 +91,9 @@ public class MaterialBeanUI implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Error al guardar", e.getMessage()));
+
+            // Si hay una excepción técnica, tampoco queremos que redireccione
+            FacesContext.getCurrentInstance().validationFailed();
         }
     }
 

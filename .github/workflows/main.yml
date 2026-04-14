@@ -60,13 +60,13 @@ jobs:
           echo "=== Contenedores activos ==="
           docker ps
 
-      - name: Probar puerto 3307
+      - name: Probar puerto 3306
         run: |
-          echo "=== Intentando hacer ping al puerto 3307 ==="
+          echo "=== Intentando hacer ping al puerto 3306 ==="
 
           sudo apt-get update && sudo apt-get install -y netcat-openbsd
 
-          nc -zv 127.0.0.1 3307
+          nc -zv 127.0.0.1 3306
       # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
       - name: Descargar e iniciar Tomcat
         run: |

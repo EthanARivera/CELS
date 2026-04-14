@@ -54,7 +54,7 @@ jobs:
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
           
-          cp target/*.war tomcat/webapps/vista_war_exploded.war
+          find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
           
           chmod +x tomcat/bin/*.sh
           ./tomcat/bin/startup.sh
@@ -73,4 +73,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: CELS-Build-Artifacts
-          path: target/*.war
+          path: '**/*.war'

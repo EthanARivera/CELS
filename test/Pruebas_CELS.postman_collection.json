@@ -73,6 +73,7 @@
               "    \r",
               "    pm.expect(jsonData.nombre).to.eql(\"cemento cruz azul\");\r",
               "    pm.expect(jsonData.costo).to.eql(215.50);\r",
+              "    pm.collectionVariables.set(\"material_id\", jsonData.id);\r",
               "});"
             ],
             "type": "text/javascript",
@@ -197,7 +198,9 @@
               "    \r",
               "    pm.expect(jsonData.costo).to.eql(250.00);\r",
               "    \r",
-              "    pm.expect(jsonData.id).to.eql(1); \r",
+              "    var idEsperado = pm.collectionVariables.get(\"material_id\");\r",
+              "    \r",
+              "    pm.expect(jsonData.id).to.eql(idEsperado); \r",
               "});"
             ],
             "type": "text/javascript",
@@ -211,7 +214,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"id\": 1, \r\n    \"nombre\": \"cemento cruz azul\",\r\n    \"costo\": 250.00,\r\n    \"tipoMaterial\": \"construccion\",\r\n    \"tipoUnidad\": \"OTRO\"\r\n}",
+          "raw": "{\r\n    \"id\": {{material_id}}, \r\n    \"nombre\": \"cemento cruz azul\",\r\n    \"costo\": 250.00,\r\n    \"tipoMaterial\": \"construccion\",\r\n    \"tipoUnidad\": \"OTRO\"\r\n}",
           "options": {
             "raw": {
               "language": "json"

@@ -834,4 +834,12 @@ public class AltaCotizacionBeanUI implements Serializable {
     public void setTiposProyecto(TipoProyecto[] tiposProyecto) {
         this.tiposProyecto = tiposProyecto;
     }
+
+    public void setTotalMateriales(BigDecimal totalMateriales) {
+        this.totalMateriales = totalMateriales;
+    }
+
+    public void setTotalManoDeObra(BigDecimal totalManoDeObra) {
+        this.totalManoDeObra = totalManoDeObra;
+    }
 }

@@ -66,7 +66,7 @@ jobs:
       # 6. Ejecutar las pruebas de Postman
       # Asegúrate de que la ruta coincida con la carpeta donde guardaste tu JSON en el repo
       - name: Correr Pruebas de API con Newman
-        run: newman run ./test/Pruebas CELS.postman_collection.json
+        run: newman run ./test/Pruebas_CELS.postman_collection.json
 
       # 7. Subir el artefacto compilado
       - name: Upload Artifact

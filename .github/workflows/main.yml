@@ -63,7 +63,7 @@ jobs:
       - name: Esperar a que el servidor inicie
         run: sleep 20
 
-      # 6. Ejecutar las pruebas de Postman
+      # 6. Ejecutar las pruebas de Postman yes
       # Asegúrate de que la ruta coincida con la carpeta donde guardaste tu JSON en el repo
       - name: Correr Pruebas de API con Newman
         run: newman run ./test/Pruebas_CELS.postman_collection.json

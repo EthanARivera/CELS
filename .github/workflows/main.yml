@@ -47,6 +47,25 @@ jobs:
       - name: Instalar Newman
         run: npm install -g newman
 
+      - name: Auditar archivo de conexión a BD
+        run: |
+          echo "=== Buscando y mostrando hibernate.cfg.xml o persistence.xml ==="
+
+          find target/ -name "hibernate.cfg.xml" -exec cat {} \;
+          find target/ -name "persistence.xml" -exec cat {} \;
+
+      - name: Auditar servicio MySQL
+        run: |
+          echo "=== Contenedores activos ==="
+          docker ps
+
+      - name: Probar puerto 3306
+        run: |
+          echo "=== Intentando hacer ping al puerto 3306 ==="
+          # Instalamos netcat rápido para hacer la prueba
+          sudo apt-get update && sudo apt-get install -y netcat-openbsd
+          # Probamos si el puerto está abierto
+          nc -zv 127.0.0.1 3306
       # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
       - name: Descargar e iniciar Tomcat
         run: |

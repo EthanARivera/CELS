@@ -17,7 +17,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: desarrollo
         ports:
-          - 3306:3306
+          - 3307:3307
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
@@ -51,7 +51,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "=== Buscando y mostrando hibernate.cfg.xml o persistence.xml ==="
-          # El punto '.' hace que busque en todas las subcarpetas mágicamente
+
           find . -name "hibernate.cfg.xml" -exec cat {} \;
           find . -name "persistence.xml" -exec cat {} \;
 
@@ -60,13 +60,13 @@ jobs:
           echo "=== Contenedores activos ==="
           docker ps
 
-      - name: Probar puerto 3306
+      - name: Probar puerto 3307
         run: |
-          echo "=== Intentando hacer ping al puerto 3306 ==="
-          # Instalamos netcat rápido para hacer la prueba
+          echo "=== Intentando hacer ping al puerto 3307 ==="
+
           sudo apt-get update && sudo apt-get install -y netcat-openbsd
-          # Probamos si el puerto está abierto
-          nc -zv 127.0.0.1 3306
+
+          nc -zv 127.0.0.1 3307
       # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
       - name: Descargar e iniciar Tomcat
         run: |

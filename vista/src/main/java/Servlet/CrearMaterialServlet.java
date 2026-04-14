@@ -34,16 +34,13 @@ public class CrearMaterialServlet extends HttpServlet {
         try {
             materialFacade.saveMaterial(nuevoMaterial);
 
-            // Respondemos con éxito (201 Created)
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
             resp.setCharacterEncoding("UTF-8");
 
-            // Devolvemos el mismo objeto que nos enviaron para confirmar
             resp.getWriter().write(gson.toJson(nuevoMaterial));
 
         } catch (Exception e) {
-            // Si algo falla, devolver un error 500 elegante
             e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().write("{\"error\": \"Error al guardar el material\"}");

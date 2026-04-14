@@ -1,0 +1,332 @@
+{
+  "info": {
+    "_postman_id": "16dd1090-9efa-4d3f-b87c-7d24826981e4",
+    "name": "Pruebas CELS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52984236",
+    "_collection_link": "https://go.postman.co/collection/52984236-16dd1090-9efa-4d3f-b87c-7d24826981e4?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Pruebas API matierales",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Es un JSON válido\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"La búsqueda retornó resultados\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an('array');\r",
+              "});\r",
+              "\r",
+              "const schema = {\r",
+              "  \"type\": \"array\",\r",
+              "  \"items\": {\r",
+              "    \"type\": \"object\",\r",
+              "    \"properties\": {\r",
+              "      \"id\": { \"type\": \"number\" },\r",
+              "      \"nombre\": { \"type\": \"string\" },\r",
+              "      \"costo\": { \"type\": \"number\" },\r",
+              "      \"tipo_material\": { \"type\": \"string\" }\r",
+              "    },\r",
+              "    \"required\": [\"id\", \"nombre\"]\r",
+              "  }\r",
+              "};\r",
+              "\r",
+              "pm.test(\"La estructura de los materiales es correcta\", function () {\r",
+              "    pm.response.to.have.jsonSchema(schema);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?texto=tubo",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "vista_war_exploded",
+            "buscarMateriales"
+          ],
+          "query": [
+            {
+              "key": "texto",
+              "value": "tubo"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Pruebas API matierales no exitosa",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 (La petición fue válida, aunque no haya datos)\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Devuelve un Array vacío\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an('array').that.is.empty;\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?texto=xyz1234",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "vista_war_exploded",
+            "buscarMateriales"
+          ],
+          "query": [
+            {
+              "key": "texto",
+              "value": "xyz1234"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Prueba API crear material",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 (Creado exitosamente)\", function () {\r",
+              "    pm.response.to.have.status(201);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Es un JSON válido\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El objeto devuelto coincide con el enviado\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    \r",
+              "    pm.expect(jsonData.nombre).to.eql(\"cemento cruz azul\");\r",
+              "    pm.expect(jsonData.costo).to.eql(215.50);\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nombre\": \"cemento cruz azul\",\r\n    \"costo\": 215.50,\r\n    \"tipoMaterial\": \"construccion\",\r\n    \"tipoUnidad\": \"OTRO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/vista_war_exploded/crearMaterial",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "vista_war_exploded",
+            "crearMaterial"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Prueba API actualizar material",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 (Actualizado exitosamente)\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Es un JSON válido\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Los datos reflejan la actualización\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    \r",
+              "    pm.expect(jsonData.costo).to.eql(250.00);\r",
+              "    \r",
+              "    pm.expect(jsonData.id).to.eql(11); \r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 11, \r\n    \"nombre\": \"cemento cruz azul\",\r\n    \"costo\": 250.00,\r\n    \"tipoMaterial\": \"construccion\",\r\n    \"tipoUnidad\": \"OTRO\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/vista_war_exploded/actualizarMaterial",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "vista_war_exploded",
+            "actualizarMaterial"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Prueba API borrar material",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 (Eliminado exitosamente)\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El servidor confirma la eliminación\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    \r",
+              "    pm.expect(jsonData).to.have.property('mensaje');\r",
+              "    \r",
+              "    pm.expect(jsonData.mensaje).to.include(\"eliminado\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/vista_war_exploded/eliminarMaterial?id=11",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "vista_war_exploded",
+            "eliminarMaterial"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "11"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Prueba API borrar material pt. 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 404 (El objeto ya no existe)\", function () {\r",
+              "    pm.response.to.have.status(404);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"El mensaje de error es correcto\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.error).to.include(\"no encontrado\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?id=11",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "vista_war_exploded",
+            "buscarMateriales"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "11"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

@@ -26,19 +26,47 @@ public class BuscarMaterialesServlet extends HttpServlet {
     FacadeMaterial facadeMaterial = new FacadeMaterial();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String idParam = req.getParameter("id");
         String texto = req.getParameter("texto");
-        List<Material> resultados = facadeMaterial.obtenerPorNombreCot(texto);
 
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (date, type, context) -> new JsonPrimitive(date.toString()))
-                .registerTypeAdapter(Instant.class, (JsonSerializer<Instant>) (instant, type, context) -> new JsonPrimitive(instant.toString())) // <-- AGREGA ESTA LÍNEA
+                .registerTypeAdapter(Instant.class, (JsonSerializer<Instant>) (instant, type, context) -> new JsonPrimitive(instant.toString()))
                 .create();
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.getWriter().write(gson.toJson(resultados));
+
+        try {
+            if (idParam != null && !idParam.trim().isEmpty()) {
+                Integer id = Integer.parseInt(idParam);
+                Material resultado = facadeMaterial.obtenerPorId(id);
+
+                if (resultado == null) {
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    resp.getWriter().write("{\"error\": \"Material no encontrado\"}");
+                    return;
+                }
+
+                resp.getWriter().write(gson.toJson(resultado));
+
+            } else if (texto != null) {
+                List<Material> resultados = facadeMaterial.obtenerPorNombreCot(texto);
+                resp.getWriter().write(gson.toJson(resultados));
+
+            } else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.getWriter().write("{\"error\": \"Debes enviar un parametro 'id' o 'texto'\"}");
+            }
+
+        } catch (NumberFormatException e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"El ID debe ser un numero\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.getWriter().write("{\"error\": \"Error en el servidor\"}");
+        }
     }
 }

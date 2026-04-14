@@ -1,4 +1,4 @@
-name: Java CI con Maven (CELS Project)
+name: Java CI con Maven y Pruebas API (CELS Project)
 
 on:
   push:
@@ -21,25 +21,56 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: Build with Maven
-      run: mvn -B install --file pom.xml
+      # 1. Compilar el proyecto (Esto genera el archivo .war en la carpeta /target)
+      - name: Build with Maven
+        run: mvn -B install --file pom.xml
 
-    - name: Run Tests
-      run: mvn test
+      # 2. Correr pruebas unitarias de Java (si tienes alguna)
+      - name: Run Tests
+        run: mvn test
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: CELS-Build-Artifacts
-        path: |
-          .github/artifact.jar
-          .github/artifact.war
+      # 3. Preparar el entorno para Newman (Postman CLI)
+      - name: Setup Node.js (Para Newman)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar Newman
+        run: npm install -g newman
+
+      # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
+      - name: Descargar e iniciar Tomcat
+        run: |
+          wget https://archive.apache.org/dist/tomcat/tomcat-11/v11.0.8/bin/apache-tomcat-11.0.8.tar.gz
+          tar xzvf apache-tomcat-11.0.8.tar.gz
+          mv apache-tomcat-11.0.8 tomcat
+          
+          cp target/*.war tomcat/webapps/vista_war_exploded.war
+          
+          chmod +x tomcat/bin/*.sh
+          ./tomcat/bin/startup.sh
+
+      # 5. Darle tiempo a Tomcat e Hibernate para arrancar y conectar a MySQL
+      - name: Esperar a que el servidor inicie
+        run: sleep 20
+
+      # 6. Ejecutar las pruebas de Postman
+      # Asegúrate de que la ruta coincida con la carpeta donde guardaste tu JSON en el repo
+      - name: Correr Pruebas de API con Newman
+        run: newman run ./test/Pruebas CELS.postman_collection.json
+
+      # 7. Subir el artefacto compilado
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CELS-Build-Artifacts
+          path: target/*.war

@@ -262,7 +262,7 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/vista_war_exploded/eliminarMaterial?id=1",
+          "raw": "http://localhost:8080/vista_war_exploded/eliminarMaterial?id={{material_id}}",
           "protocol": "http",
           "host": [
             "localhost"
@@ -275,7 +275,7 @@
           "query": [
             {
               "key": "id",
-              "value": "1"
+              "value": "{{material_id}}"
             }
           ]
         }
@@ -308,7 +308,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?{{material_id}}",
+          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?id={{material_id}}",
           "protocol": "http",
           "host": [
             "localhost"
@@ -320,8 +320,8 @@
           ],
           "query": [
             {
-              "key": "{{material_id}}",
-              "value": null
+              "key": "id",
+              "value": "{{material_id}}"
             }
           ]
         }

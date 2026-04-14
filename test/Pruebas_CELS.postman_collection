@@ -8,75 +8,6 @@
   },
   "item": [
     {
-      "name": "Pruebas API matierales",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Status code is 200\", function () {\r",
-              "    pm.response.to.have.status(200);\r",
-              "});\r",
-              "\r",
-              "pm.test(\"Es un JSON válido\", function () {\r",
-              "    pm.response.to.be.json;\r",
-              "});\r",
-              "\r",
-              "pm.test(\"La búsqueda retornó resultados\", function () {\r",
-              "    var jsonData = pm.response.json();\r",
-              "    pm.expect(jsonData).to.be.an('array');\r",
-              "});\r",
-              "\r",
-              "const schema = {\r",
-              "  \"type\": \"array\",\r",
-              "  \"items\": {\r",
-              "    \"type\": \"object\",\r",
-              "    \"properties\": {\r",
-              "      \"id\": { \"type\": \"number\" },\r",
-              "      \"nombre\": { \"type\": \"string\" },\r",
-              "      \"costo\": { \"type\": \"number\" },\r",
-              "      \"tipo_material\": { \"type\": \"string\" }\r",
-              "    },\r",
-              "    \"required\": [\"id\", \"nombre\"]\r",
-              "  }\r",
-              "};\r",
-              "\r",
-              "pm.test(\"La estructura de los materiales es correcta\", function () {\r",
-              "    pm.response.to.have.jsonSchema(schema);\r",
-              "});\r",
-              ""
-            ],
-            "type": "text/javascript",
-            "packages": {},
-            "requests": {}
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?texto=tubo",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "8080",
-          "path": [
-            "vista_war_exploded",
-            "buscarMateriales"
-          ],
-          "query": [
-            {
-              "key": "texto",
-              "value": "tubo"
-            }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
       "name": "Pruebas API matierales no exitosa",
       "event": [
         {
@@ -178,6 +109,75 @@
       "response": []
     },
     {
+      "name": "Pruebas API matierales",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Es un JSON válido\", function () {\r",
+              "    pm.response.to.be.json;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"La búsqueda retornó resultados\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an('array');\r",
+              "});\r",
+              "\r",
+              "const schema = {\r",
+              "  \"type\": \"array\",\r",
+              "  \"items\": {\r",
+              "    \"type\": \"object\",\r",
+              "    \"properties\": {\r",
+              "      \"id\": { \"type\": \"number\" },\r",
+              "      \"nombre\": { \"type\": \"string\" },\r",
+              "      \"costo\": { \"type\": \"number\" },\r",
+              "      \"tipo_material\": { \"type\": \"string\" }\r",
+              "    },\r",
+              "    \"required\": [\"id\", \"nombre\"]\r",
+              "  }\r",
+              "};\r",
+              "\r",
+              "pm.test(\"La estructura de los materiales es correcta\", function () {\r",
+              "    pm.response.to.have.jsonSchema(schema);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?texto=cemento",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "vista_war_exploded",
+            "buscarMateriales"
+          ],
+          "query": [
+            {
+              "key": "texto",
+              "value": "cemento"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "Prueba API actualizar material",
       "event": [
         {
@@ -197,7 +197,7 @@
               "    \r",
               "    pm.expect(jsonData.costo).to.eql(250.00);\r",
               "    \r",
-              "    pm.expect(jsonData.id).to.eql(11); \r",
+              "    pm.expect(jsonData.id).to.eql(1); \r",
               "});"
             ],
             "type": "text/javascript",
@@ -211,7 +211,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"id\": 11, \r\n    \"nombre\": \"cemento cruz azul\",\r\n    \"costo\": 250.00,\r\n    \"tipoMaterial\": \"construccion\",\r\n    \"tipoUnidad\": \"OTRO\"\r\n}",
+          "raw": "{\r\n    \"id\": 1, \r\n    \"nombre\": \"cemento cruz azul\",\r\n    \"costo\": 250.00,\r\n    \"tipoMaterial\": \"construccion\",\r\n    \"tipoUnidad\": \"OTRO\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -262,7 +262,7 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/vista_war_exploded/eliminarMaterial?id=11",
+          "raw": "http://localhost:8080/vista_war_exploded/eliminarMaterial?id=1",
           "protocol": "http",
           "host": [
             "localhost"
@@ -275,7 +275,7 @@
           "query": [
             {
               "key": "id",
-              "value": "11"
+              "value": "1"
             }
           ]
         }
@@ -308,7 +308,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?id=11",
+          "raw": "http://localhost:8080/vista_war_exploded/buscarMateriales?{{material_id}}",
           "protocol": "http",
           "host": [
             "localhost"
@@ -320,8 +320,8 @@
           ],
           "query": [
             {
-              "key": "id",
-              "value": "11"
+              "key": "{{material_id}}",
+              "value": null
             }
           ]
         }

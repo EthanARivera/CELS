@@ -68,6 +68,10 @@ jobs:
       - name: Correr Pruebas de API con Newman
         run: newman run ./test/Pruebas_CELS.postman_collection.json
 
+      - name: Mostrar consola de Tomcat
+        if: always()
+        run: cat tomcat/logs/catalina.out
+
       # 7. Subir el artefacto compilado
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

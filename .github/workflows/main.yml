@@ -48,11 +48,12 @@ jobs:
         run: npm install -g newman
 
       - name: Auditar archivo de conexión a BD
+        continue-on-error: true
         run: |
           echo "=== Buscando y mostrando hibernate.cfg.xml o persistence.xml ==="
-
-          find target/ -name "hibernate.cfg.xml" -exec cat {} \;
-          find target/ -name "persistence.xml" -exec cat {} \;
+          # El punto '.' hace que busque en todas las subcarpetas mágicamente
+          find . -name "hibernate.cfg.xml" -exec cat {} \;
+          find . -name "persistence.xml" -exec cat {} \;
 
       - name: Auditar servicio MySQL
         run: |

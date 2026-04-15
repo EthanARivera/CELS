@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -154,7 +155,7 @@ public class AltaCotizacionBeanUI implements Serializable {
 
                 // Crear una cotización NUEVA
                 cotizacion = new Cotizacion();
-                cotizacion.setFecha(LocalDate.now());
+                cotizacion.setFechaCreacion(Instant.now());
                 cotizacion.setIdUsuario(usuarioActivo);
 
                 listaMateriales = new ArrayList<>();
@@ -177,7 +178,7 @@ public class AltaCotizacionBeanUI implements Serializable {
 
         //      FLUJO NORMAL (NUEVA COTIZACIÓN)
         cotizacion = new Cotizacion();
-        cotizacion.setFecha(LocalDate.now());
+        cotizacion.setFechaCreacion(Instant.now());
         cotizacion.setIdUsuario(usuarioActivo);
         cotizacion.setCotizacionMateriales(new LinkedHashSet<>());
         cotizacion.setCotizacionManoDeObras(new LinkedHashSet<>());
@@ -541,7 +542,7 @@ public class AltaCotizacionBeanUI implements Serializable {
             // Cmpos simples
             cotizacion.setCliente(c.getCliente());
             cotizacion.setDescripcion(c.getDescripcion());
-            cotizacion.setFecha(c.getFecha());
+            cotizacion.setFechaCreacion(c.getFechaCreacion());
             tipoProyecto = c.getTipoProyecto();
 
             // Materiales
@@ -617,7 +618,7 @@ public class AltaCotizacionBeanUI implements Serializable {
             Cotizacion nueva = new Cotizacion();
             nueva.setCliente(cotizacion.getCliente());
             nueva.setDescripcion(cotizacion.getDescripcion());
-            nueva.setFecha(LocalDate.now());
+            nueva.setFechaCreacion(Instant.now());
             nueva.setIdUsuario(usuarioActivo);
             nueva.setTipoProyecto(tipoProyecto);
             nueva.setPrecioFinal(precioFinal);

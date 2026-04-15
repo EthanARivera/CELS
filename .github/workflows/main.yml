@@ -30,15 +30,19 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
-      - name: Forzar IPv4 en persistence.xml
-        run: |
-          find . -name "persistence.xml" -exec sed -i 's/localhost:3307/127.0.0.1:3307/g' {} \;
-          echo "=== Verificando el cambio a 127.0.0.1 ==="
-          find . -name "persistence.xml" -exec cat {} \;
 
       # 1. Compilar el proyecto
       - name: Build with Maven
         run: mvn -B install --file pom.xml
+
+      - name: Inspeccionar el WAR generado
+        continue-on-error: true
+        run: |
+          echo "=== 1. ¿Qué URL quedó guardada exactamente dentro del WAR? ==="
+          unzip -p target/*.war WEB-INF/classes/META-INF/persistence.xml | grep "jakarta.persistence.jdbc.url"
+          
+          echo "=== 2. ¿Maven empacó el Driver de MySQL en las librerías? ==="
+          unzip -l target/*.war | grep mysql
 
       # 2. Correr pruebas unitarias de Java
       - name: Run Tests
@@ -62,9 +66,6 @@ jobs:
           wget https://archive.apache.org/dist/tomcat/tomcat-11/v11.0.8/bin/apache-tomcat-11.0.8.tar.gz
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
-          
-          # AHORA SÍ: Como la carpeta "tomcat" ya existe, podemos modificar el server.xml
-          sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="8080" protocol="HTTP\/1.1" relaxedPathChars="\{\}|[]" relaxedQueryChars="\{\}|[]"/' tomcat/conf/server.xml
           
           # TRUCO 1: Descargar el Driver de MySQL a la carpeta lib
           wget https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar -P tomcat/lib/

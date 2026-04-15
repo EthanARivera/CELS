@@ -78,8 +78,15 @@ jobs:
           ./tomcat/bin/startup.sh
 
       # 5. Darle tiempo a Tomcat e Hibernate para arrancar y conectar a MySQL
-      - name: Esperar a que el servidor inicie
-        run: sleep 20
+      - name: Esperar a que los servicios estén listos
+        run: |
+          echo "Esperando a MySQL..."
+          until nc -zv 127.0.0.1 3307; do
+            sleep 2
+          done
+          echo "MySQL está arriba. Iniciando Tomcat..."
+          ./tomcat/bin/startup.sh
+          sleep 30 # Le damos 30 segundos a Hibernate para crear las tablas
 
       # 6. Ejecutar las pruebas de Postman yes
       # Asegúrate de que la ruta coincida con la carpeta donde guardaste tu JSON en el repo

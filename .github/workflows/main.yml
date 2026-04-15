@@ -103,7 +103,7 @@ jobs:
           cp -r reportes-api/* build/reporte_api/ || true
           cp -r playwright-report/* build/reporte_ui/ || true
 
-      # --- SECCIÓN DE DESCARGA DE ARTEFACTOS a---
+      # --- SECCIÓN DE DESCARGA DE ARTEFACTOS aa---
       - name: Subir Artefacto WAR
         uses: actions/upload-artifact@v4
         with:

@@ -87,7 +87,7 @@ jobs:
           cat tomcat/logs/catalina.out | grep -i "error\|exception\|hibernate" | tail -n 30
           
           echo "Inyectando usuarios y datos de prueba a MySQL..."
-          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels < ./BD_Script/tu_script_de_datos.sql
+          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels < ./BD_Script/CELS.sql
 
       - name: Correr Pruebas de API con Newman
         run: newman run ./test/Pruebas_CELS.postman_collection.json

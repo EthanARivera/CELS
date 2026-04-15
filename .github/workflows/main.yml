@@ -32,13 +32,19 @@ jobs:
           cache: maven
 
       # SIMULACIÓN INTELLIJ: Cambiamos tu configuración local a la configuración de nube
-      - name: Traducir URL de BD para la nube
+      - name: Traducir URL y unificar persistence.xml
         run: |
-          echo "Adaptando persistence.xml (Cambiando localhost:3307 a 127.0.0.1:3306)..."
+          echo "1. Cambiando localhost a 127.0.0.1..."
           find . -name "persistence.xml" -exec sed -i 's/localhost:3307/127.0.0.1:3306/g' {} \;
           
-          echo "=== ASÍ QUEDÓ TU ARCHIVO (Verifica que no esté roto) ==="
-          find . -name "persistence.xml" -exec cat {} \;
+          echo "2. Unificando contraseñas (Cambiando root a dino0899)..."
+          find . -name "persistence.xml" -exec sed -i 's/value="root"/value="dino0899"/g' {} \;
+          
+          echo "3. Actualizando sintaxis de Hibernate a Jakarta en entidadPU para evitar error [null]..."
+          find . -name "persistence.xml" -exec sed -i 's/hibernate.connection.url/jakarta.persistence.jdbc.url/g' {} \;
+          find . -name "persistence.xml" -exec sed -i 's/hibernate.connection.username/jakarta.persistence.jdbc.user/g' {} \;
+          find . -name "persistence.xml" -exec sed -i 's/hibernate.connection.password/jakarta.persistence.jdbc.password/g' {} \;
+          find . -name "persistence.xml" -exec sed -i 's/hibernate.connection.driver_class/jakarta.persistence.jdbc.driver/g' {} \;
 
       # SIMULACIÓN INTELLIJ: Botón "Build Project" (Empaquetar Multi-Módulo)
       - name: Build with Maven

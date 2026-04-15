@@ -33,15 +33,9 @@ jobs:
 
       - name: Corregir persistence.xml (Sin romper el usuario)
         run: |
-          # 1. Cambiamos localhost a 127.0.0.1
           find . -name "persistence.xml" -exec sed -i 's/localhost/127.0.0.1/g' {} \;
-          
-          # 2. EL ARREGLO: Solo cambiamos la CONTRASEÑA "root" a "dino0899" (dejando al usuario intacto)
           find . -name "persistence.xml" -exec sed -i 's/password" value="root"/password" value="dino0899"/g' {} \;
-          
-          # 3. Blindaje extra para MySQL 8 en Linux
           find . -name "persistence.xml" -exec sed -i 's/useSSL=false/useSSL=false\&amp;allowPublicKeyRetrieval=true/g' {} \;
-          
           find . -name "persistence.xml" -exec sed -i 's/value="none"/value="update"/g' {} \;
 
       - name: Build with Maven
@@ -52,9 +46,9 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Instalar Newman y Playwright
+      - name: Instalar Newman, Playwright y Reportes
         run: |
-          npm install -g newman
+          npm install -g newman newman-reporter-htmlextra
           npm install -D @playwright/test
           npx playwright install --with-deps chromium
 
@@ -64,7 +58,6 @@ jobs:
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
           
-          # Relajar seguridad para Postman
           sed -i 's/<Connector port="8080"/<Connector port="8080" relaxedPathChars="[]|{}" relaxedQueryChars="[]|{}" /g' tomcat/conf/server.xml
           
           find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
@@ -79,28 +72,44 @@ jobs:
           echo "Esperando 40 segundos para que Hibernate cree las tablas vacías..."
           sleep 40
           
-          echo "=== 🕵️‍♂️ DETECTIVE 1: ¿Qué tablas existen en la base de datos? ==="
-          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels -e "SHOW TABLES;"
-          
-          echo "=== 🕵️‍♂️ DETECTIVE 2: ¿Hibernate se quejó de algo en los logs? ==="
-          # Esto buscará cualquier error de Hibernate en las últimas líneas del log
-          cat tomcat/logs/catalina.out | grep -i "error\|exception\|hibernate" | tail -n 30
-          
           echo "Inyectando usuarios y datos de prueba a MySQL..."
-          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels < ./BD_Script/CELS.sql
+          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels < ./BD_Script/tu_script_de_datos.sql
 
       - name: Correr Pruebas de API con Newman
-        run: newman run ./test/Pruebas_CELS.postman_collection.json
+        run: |
+          mkdir -p reportes-api
+          newman run ./test/Pruebas_CELS.postman_collection.json -r cli,htmlextra --reporter-htmlextra-export reportes-api/reporte-api.html
 
       - name: Correr Pruebas de UI con Playwright
-        run: npx playwright test ./vista/src/test/java/ui/cels.spec.js
+        if: always()
+        run: npx playwright test ./vista/src/test/java/ui/cels.spec.js --reporter=html
 
       - name: Mostrar consola de Tomcat
         if: always()
         run: cat tomcat/logs/catalina.out
 
-      - name: Upload Artifact
+      # --- AQUÍ ESTÁ EL PASO QUE PEDISTE ---
+      - name: Build Reportes (Consolidar en carpeta build)
+        if: always()
+        run: |
+          mkdir -p build/reporte_api
+          mkdir -p build/reporte_ui
+          
+          # Copiamos los reportes a la carpeta final de build
+          # El "|| true" evita que el workflow falle si alguna prueba colapsó antes de generar el reporte
+          cp -r reportes-api/* build/reporte_api/ || true
+          cp -r playwright-report/* build/reporte_ui/ || true
+
+      # --- SECCIÓN DE DESCARGA DE ARTEFACTOS ---
+      - name: Subir Artefacto WAR
         uses: actions/upload-artifact@v4
         with:
           name: CELS-Build-Artifacts
           path: '**/*.war'
+
+      - name: Subir Consolidado de Reportes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Reportes-HTML-CELS
+          path: build/

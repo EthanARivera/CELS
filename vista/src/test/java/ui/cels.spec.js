@@ -33,8 +33,11 @@ test.describe('UI CASE 1: Login and Role-based Redirection', () => {
 
             await rolePage.goto(`${BASE_URL}/login.xhtml`);
             await rolePage.locator("input[type='text']").fill(email);
+            await rolePage.waitForTimeout(2000);
             await rolePage.locator("input[type='password']").fill(password);
+            await rolePage.waitForTimeout(2000);
             await rolePage.locator("button:has-text('Iniciar sesion')").click();
+            await rolePage.waitForTimeout(2000);
 
             // Espera a que la URL cambie a la página esperada
             await rolePage.waitForURL(new RegExp(`.*${expectedPage}.*`));
@@ -69,8 +72,11 @@ test.describe('UI CASE 1: Login and Role-based Redirection', () => {
         // CASO B: Contraseña incorrecta
         // ==========================================
         await page.locator("input[type='text']").fill("john.garcia.viray@uabc.edu.mx");
+        await page.waitForTimeout(2000);
         await page.locator("input[type='password']").fill("wrongpassword");
+        await page.waitForTimeout(2000);
         await page.locator("button:has-text('Iniciar sesion')").click();
+        await page.waitForTimeout(2000);
 
         // Aquí puede que tu sistema lance rojo (error) o amarillo (warn), así que abarcamos todos
         const errorMessage = page.locator(".ui-messages-error, .ui-messages-warn, .ui-messages").first();
@@ -87,8 +93,10 @@ test.describe('UI CASE 2: Material CRUD and AJAX Search', () => {
     test('testMaterialCRUDAndAjax', async ({ page }) => {
         // Asumiendo que el login de Gerente lleva al módulo de materiales
         await loginAs(page, "john.garcia.viray@uabc.edu.mx", "dino0899");
+        await page.waitForTimeout(1000);
 
         await page.goto(`${BASE_URL}/consulta_materiales.xhtml`);
+        await page.waitForTimeout(1000);
 
         // 1. Capturar Material
         const uniqueSuffix = Date.now();
@@ -96,6 +104,7 @@ test.describe('UI CASE 2: Material CRUD and AJAX Search', () => {
 
         // Clic en el botón Agregar de la tabla (asumo que este te llevó a la pantalla de la foto)
         await page.locator("button:has-text('Agregar'), a:has-text('Agregar')").first().click();
+        await page.waitForTimeout(1000);
 
         // Espera a que los inputs del modal/página sean visibles
         const inputs = page.locator("input[type='text']");
@@ -103,12 +112,15 @@ test.describe('UI CASE 2: Material CRUD and AJAX Search', () => {
 
         // 1er Cuadro: Nombre del Material
         await inputs.nth(0).fill(uniqueMatName);
+        await page.waitForTimeout(1000);
 
         // 2do Cuadro: Tipo de Material
         await inputs.nth(1).fill("Lona");
+        await page.waitForTimeout(1000);
 
         // 3er Cuadro: Costo por Unidad
         await inputs.nth(2).fill("200.50");
+        await page.waitForTimeout(1000);
 
         // 4to Campo: Tipo de Unidad (Menú desplegable de PrimeFaces)
         // Hacemos clic en la flechita para abrir opciones
@@ -118,9 +130,11 @@ test.describe('UI CASE 2: Material CRUD and AJAX Search', () => {
             // Hacemos clic en la segunda opción de la lista (ej. MTS, PZAS, etc.)
             await page.locator("li.ui-selectonemenu-item").nth(1).click();
         }
+        await page.waitForTimeout(1000);
 
         // Clic en tu botón azul "Agregar"
         await page.locator("button:has-text('Agregar')").first().click();
+        await page.waitForTimeout(1000);
 
         // 2. Validar que aparece en la búsqueda (AJAX)
         const searchInput = page.locator("input[placeholder*='Buscar'], input[id*='buscar']").first();
@@ -138,10 +152,11 @@ test.describe('UI CASE 2: Material CRUD and AJAX Search', () => {
         const materialRow = page.locator(`td:has-text('${uniqueMatName}')`);
         await expect(materialRow).toBeVisible();
 
-        await page.waitForTimeout(5000);
+        await page.waitForTimeout(1000);
 
         // 3. Modificarlo
         await materialRow.locator("..").locator("button:has-text('Editar'), button[icon*='pencil']").click();
+        await page.waitForTimeout(1000);
 
         // 1. Ubicamos específicamente la ventanita (modal) de "Editar Material"
         const modal = page.locator(".ui-dialog").filter({ hasText: 'Editar Material' });
@@ -153,12 +168,15 @@ test.describe('UI CASE 2: Material CRUD and AJAX Search', () => {
         const modalInputs = modal.locator("input[type='text']");
 
         await modalInputs.nth(3).fill("250.75");
+        await page.waitForTimeout(1000);
 
         // 4. Hacemos clic en el botón Guardar que pertenece a ese modal
         await modal.locator("button:has-text('Guardar')").click();
+        await page.waitForTimeout(1000);
 
         // 4. Eliminarlo
         const editedMaterialRow = page.locator(`td:has-text('${uniqueMatName}')`);
+        await page.waitForTimeout(1000);
         await editedMaterialRow.locator("..").locator("button:has-text('Eliminar'), button[icon*='trash']").click();
 
         // Manejar diálogo de confirmación si existe
@@ -174,11 +192,13 @@ test.describe('UI CASE 2: Material CRUD and AJAX Search', () => {
     test('testMaterialCRUD_Fail_Duplicate', async ({ page }) => {
         await loginAs(page, "john.garcia.viray@uabc.edu.mx", "dino0899");
         await page.goto(`${BASE_URL}/consulta_materiales.xhtml`);
+        await page.waitForTimeout(1000);
 
         await page.locator("button:has-text('Agregar'), a:has-text('Agregar')").first().click();
 
         // Intentar guardar un material vacío
         await page.locator("button:has-text('Agregar')").first().click();
+        await page.waitForTimeout(1000);
 
         // Esperar mensajes de error
         const errorMsgs = page.locator(".ui-messages-error, .ui-message-error");
@@ -194,10 +214,12 @@ test.describe('UI CASE 3: Quote Creation and Registration', () => {
     test('testAltaCotizacion_Success', async ({ page }) => {
         await loginAs(page, "abraham.flores.cabanillas@uabc.edu.mx", "123");
         await page.goto(`${BASE_URL}/registroCotizacion.xhtml`);
+        await page.waitForTimeout(1000);
 
         // 1. Crear cotización (Buscando por Placeholder en lugar de ID)
         await page.locator("input[placeholder='[Nombre]']").fill("Cliente Automatizado");
         await page.locator("textarea[placeholder*='descripción']").fill("Descripción Automática del proyecto Playwright");
+        await page.waitForTimeout(1000);
 
         // 2. Dropdown de TipoProyecto
         const dropdown = page.locator(".ui-selectonemenu-trigger").first();
@@ -205,6 +227,7 @@ test.describe('UI CASE 3: Quote Creation and Registration', () => {
             await dropdown.click();
             await page.locator("li.ui-selectonemenu-item").nth(1).click();
         }
+        await page.waitForTimeout(1000);
 
         // ==========================================
         // AÑADIR MATERIAL (Awesomplete)
@@ -213,6 +236,8 @@ test.describe('UI CASE 3: Quote Creation and Registration', () => {
 
         const primeraFila = page.locator("#tablaMateriales tbody tr").first();
         const inputMaterial = primeraFila.locator("input[type='text']").first();
+
+        await page.waitForTimeout(1000);
 
         // Clickeamos el input y tecleamos la letra 'a' como un humano para despertar al autocompletado
         await inputMaterial.click();
@@ -226,12 +251,15 @@ test.describe('UI CASE 3: Quote Creation and Registration', () => {
         // Agregamos la cantidad (es el segundo input dentro de la fila)
         await primeraFila.locator("input").nth(1).fill("10");
         // ==========================================
+        await page.waitForTimeout(1000);
 
         // 3. Ganancia (En tu HTML el ID es indiceGanancia, respetamos mayúsculas/minúsculas)
         await page.locator("input[id*='indiceGanancia']").fill("20");
+        await page.waitForTimeout(1000);
 
         // 4. Acción Generar Cotización
         await page.locator("button:has-text('Generar Cotización')").click();
+        await page.waitForTimeout(1000);
 
         // 5. Verificar Mensaje de Éxito (Solo el de info, y tomamos el primero para evitar Strict Mode)
         await expect(page.locator("#formCotizacion\\:msgs .ui-messages-info, #formCotizacion\\:msgs").first()).toBeVisible({ timeout: 7000 });
@@ -241,7 +269,7 @@ test.describe('UI CASE 3: Quote Creation and Registration', () => {
     test('testAltaCotizacion_Fail_MissingDetails', async ({ page }) => {
         await loginAs(page, "abraham.flores.cabanillas@uabc.edu.mx", "123");
         await page.goto(`${BASE_URL}/registroCotizacion.xhtml`);
-
+        await page.waitForTimeout(1000);
         // 1. Intentamos generar la cotización sin llenar nada
         await page.locator("button:has-text('Generar Cotización')").click();
 

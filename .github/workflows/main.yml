@@ -16,10 +16,10 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: dino0899
           MYSQL_DATABASE: cels
-        # AQUÍ ESTÁ LA MAGIA: Tu persistence busca el 3307, GitHub lo redirige al 3306 interno.
+        # Usamos el puerto estándar de MySQL en la nube para evitar bloqueos de red
         ports:
-          - 3307:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - uses: actions/checkout@v4
@@ -31,20 +31,19 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Preparar persistence.xml para GitHub Actions
+      # SIMULACIÓN INTELLIJ: Cambiamos tu configuración local a la configuración de nube
+      - name: Traducir URL de BD para la nube
         run: |
-          find . -name "persistence.xml" -exec sed -i 's/localhost:3307/127.0.0.1:3307/g' {} \;
-          echo "XML actualizado para la nube."
+          echo "Adaptando persistence.xml (Cambiando localhost:3307 a 127.0.0.1:3306)..."
+          find . -name "persistence.xml" -exec sed -i 's/localhost:3307/127.0.0.1:3306/g' {} \;
+          
+          echo "=== ASÍ QUEDÓ TU ARCHIVO (Verifica que no esté roto) ==="
+          find . -name "persistence.xml" -exec cat {} \;
 
-      # 1. Compilar el proyecto
+      # SIMULACIÓN INTELLIJ: Botón "Build Project" (Empaquetar Multi-Módulo)
       - name: Build with Maven
         run: mvn -B install --file pom.xml
 
-      # 2. Correr pruebas unitarias de Java
-      - name: Run Tests
-        run: mvn test
-
-      # 3. Preparar el entorno para Newman y Playwright
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -56,56 +55,47 @@ jobs:
           npm install -D @playwright/test
           npx playwright install --with-deps chromium
 
-      # 4. Descargar y preparar Tomcat
+      # SIMULACIÓN INTELLIJ: Configurar el Servidor Local Tomcat
       - name: Descargar y preparar Tomcat
         run: |
           wget https://archive.apache.org/dist/tomcat/tomcat-11/v11.0.8/bin/apache-tomcat-11.0.8.tar.gz
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
           
-          # TRUCO 1: Descargar el Driver de MySQL a la carpeta lib
+          # Inyectar el Driver directamente al corazón de Tomcat para evitar el error [null]
           wget https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar -P tomcat/lib/
           
-          # TRUCO 2: Permitir caracteres especiales en las properties
-          echo 'org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true' >> tomcat/conf/catalina.properties
-          echo 'org.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true' >> tomcat/conf/catalina.properties
+          # Relajar la seguridad para Postman
+          sed -i 's/<Connector port="8080"/<Connector port="8080" relaxedPathChars="[]|{}" relaxedQueryChars="[]|{}" /g' tomcat/conf/server.xml
           
-          # Copiar el WAR y dar permisos
+          # Mover tu proyecto al servidor
           find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
           chmod +x tomcat/bin/*.sh
 
-      # 5. Esperar a MySQL e iniciar Tomcat una sola vez
-      - name: Iniciar servicios
+      # SIMULACIÓN INTELLIJ: Botón de "Play" verde en Tomcat
+      - name: Iniciar Tomcat y BD
         run: |
-          echo "Esperando a MySQL en el puerto 3307..."
-          until nc -zv 127.0.0.1 3307; do
-            echo "MySQL aún no responde, esperando..."
-            sleep 2
-          done
+          echo "Dando 20 segundos para que MySQL inicie sus tablas internas..."
+          sleep 20
           
-          echo "MySQL está arriba. Iniciando Tomcat por única vez..."
-          
-          # Forzamos a Java/Tomcat a no usar redes IPv6
+          echo "Iniciando Tomcat..."
           export JAVA_OPTS="-Djava.net.preferIPv4Stack=true"
           ./tomcat/bin/startup.sh
           
-          echo "Esperando a que la aplicación despliegue e Hibernate cree las tablas (40 seg)..."
+          echo "Tomcat corriendo. Esperando 40 segundos para despliegue de Hibernate..."
           sleep 40
 
-      # 6. Ejecutar las pruebas de API (Postman)
+      # SIMULACIÓN INTELLIJ: Ejecutar tus pruebas
       - name: Correr Pruebas de API con Newman
         run: newman run ./test/Pruebas_CELS.postman_collection.json
 
-      # 7. Ejecutar las pruebas de Interfaz de Usuario (Playwright)
       - name: Correr Pruebas de UI con Playwright
-        # Ojo: Asegúrate de que la ruta coincida con donde tienes tu cels.spec.js
         run: npx playwright test ./vista/src/test/java/ui/cels.spec.js
 
-      - name: Mostrar consola de Tomcat (Útil si algo falla)
+      - name: Mostrar consola de Tomcat
         if: always()
         run: cat tomcat/logs/catalina.out
 
-      # 8. Subir el artefacto compilado
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:

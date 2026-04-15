@@ -66,27 +66,32 @@ jobs:
           sudo apt-get update && sudo apt-get install -y netcat-openbsd
           nc -zv 127.0.0.1 3307
       # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
-      - name: Descargar e iniciar Tomcat
+      - name: Descargar y preparar Tomcat
         run: |
           wget https://archive.apache.org/dist/tomcat/tomcat-11/v11.0.8/bin/apache-tomcat-11.0.8.tar.gz
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
           
+          # Copiamos el WAR a webapps
           find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
           
+          # Damos permisos pero NO ejecutamos startup.sh todavía
           chmod +x tomcat/bin/*.sh
-          ./tomcat/bin/startup.sh
 
-      # 5. Darle tiempo a Tomcat e Hibernate para arrancar y conectar a MySQL
-      - name: Esperar a que los servicios estén listos
+      # 5. Esperar a MySQL e iniciar Tomcat una sola vez
+      - name: Iniciar servicios
         run: |
-          echo "Esperando a MySQL..."
+          echo "Esperando a MySQL en el puerto 3307..."
           until nc -zv 127.0.0.1 3307; do
+            echo "MySQL aún no responde, esperando..."
             sleep 2
           done
-          echo "MySQL está arriba. Iniciando Tomcat..."
+          
+          echo "MySQL está arriba. Iniciando Tomcat por única vez..."
           ./tomcat/bin/startup.sh
-          sleep 30 # Le damos 30 segundos a Hibernate para crear las tablas
+          
+          echo "Esperando a que la aplicación despliegue e Hibernate cree las tablas..."
+          sleep 40
 
       # 6. Ejecutar las pruebas de Postman yes
       # Asegúrate de que la ruta coincida con la carpeta donde guardaste tu JSON en el repo

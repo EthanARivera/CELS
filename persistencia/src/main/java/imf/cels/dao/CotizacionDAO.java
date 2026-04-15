@@ -33,7 +33,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Cotizacion> obtenerTodosPorFecha(){
         return entityManager
-                .createQuery("SELECT c FROM Cotizacion c ORDER BY c.fecha DESC", Cotizacion.class)
+                .createQuery("SELECT c FROM Cotizacion c ORDER BY c.fechaCreacion DESC", Cotizacion.class)
                 .getResultList();
     }
 
@@ -51,13 +51,13 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Cotizacion> obtenerPorAnio(int anio){
         return entityManager
-                .createQuery("SELECT c FROM Cotizacion c WHERE YEAR(c.fecha) = :anio ORDER BY c.fecha DESC", Cotizacion.class)
+                .createQuery("SELECT c FROM Cotizacion c WHERE YEAR(c.fechaCreacion) = :anio ORDER BY c.fechaCreacion DESC", Cotizacion.class)
                 .setParameter("anio", anio).getResultList();
     }
 
     public List<Cotizacion> obtenerPorMes(int mes){
         return entityManager
-                .createQuery("SELECT c FROM Cotizacion c WHERE MONTH(c.fecha) = :mes ORDER BY c.fecha DESC", Cotizacion.class)
+                .createQuery("SELECT c FROM Cotizacion c WHERE MONTH(c.fechaCreacion) = :mes ORDER BY c.fechaCreacion DESC", Cotizacion.class)
                 .setParameter("mes", mes).getResultList();
     }
 
@@ -69,13 +69,13 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Integer> obtenerAniosDisponibles(){
         return entityManager
-                .createQuery("SELECT DISTINCT YEAR(c.fecha) FROM Cotizacion c ORDER BY YEAR(c.fecha) DESC",  Integer.class)
+                .createQuery("SELECT DISTINCT YEAR(c.fechaCreacion) FROM Cotizacion c ORDER BY YEAR(c.fechaCreacion) DESC",  Integer.class)
                 .getResultList();
     }
 
     public List<Integer> obtenerMesesDisponibles(){
         return entityManager
-                .createQuery("SELECT DISTINCT MONTH(c.fecha) FROM Cotizacion c ORDER BY MONTH(c.fecha)", Integer.class)
+                .createQuery("SELECT DISTINCT MONTH(c.fechaCreacion) FROM Cotizacion c ORDER BY MONTH(c.fechaCreacion)", Integer.class)
                 .getResultList();
     }
 
@@ -83,7 +83,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Cotizacion> obtenerTodosPorFecha(Integer idUsuario) {
         return entityManager
-                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY c.fecha DESC", Cotizacion.class)
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY c.fechaCreacion DESC", Cotizacion.class)
                 .setParameter("idUsuario", idUsuario)
                 .getResultList();
     }
@@ -97,7 +97,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Cotizacion> obtenerPorAnio(Integer idUsuario, int anio) {
         return entityManager
-                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND YEAR(c.fecha) = :anio ORDER BY c.fecha DESC", Cotizacion.class)
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND YEAR(c.fechaCreacion) = :anio ORDER BY c.fechaCreacion DESC", Cotizacion.class)
                 .setParameter("idUsuario", idUsuario)
                 .setParameter("anio", anio)
                 .getResultList();
@@ -105,7 +105,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Cotizacion> obtenerPorMes(Integer idUsuario, int mes) {
         return entityManager
-                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND MONTH(c.fecha) = :mes ORDER BY c.fecha DESC", Cotizacion.class)
+                .createQuery("SELECT c FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario AND MONTH(c.fechaCreacion) = :mes ORDER BY c.fechaCreacion DESC", Cotizacion.class)
                 .setParameter("idUsuario", idUsuario)
                 .setParameter("mes", mes)
                 .getResultList();
@@ -121,14 +121,14 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Integer> obtenerAniosDisponibles(Integer idUsuario) {
         return entityManager
-                .createQuery("SELECT DISTINCT YEAR(c.fecha) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY YEAR(c.fecha) DESC", Integer.class)
+                .createQuery("SELECT DISTINCT YEAR(c.fechaCreacion) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY YEAR(c.fechaCreacion) DESC", Integer.class)
                 .setParameter("idUsuario", idUsuario)
                 .getResultList();
     }
 
     public List<Integer> obtenerMesesDisponibles(Integer idUsuario) {
         return entityManager
-                .createQuery("SELECT DISTINCT MONTH(c.fecha) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY MONTH(c.fecha)", Integer.class)
+                .createQuery("SELECT DISTINCT MONTH(c.fechaCreacion) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY MONTH(c.fechaCreacion)", Integer.class)
                 .setParameter("idUsuario", idUsuario)
                 .getResultList();
     }
@@ -145,7 +145,7 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
             throw new IllegalArgumentException("No se encuentra ningún usuario vendedor activo. ");
         }
 
-        if(cotizacion.getFecha() == null) {
+        if(cotizacion.getFechaCreacion() == null) {
             throw new IllegalArgumentException("La fecha no se puede recuperar de manera correcta. ");
         }
 
@@ -262,14 +262,14 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
 
     public List<Cotizacion> obtenerCotizacionesContratoAprobado() {
         return entityManager.createQuery(
-                "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true ORDER BY c.fecha DESC",
+                "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true ORDER BY c.fechaCreacion DESC",
                 Cotizacion.class
         ).getResultList();
     }
 
     public List<Cotizacion> obtenerCotizacionesContratoAprobadoPorUsuario(Integer idUsuario) {
         return entityManager.createQuery(
-                        "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true AND c.idUsuario.id = :id ORDER BY c.fecha DESC",
+                        "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true AND c.idUsuario.id = :id ORDER BY c.fechaCreacion DESC",
                         Cotizacion.class
                 )
                 .setParameter("id", idUsuario)

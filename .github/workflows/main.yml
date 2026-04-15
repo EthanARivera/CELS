@@ -46,6 +46,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Run Unit Tests
+        run: mvn test
+
       - name: Instalar Newman, Playwright y Reportes
         run: |
           npm install -g newman newman-reporter-htmlextra

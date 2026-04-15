@@ -16,7 +16,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: dino0899
           MYSQL_DATABASE: cels
-        # ¡EL TRUCO MAESTRO! Abrimos ambos puertos para que NINGÚN archivo falle.
         ports:
           - 3306:3306
           - 3307:3306
@@ -32,12 +31,16 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Estandarizar BD para la nube
+      - name: Corregir persistence.xml (Sin romper el usuario)
         run: |
-          # Solo cambiamos localhost por la IP pura y aseguramos que la contraseña sea la misma
-          # en TODOS los archivos persistence.xml que tengas escondidos.
+          # 1. Cambiamos localhost a 127.0.0.1
           find . -name "persistence.xml" -exec sed -i 's/localhost/127.0.0.1/g' {} \;
-          find . -name "persistence.xml" -exec sed -i 's/value="root"/value="dino0899"/g' {} \;
+          
+          # 2. EL ARREGLO: Solo cambiamos la CONTRASEÑA "root" a "dino0899" (dejando al usuario intacto)
+          find . -name "persistence.xml" -exec sed -i 's/password" value="root"/password" value="dino0899"/g' {} \;
+          
+          # 3. Blindaje extra para MySQL 8 en Linux
+          find . -name "persistence.xml" -exec sed -i 's/useSSL=false/useSSL=false\&amp;allowPublicKeyRetrieval=true/g' {} \;
 
       - name: Build with Maven
         run: mvn -B install --file pom.xml
@@ -58,9 +61,6 @@ jobs:
           wget https://archive.apache.org/dist/tomcat/tomcat-11/v11.0.8/bin/apache-tomcat-11.0.8.tar.gz
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
-          
-          # NOTA IMPORTANTE: Ya no descargamos el Driver manualmente para evitar el conflicto [null].
-          # Dejamos que Maven y tu proyecto se encarguen de eso.
           
           # Relajar seguridad para Postman
           sed -i 's/<Connector port="8080"/<Connector port="8080" relaxedPathChars="[]|{}" relaxedQueryChars="[]|{}" /g' tomcat/conf/server.xml

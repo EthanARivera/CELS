@@ -2,9 +2,9 @@ name: Java CI con Maven y Pruebas API (CELS Project)
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: [ "master", "main", "tests" ]
   pull_request:
-    branches: [ "master", "main" ]
+    branches: [ "master", "main", "tests" ]
 
 jobs:
   build:

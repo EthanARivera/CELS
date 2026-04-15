@@ -41,6 +41,8 @@ jobs:
           
           # 3. Blindaje extra para MySQL 8 en Linux
           find . -name "persistence.xml" -exec sed -i 's/useSSL=false/useSSL=false\&amp;allowPublicKeyRetrieval=true/g' {} \;
+          
+          find . -name "persistence.xml" -exec sed -i 's/value="none"/value="update"/g' {} \;
 
       - name: Build with Maven
         run: mvn -B install --file pom.xml

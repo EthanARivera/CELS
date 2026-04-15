@@ -68,14 +68,18 @@ jobs:
           find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
           chmod +x tomcat/bin/*.sh
 
-      - name: Iniciar Tomcat
+      - name: Iniciar Tomcat y Poblar BD
         run: |
           echo "Iniciando Tomcat..."
           export JAVA_OPTS="-Djava.net.preferIPv4Stack=true"
           ./tomcat/bin/startup.sh
           
-          echo "Esperando 40 segundos para despliegue completo..."
+          echo "Esperando 40 segundos para que Hibernate cree las tablas vacías..."
           sleep 40
+          
+          echo "Inyectando usuarios y datos de prueba a MySQL..."
+          # Reemplaza la ruta con el nombre exacto de tu archivo SQL donde tienes los INSERT de tus usuarios
+          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels < ./BD_Script/tu_script_de_datos.sql
 
       - name: Correr Pruebas de API con Newman
         run: newman run ./test/Pruebas_CELS.postman_collection.json

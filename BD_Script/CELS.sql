@@ -25,16 +25,6 @@ CREATE TABLE `cotizacion` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cotizacion`
---
-
-LOCK TABLES `cotizacion` WRITE;
-/*!40000 ALTER TABLE `cotizacion` DISABLE KEYS */;
-INSERT INTO `cotizacion` VALUES (1,2,NULL,'Caja Luminosa','Descripción Automática del proyecto Playwright','Cliente Automatizado',2586.00,0,0,'2026-04-14'),(3,2,NULL,'Caja Luminosa','Descripción Automática del proyecto Playwright','Cliente Automatizado',2586.00,0,0,'2026-04-14'),(5,2,NULL,'Caja Luminosa','Descripción Automática del proyecto Playwright','Cliente Automatizado',2586.00,0,0,'2026-04-14'),(7,2,NULL,'Caja Luminosa','Descripción Automática del proyecto Playwright','Cliente Automatizado',2586.00,0,0,'2026-04-14'),(9,2,NULL,'Caja Luminosa','Descripción Automática del proyecto Playwright','Cliente Automatizado',2586.00,0,0,'2026-04-14'),(11,2,NULL,'Caja Luminosa','Descripción Automática del proyecto Playwright','Cliente Automatizado',2586.00,0,0,'2026-04-14'),(13,2,NULL,'Caja Luminosa','Descripción Automática del proyecto Playwright','Cliente Automatizado',2586.00,0,0,'2026-04-14');
-/*!40000 ALTER TABLE `cotizacion` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `cotizacion_mano_de_obra`
 --
 
@@ -79,16 +69,6 @@ CREATE TABLE `cotizacion_material` (
                                        CONSTRAINT `fk_material` FOREIGN KEY (`id_material`) REFERENCES `material` (`id_material`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `cotizacion_material`
---
-
-LOCK TABLES `cotizacion_material` WRITE;
-/*!40000 ALTER TABLE `cotizacion_material` DISABLE KEYS */;
-INSERT INTO `cotizacion_material` VALUES (1,12,10.00,2155.00),(3,12,10.00,2155.00),(5,12,10.00,2155.00),(7,12,10.00,2155.00),(9,12,10.00,2155.00),(11,12,10.00,2155.00),(13,12,10.00,2155.00);
-/*!40000 ALTER TABLE `cotizacion_material` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `datos_encuesta`

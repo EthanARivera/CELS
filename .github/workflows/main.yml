@@ -30,6 +30,11 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+      - name: Forzar IPv4 en persistence.xml
+        run: |
+          find . -name "persistence.xml" -exec sed -i 's/localhost:3307/127.0.0.1:3307/g' {} \;
+          echo "=== Verificando el cambio a 127.0.0.1 ==="
+          find . -name "persistence.xml" -exec cat {} \;
 
       # 1. Compilar el proyecto
       - name: Build with Maven
@@ -82,6 +87,9 @@ jobs:
           done
           
           echo "MySQL está arriba. Iniciando Tomcat por única vez..."
+          
+          # Forzamos a Java/Tomcat a no usar redes IPv6
+          export JAVA_OPTS="-Djava.net.preferIPv4Stack=true"
           ./tomcat/bin/startup.sh
           
           echo "Esperando a que la aplicación despliegue e Hibernate cree las tablas (40 seg)..."

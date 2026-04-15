@@ -65,6 +65,11 @@ jobs:
           echo "=== Intentando hacer ping al puerto 3307 (el que usa tu persistence) ==="
           sudo apt-get update && sudo apt-get install -y netcat-openbsd
           nc -zv 127.0.0.1 3307
+          
+      - name: Configurar server.xml para caracteres especiales
+        run: |
+          sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="8080" protocol="HTTP\/1.1" relaxedPathChars="\{\}|[]" relaxedQueryChars="\{\}|[]"/' tomcat/conf/server.xml
+
       # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
       - name: Descargar y preparar Tomcat
         run: |
@@ -72,10 +77,17 @@ jobs:
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
           
-          # Copiamos el WAR a webapps
-          find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
+          # TRUCO 1: Descargar el Driver de MySQL directamente a la carpeta lib de Tomcat
+          wget https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar -P tomcat/lib/
           
-          # Damos permisos pero NO ejecutamos startup.sh todavía
+          # TRUCO 2: Permitir caracteres especiales en las URLs ({} []) para Postman
+          echo 'org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true' >> tomcat/conf/catalina.properties
+          echo 'org.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true' >> tomcat/conf/catalina.properties
+          # Esta línea es la clave para las llaves {{ }}
+          echo 'relaxedPathChars="[]|{}"' > tomcat/conf/relaxed_chars.txt
+          # (Nota: Es mejor configurar esto en server.xml, pero intentemos con las propiedades primero)
+          
+          find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
           chmod +x tomcat/bin/*.sh
 
       # 5. Esperar a MySQL e iniciar Tomcat una sola vez

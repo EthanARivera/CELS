@@ -78,19 +78,11 @@ jobs:
           
           echo "Esperando 40 segundos para que Hibernate cree las tablas vacías..."
           sleep 40
-          
-          echo "=== 🕵️‍♂️ DETECTIVE 1: ¿Qué tablas existen en la base de datos? ==="
-          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels -e "SHOW TABLES;"
-          
-          echo "=== 🕵️‍♂️ DETECTIVE 2: ¿Hibernate se quejó de algo en los logs? ==="
-          # Esto buscará cualquier error de Hibernate en las últimas líneas del log
-          cat tomcat/logs/catalina.out | grep -i "error\|exception\|hibernate" | tail -n 30
-          
-          echo "Inyectando usuarios y datos de prueba a MySQL..."
-          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels < ./BD_Script/CELS.sql
 
       - name: Correr Pruebas de API con Newman
-        run: newman run ./test/Pruebas_CELS.postman_collection.json
+        run: | 
+          newman run ./test/Pruebas_CELS.postman_collection.json
+          mysql -h 127.0.0.1 -P 3306 -u root -pdino0899 cels < ./BD_Script/CELS.sql
 
       - name: Correr Pruebas de UI con Playwright
         run: npx playwright test ./vista/src/test/java/ui/cels.spec.js

@@ -31,6 +31,8 @@ test.describe('UI CASE 1: Login and Role-based Redirection', () => {
             const context = await browser.newContext();
             const rolePage = await context.newPage();
 
+            // Comentario hola
+            //Ahora si lo descontamos, ya va a funcionar
             await rolePage.goto(`${BASE_URL}/login.xhtml`);
             await rolePage.locator("input[type='text']").fill(email);
             await rolePage.waitForTimeout(2000);

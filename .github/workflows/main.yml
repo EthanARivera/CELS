@@ -31,18 +31,14 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Preparar persistence.xml para GitHub Actions
+        run: |
+          find . -name "persistence.xml" -exec sed -i 's/localhost:3307/127.0.0.1:3307/g' {} \;
+          echo "XML actualizado para la nube."
+
       # 1. Compilar el proyecto
       - name: Build with Maven
         run: mvn -B install --file pom.xml
-
-      - name: Inspeccionar el WAR generado
-        continue-on-error: true
-        run: |
-          echo "=== 1. ¿Qué URL quedó guardada exactamente dentro del WAR? ==="
-          unzip -p target/*.war WEB-INF/classes/META-INF/persistence.xml | grep "jakarta.persistence.jdbc.url"
-          
-          echo "=== 2. ¿Maven empacó el Driver de MySQL en las librerías? ==="
-          unzip -l target/*.war | grep mysql
 
       # 2. Correr pruebas unitarias de Java
       - name: Run Tests

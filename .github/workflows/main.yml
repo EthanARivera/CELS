@@ -14,10 +14,10 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: desarrollo
+          MYSQL_ROOT_PASSWORD: dino0899
+          MYSQL_DATABASE: cels
         ports:
-          - 3306:3306
+          - 3307:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
@@ -60,13 +60,11 @@ jobs:
           echo "=== Contenedores activos ==="
           docker ps
 
-      - name: Probar puerto 3306
+      - name: Probar puerto 3307
         run: |
-          echo "=== Intentando hacer ping al puerto 3306 ==="
-
+          echo "=== Intentando hacer ping al puerto 3307 (el que usa tu persistence) ==="
           sudo apt-get update && sudo apt-get install -y netcat-openbsd
-
-          nc -zv 127.0.0.1 3306
+          nc -zv 127.0.0.1 3307
       # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
       - name: Descargar e iniciar Tomcat
         run: |

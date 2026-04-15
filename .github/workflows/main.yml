@@ -16,6 +16,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: dino0899
           MYSQL_DATABASE: cels
+        # AQUÍ ESTÁ LA MAGIA: Tu persistence busca el 3307, GitHub lo redirige al 3306 interno.
         ports:
           - 3307:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -30,63 +31,44 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 1. Compilar el proyecto (Esto genera el archivo .war en la carpeta /target)
+      # 1. Compilar el proyecto
       - name: Build with Maven
         run: mvn -B install --file pom.xml
 
-      # 2. Correr pruebas unitarias de Java (si tienes alguna)
+      # 2. Correr pruebas unitarias de Java
       - name: Run Tests
         run: mvn test
 
-      # 3. Preparar el entorno para Newman (Postman CLI)
-      - name: Setup Node.js (Para Newman)
+      # 3. Preparar el entorno para Newman y Playwright
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Instalar Newman
-        run: npm install -g newman
-
-      - name: Auditar archivo de conexión a BD
-        continue-on-error: true
+      - name: Instalar Newman y Playwright
         run: |
-          echo "=== Buscando y mostrando hibernate.cfg.xml o persistence.xml ==="
+          npm install -g newman
+          npm install -D @playwright/test
+          npx playwright install --with-deps chromium
 
-          find . -name "hibernate.cfg.xml" -exec cat {} \;
-          find . -name "persistence.xml" -exec cat {} \;
-
-      - name: Auditar servicio MySQL
-        run: |
-          echo "=== Contenedores activos ==="
-          docker ps
-
-      - name: Probar puerto 3307
-        run: |
-          echo "=== Intentando hacer ping al puerto 3307 (el que usa tu persistence) ==="
-          sudo apt-get update && sudo apt-get install -y netcat-openbsd
-          nc -zv 127.0.0.1 3307
-          
-      - name: Configurar server.xml para caracteres especiales
-        run: |
-          sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="8080" protocol="HTTP\/1.1" relaxedPathChars="\{\}|[]" relaxedQueryChars="\{\}|[]"/' tomcat/conf/server.xml
-
-      # 4. Descargar e iniciar Tomcat 11 (La misma versión que usas localmente)
+      # 4. Descargar y preparar Tomcat
       - name: Descargar y preparar Tomcat
         run: |
           wget https://archive.apache.org/dist/tomcat/tomcat-11/v11.0.8/bin/apache-tomcat-11.0.8.tar.gz
           tar xzvf apache-tomcat-11.0.8.tar.gz
           mv apache-tomcat-11.0.8 tomcat
           
-          # TRUCO 1: Descargar el Driver de MySQL directamente a la carpeta lib de Tomcat
+          # AHORA SÍ: Como la carpeta "tomcat" ya existe, podemos modificar el server.xml
+          sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="8080" protocol="HTTP\/1.1" relaxedPathChars="\{\}|[]" relaxedQueryChars="\{\}|[]"/' tomcat/conf/server.xml
+          
+          # TRUCO 1: Descargar el Driver de MySQL a la carpeta lib
           wget https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar -P tomcat/lib/
           
-          # TRUCO 2: Permitir caracteres especiales en las URLs ({} []) para Postman
+          # TRUCO 2: Permitir caracteres especiales en las properties
           echo 'org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true' >> tomcat/conf/catalina.properties
           echo 'org.apache.catalina.connector.CoyoteAdapter.ALLOW_BACKSLASH=true' >> tomcat/conf/catalina.properties
-          # Esta línea es la clave para las llaves {{ }}
-          echo 'relaxedPathChars="[]|{}"' > tomcat/conf/relaxed_chars.txt
-          # (Nota: Es mejor configurar esto en server.xml, pero intentemos con las propiedades primero)
           
+          # Copiar el WAR y dar permisos
           find . -name "*.war" -exec cp {} tomcat/webapps/vista_war_exploded.war \;
           chmod +x tomcat/bin/*.sh
 
@@ -102,19 +84,23 @@ jobs:
           echo "MySQL está arriba. Iniciando Tomcat por única vez..."
           ./tomcat/bin/startup.sh
           
-          echo "Esperando a que la aplicación despliegue e Hibernate cree las tablas..."
+          echo "Esperando a que la aplicación despliegue e Hibernate cree las tablas (40 seg)..."
           sleep 40
 
-      # 6. Ejecutar las pruebas de Postman yes
-      # Asegúrate de que la ruta coincida con la carpeta donde guardaste tu JSON en el repo
+      # 6. Ejecutar las pruebas de API (Postman)
       - name: Correr Pruebas de API con Newman
         run: newman run ./test/Pruebas_CELS.postman_collection.json
 
-      - name: Mostrar consola de Tomcat
+      # 7. Ejecutar las pruebas de Interfaz de Usuario (Playwright)
+      - name: Correr Pruebas de UI con Playwright
+        # Ojo: Asegúrate de que la ruta coincida con donde tienes tu cels.spec.js
+        run: npx playwright test ./vista/src/test/java/ui/cels.spec.js
+
+      - name: Mostrar consola de Tomcat (Útil si algo falla)
         if: always()
         run: cat tomcat/logs/catalina.out
 
-      # 7. Subir el artefacto compilado
+      # 8. Subir el artefacto compilado
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:

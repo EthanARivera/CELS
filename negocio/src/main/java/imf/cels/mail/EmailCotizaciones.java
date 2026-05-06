@@ -64,7 +64,7 @@ public class EmailCotizaciones {
 
         //Formato de factura
         document.add(new Paragraph("Cotización Folio: " + cotizacion.getId()).setBold().setFontSize(18));
-        document.add(new Paragraph("Fecha: " + cotizacion.getFecha().toString()));
+        document.add(new Paragraph("Fecha: " + cotizacion.getFechaCreacion().toString()));
         document.add(new Paragraph("Cliente: " + cotizacion.getCliente()));
         document.add(new Paragraph("Vendedor: " + cotizacion.getIdUsuario().getNombre()));
         document.add(new Paragraph("Proyecto: " + cotizacion.getDescripcion()));

@@ -3,6 +3,7 @@ import imf.cels.persistence.HibernateUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class TestCotizacion {
             Cotizacion cot = new Cotizacion();
             cot.setIdUsuario(usuario);
             cot.setCliente("Constructora MX");
-            cot.setFecha(LocalDate.now());
+            cot.setFechaCreacion(Instant.now());
             cot.setDescripcion("Remodelación de fachada comercial");
             cot.setTipoProyecto(TipoProyecto.FACHADA);
             cot.setPrecioFinal(BigDecimal.ZERO);

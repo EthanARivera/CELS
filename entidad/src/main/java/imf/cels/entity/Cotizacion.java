@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -33,12 +34,6 @@ public class Cotizacion {
     @JoinColumn(name = "id_usuario", nullable = false)
     @XmlTransient
     private Usuario idUsuario;
-
-    @NotNull
-    @Convert(converter = LocalDateAttributeConverter.class)
-    @Column(name = "fecha", nullable = false)
-    @XmlElement
-    private LocalDate fecha;
 
     @NotNull
     @Column(name = "cliente", nullable = false)
@@ -112,6 +107,8 @@ public class Cotizacion {
         this.fechaCreacion = fechaCreacion;
     }
 
+    public Date getFechaCreacionDate() { return fechaCreacion != null ? Date.from(fechaCreacion) : null; }
+
     public Integer getId() {
         return id;
     }
@@ -126,14 +123,6 @@ public class Cotizacion {
 
     public void setIdUsuario(Usuario idUsuario) {
         this.idUsuario = idUsuario;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
     }
 
     public String getCliente() {

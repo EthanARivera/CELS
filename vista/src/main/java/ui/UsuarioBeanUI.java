@@ -26,8 +26,10 @@ public class UsuarioBeanUI implements Serializable {
 
     private Usuario usuarioSeleccionado;
 
-    private String nombreBusqueda = "";
-    private Integer idBusqueda;
+    private String filtroGlobal = "";
+
+    //private String nombreBusqueda = "";
+    //private Integer idBusqueda;
 
     private final DelegateUsuario delegate = new DelegateUsuario(); // p/modify
 
@@ -41,6 +43,7 @@ public class UsuarioBeanUI implements Serializable {
         if (usuarios == null) usuarios = new ArrayList<Usuario>();
         ordenarPorNombre();
         listaFiltrada = new ArrayList<>(usuarios);
+
         usuarioSeleccionado = new Usuario();
         usuarioSeleccionado.setUsDatosSensible(new UsDatosSensible());
         usuarioSeleccionado.setUsPsswd(new UsPsswd());
@@ -54,7 +57,7 @@ public class UsuarioBeanUI implements Serializable {
     }
 
     //Aplicar filtros por nombre o ID
-    public void aplicarFiltro() {
+    /*public void aplicarFiltro() {
         if (usuarios == null) {
             usuarios = new ArrayList<>();
         }
@@ -87,15 +90,46 @@ public class UsuarioBeanUI implements Serializable {
                 listaFiltrada.add(u);
             }
         }
+    }*/
+
+    public void aplicarFiltroGlobal() {
+        if (filtroGlobal == null || filtroGlobal.trim().isEmpty()) {
+            listaFiltrada = new ArrayList<>(usuarios);
+            return;
+        }
+
+        String search = filtroGlobal.toLowerCase().trim();
+        listaFiltrada = new ArrayList<>();
+
+        for (Usuario u : usuarios) {
+            // Check ID (convert to string)
+            String id = String.valueOf(u.getId());
+            String nombre = u.getNombre().toLowerCase();
+            String rfc = u.getUsDatosSensible().getRfc().toLowerCase();
+            String email = u.getUsDatosSensible().getEmail().toLowerCase();
+
+            // If the search string is found in ANY of these, add the user
+            if (id.contains(search) ||
+                    nombre.contains(search) ||
+                    rfc.contains(search) ||
+                    email.contains(search)) {
+
+                listaFiltrada.add(u);
+            }
+        }
     }
+
 
     // --- Recargar desde la base de datos ---
     public void recargarUsuarios() {
         usuarios = helper.obtenerUsuarios();
+
         ordenarPorNombre();
+
         listaFiltrada = new ArrayList<>(usuarios);
-        nombreBusqueda = "";
-        idBusqueda = null;
+        //nombreBusqueda = "";
+        //idBusqueda = null;
+        filtroGlobal = "";
     }
 
     public List<Usuario> getListaFiltrada() {
@@ -124,7 +158,14 @@ public class UsuarioBeanUI implements Serializable {
             this.usuarioSeleccionado.setUsPsswd(new UsPsswd());
     }
 
-    public String getNombreBusqueda() {
+    public String getFiltroGlobal() {
+        return filtroGlobal;
+    }
+
+    public void setFiltroGlobal(String filtroGlobal) {
+        this.filtroGlobal = filtroGlobal;
+    }
+    /*public String getNombreBusqueda() {
         return nombreBusqueda;
     }
 
@@ -138,7 +179,7 @@ public class UsuarioBeanUI implements Serializable {
 
     public void setIdBusqueda(Integer idBusqueda) {
         this.idBusqueda = idBusqueda;
-    }
+    }*/
 
 
     // Modificacion

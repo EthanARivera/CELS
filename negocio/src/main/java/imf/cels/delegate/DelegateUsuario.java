@@ -37,8 +37,19 @@ public class DelegateUsuario {
 
 
     public void saveUsuario(Usuario usuario) {
-
+        // NEW
         UsuarioDAO dao = ServiceLocator.getInstanceUsuarioDAO();
+
+        if (usuario.getUsDatosSensible() != null) {
+            usuario.getUsDatosSensible().setUsuario(usuario);
+        }
+        if (usuario.getUsPsswd() != null) {
+            usuario.getUsPsswd().setUsuario(usuario);
+        }
+
+        dao.save(usuario);
+        // OLD
+        /*UsuarioDAO dao = ServiceLocator.getInstanceUsuarioDAO();
 
         // 1. Guardar primero el usuario (genera id)
         dao.save(usuario);
@@ -53,7 +64,7 @@ public class DelegateUsuario {
         UsPsswd up = usuario.getUsPsswd();
         up.setId(usuario.getId());
         up.setUsuario(usuario);
-        dao.savePsswd(up);
+        dao.savePsswd(up);*/
     }
 
     public List<Usuario> obtenerUsuarios() {
@@ -79,7 +90,10 @@ public class DelegateUsuario {
         if (usuario.getUsPsswd() == null)
             usuario.setUsPsswd(new UsPsswd());
 
-        usuario.getUsDatosSensible().setUsuario(usuario);
+        formatoDatos(usuario);
+        validacionUsuario(usuario);
+        // OLD
+        /*usuario.getUsDatosSensible().setUsuario(usuario);
         usuario.getUsPsswd().setUsuario(usuario);
 
         // Capitalize primer letra de nombres
@@ -107,9 +121,56 @@ public class DelegateUsuario {
             throw new IllegalArgumentException("RFC no coincide con los datos");
 
         if(ServiceLocator.getInstanceUsuarioDAO().existeCorreo(usuario.getUsDatosSensible().getEmail()))
-            throw new IllegalArgumentException("Correo ya está registrado");
+            throw new IllegalArgumentException("Correo ya está registrado");*/
 
         saveUsuario(usuario); //guardar usuario
+    }
+
+    // Formato
+    private void formatoDatos(Usuario usuario) {
+        usuario.getUsDatosSensible().setUsuario(usuario);
+        usuario.getUsPsswd().setUsuario(usuario);
+
+        usuario.setNombre(capitalizeFirstLetter(usuario.getNombre()));
+        usuario.setApellidoPrim(capitalizeFirstLetter(usuario.getApellidoPrim()));
+        if (usuario.getApellidoSeg() != null && !usuario.getApellidoSeg().isEmpty()) {
+            usuario.setApellidoSeg(usuario.getApellidoSeg());
+        }
+
+        if (usuario.getUsDatosSensible().getRfc() != null) {
+            usuario.getUsDatosSensible().setRfc(usuario.getUsDatosSensible().getRfc().toUpperCase());
+        }
+
+        /*if (usuario.getUsPsswd().getPsswd() != null && usuario.getUsPsswd().getPsswd().length() <64) {
+            usuario.getUsPsswd().setPsswd(encryptPassword(usuario.getUsPsswd().getPsswd()));
+        }*/
+    }
+
+    // Validaciones
+    private void validacionUsuario(Usuario usuario) {
+        String email = usuario.getUsDatosSensible().getEmail();
+        String rfcIngresado = usuario.getUsDatosSensible().getRfc();
+
+        if (!negocio.validarCorreo(email)) {
+            throw new IllegalArgumentException("Formato Inválido: El correo '" + email + "' no es valido");
+        }
+
+        if (ServiceLocator.getInstanceUsuarioDAO().existeCorreo(email)) {
+            throw new IllegalArgumentException("Duplicado: El correo '" + email + "' ya se encuentra registrado en el sistema.");
+        }
+
+        String rfcEsperado = negocio.generarRFC(usuario);
+
+        if (rfcIngresado == null || rfcIngresado.isEmpty()) {
+            throw new IllegalArgumentException("RFC Requerido: El campo RFC no puede estar vacío.");
+        }
+
+        if (!rfcIngresado.toUpperCase().startsWith(rfcEsperado.substring(0, 10))) {
+            throw new IllegalArgumentException("RFC Explícito No Coincide: " +
+                    "\nRFC Ingresado: " + rfcIngresado +
+                    "\nRFC Esperado: " +rfcEsperado.substring(0, 10) + " ... " +
+                    "\nVerifique que el Nombre, Apellidos y Fecha de Nacimiento sean correctos.");
+        }
     }
 
     // Metodo para capitalize

@@ -44,9 +44,12 @@ public class UsuarioNegocio {
     }
 
     private String primeraVocal(String palabra) {
+        if (palabra == null || palabra.length() < 2)
+            return "X";
         for (int i = 1; i < palabra.length(); i++) {
             char c = palabra.charAt(i);
-            if ("AEIOU".indexOf(c) >= 0) return String.valueOf(c);
+            if ("AEIOU".indexOf(c) >= 0)
+                return String.valueOf(c);
         }
         return "X";
     }

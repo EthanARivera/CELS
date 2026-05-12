@@ -11,6 +11,7 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.util.Calendar;
 
 @Named("registroUI")
 @ViewScoped
@@ -63,6 +64,13 @@ public class RegistroBeanUI implements Serializable {
             context.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error interno", e.getMessage()));
         }
+    }
+
+    // Validadcion Fecha
+    public java.util.Date getFechaMin() {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.add(Calendar.YEAR, -18); // Subtract 18 years from today
+        return cal.getTime();
     }
 
     // Getter y Setter

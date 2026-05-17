@@ -76,6 +76,10 @@ public class Cotizacion {
     @Column(name = "fecha_creacion")
     private Instant fechaCreacion;
 
+    @NotNull
+    @Column (name = "fecha", nullable = false)
+    private LocalDate fecha;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_folio")
     private imf.cels.entity.PedidosTaller pedidosTaller;
@@ -108,6 +112,14 @@ public class Cotizacion {
     }
 
     public Date getFechaCreacionDate() { return fechaCreacion != null ? Date.from(fechaCreacion) : null; }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
 
     public Integer getId() {
         return id;

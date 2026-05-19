@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- Verificación de sesión -->
+<f:metadata>
+    <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"></f:event>
+</f:metadata>
+
+<h:head>
+    <title>Gestor de Pedidos</title>
+    <link href="resources/style.css" rel="stylesheet"/>
+    <script src="resources/funct.js"></script>
+</h:head>
+<h:body>
+    <!-- Encabezado con botones -->
+    <div class="header">
+        <!-- Link para regresar -->
+        <h:link outcome="indexGerente.xhtml" styleClass="back ui-button-success">
+            <i class="pi pi-arrow-left"></i>
+        </h:link>
+
+        <span>Gestor de Pedidos</span>
+
+        <!-- Botón de menú -->
+        <p:commandButton class="menu" icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;" />
+    </div>
+
+    <!-- Menú superior oculto -->
+    <div id="menuPanel" class="menu-panel">
+        <h:link outcome="consulta_materiales.xhtml" styleClass="menu-option">
+            <i class="pi pi-box"></i> Consulta Materiales
+        </h:link>
+
+        <h:link outcome="consulta_usuarios.xhtml" styleClass="menu-option">
+            <i class="pi pi-users"></i> Consulta Usuarios
+        </h:link>
+
+        <h:link outcome="consulta_cotizaciones.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Consulta Cotizaciones
+        </h:link>
+
+        <h:link outcome="gestion_pedidos.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Gestor de Pedidos
+        </h:link>
+    </div>
+
+    <h:form id="formCotizaciones" styleClass="cuerpo-gestores">
+
+        <!-- Panel principal del catálogo -->
+        <p:panel styleClass="catalogo-panel">
+            <br/>
+            <!-- Barra de búsqueda -->
+            <div class="searchbar">
+                <i class="pi pi-search">    </i>
+
+                <p:inputText id="idBusqueda"
+                             value="#{cotizacionUI.idBusqueda}"
+                             placeholder="Buscar pedido por id"
+                             styleClass="search-input">
+                    <p:ajax event="keyup"
+                            process="@form"
+                            listener="#{cotizacionUI.buscarPorId}"
+                            update="tablaPedidos"
+                            delay="500"/>
+                </p:inputText>
+
+                <br/><br/>
+            </div>
+            <br/>
+
+            <!-- Tabla de pedidos -->
+            <p:dataTable id="tablaPedidos"
+                         value="#{cotizacionUI.cotizaciones}"
+                         var="c"
+                         responsiveLayout="scroll"
+                         emptyMessage="Sin pedidos registrados"
+                         rowHover="true"
+                         paginator="false"
+                         styleClass="ua-table custom-table-skin">
+
+                <p:column headerText="ID Folio" style="width:80px;">
+                    <h:outputText value="#{c.id}" />
+                </p:column>
+
+                <p:column headerText="Cliente">
+                    <h:outputText value="#{c.cliente}" />
+                </p:column>
+
+                <p:column headerText="Descripción">
+                    <h:outputText value="#{c.descripcion}" />
+                </p:column>
+
+                <p:column headerText="Estado de producción">
+                    <h:outputText value="Por empezar" />
+                </p:column>
+
+                <p:column headerText="Prioridad" style="width:150px; text-align:center;">
+                    <p:selectOneMenu value="#{c.prioridadSeleccionada}">
+                        <f:selectItems value="#{pedidosUI.prioridades}" />
+                    </p:selectOneMenu>
+                </p:column>
+
+                <p:column>
+                    <p:commandButton value="Dar de alta"
+                                     actionListener="#{cotizacionUI.seleccionarCotizacion(c)}"
+                                     onclick="PF('dlgAltaPedido').show();" />
+                </p:column>
+            </p:dataTable>
+        </p:panel>
+
+        <p:dialog id="dialogAltaPedido"
+                  header="Confirmar alta de pedido"
+                  widgetVar="dlgAltaPedido"
+                  modal="true"
+                  resizable="false"
+                  closable="false"
+                  style="width:350px;">
+
+            <h:panelGrid columns="1" cellpadding="6" style="text-align:center;">
+                <h:outputText value="¿Desea dar de alta el pedido seleccionado?"/>
+
+                <p:commandButton value="Aceptar"
+                                 icon="pi pi-check"
+                                 actionListener="#{cotizacionUI.darDeAltaPedido}"
+                                 update="tablaPedidos growl"
+                                 oncomplete="PF('dlgAltaPedido').hide()" />
+
+                <p:commandButton value="Cancelar"
+                                 icon="pi pi-times"
+                                 onclick="PF('dlgAltaPedido').hide(); return false;"
+                                 styleClass="ui-button-secondary"
+                                 style="margin-top:5px;"/>
+            </h:panelGrid>
+        </p:dialog>
+
+        <p:growl id="growl" showDetail="true" life="4000"/> <!-- the message in the top right -->
+
+    </h:form>
+</h:body>
+</html>

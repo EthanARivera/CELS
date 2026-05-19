@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
 import java.time.Instant;
 
 @lombok.Getter
@@ -29,8 +28,32 @@ public class PedidosTaller {
     @Column(name = "estado_en_taller", nullable = false)
     private String estadoEnTaller;
 
+    @Column(name = "prioridad")
+    private String prioridad;
+    public String getPrioridad() {return prioridad;}
+    public void setPrioridad(String prioridad) {this.prioridad = prioridad;}
+
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "fecha_actualizacion")
     private Instant fechaActualizacion;
 
+    public void setCotizacion(Cotizacion cotizacion) {
+        this.cotizacion = cotizacion;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setEstadoEnTaller(String estadoEnTaller) {
+        this.estadoEnTaller = estadoEnTaller;
+    }
+
+    public Instant getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(Instant fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
+    }
 }

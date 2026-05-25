@@ -45,8 +45,16 @@ public class PedidosTaller {
         this.id = id;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     public void setEstadoEnTaller(String estadoEnTaller) {
         this.estadoEnTaller = estadoEnTaller;
+    }
+
+    public String getEstadoEnTaller() {
+        return estadoEnTaller;
     }
 
     public Instant getFechaActualizacion() {

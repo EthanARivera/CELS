@@ -356,7 +356,7 @@ public class ConsultaCotizacionesBeanUI implements Serializable {
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
-                    "Error al dar de alta", e.getMessage()
+                    "Error al dar de alta", "El pedido ya fue dado de alta previamente."
             ));
         }
     }

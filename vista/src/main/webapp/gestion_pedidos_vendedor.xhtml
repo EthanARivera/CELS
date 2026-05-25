@@ -96,7 +96,7 @@
                 </p:column>
 
                 <p:column headerText="Estado de producción">
-                    <h:outputText value="Por empezar" />
+                    <h:outputText value="#{empty c.pedidosTaller ? 'Pendiente de dar de alta' : c.pedidosTaller.estadoEnTaller}" />
                 </p:column>
 
                 <p:column headerText="Prioridad" style="width:150px; text-align:center;">
@@ -108,7 +108,8 @@
                 <p:column>
                     <p:commandButton value="Dar de alta"
                                      actionListener="#{cotizacionUI.seleccionarCotizacion(c)}"
-                                     onclick="PF('dlgAltaPedido').show();" />
+                                     onclick="PF('dlgAltaPedido').show();"
+                                     disabled="#{not empty c.pedidosTaller}" />
                 </p:column>
             </p:dataTable>
         </p:panel>

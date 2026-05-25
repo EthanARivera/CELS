@@ -16,4 +16,8 @@ public class PedidosHelper {
     public void darDeAltaPedido(Cotizacion cot, String prioridad) throws Exception{
         pedidosDAO.darDeAltaPedido(cot, prioridad);
     }
+    
+    public void actualizarEstadoPedido(Integer idFolio, String nuevoEstado) {
+        pedidosDAO.actualizarEstadoPedido(idFolio, nuevoEstado);
+    }
 }

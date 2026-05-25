@@ -103,7 +103,7 @@ public class PedidosBeanUI implements Serializable {
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Error",
-                    "No se pudo actualizar el estado del pedido."
+                    e.getMessage()
             ));
         }
     }

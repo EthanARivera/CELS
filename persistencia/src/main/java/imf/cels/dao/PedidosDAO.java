@@ -55,6 +55,10 @@ public class PedidosDAO {
             if (pedido == null) {
                 throw new RuntimeException("El pedido no existe.");
             }
+            String estadoActual = pedido.getEstadoEnTaller();
+            if ("En producción".equalsIgnoreCase(estadoActual) && "Por iniciar".equalsIgnoreCase(nuevoEstado)) {
+                throw new IllegalStateException("No es posible regresar de En producción a Por iniciar");
+            }
             pedido.setEstadoEnTaller(nuevoEstado);
             pedido.setFechaActualizacion(Instant.now());
             em.merge(pedido);

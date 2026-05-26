@@ -22,6 +22,7 @@ public class ServiceLocator {
     private static CotizacionDAO cotizacionDAO;
     private static CotizacionMaterialDAO cotizacionMaterialDAO;
     private static CotizacionManoDeObraDAO cotizacionManoDeObraDAO;
+    private static EncuestaDAO encuestaDAO;
 
     private static EntityManager getEntityManager(){
         return HibernateUtil.getEntityManager();
@@ -72,5 +73,12 @@ public class ServiceLocator {
             return cotizacionManoDeObraDAO;
         }
         return cotizacionManoDeObraDAO;
+    }
+
+    public static EncuestaDAO getInstanceEncuestaDAO() {
+        if(encuestaDAO == null){
+            encuestaDAO = new EncuestaDAO(getEntityManager());
+        }
+        return encuestaDAO;
     }
 }

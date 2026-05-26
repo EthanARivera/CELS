@@ -107,9 +107,11 @@ CREATE TABLE pedidos_taller (
 
 CREATE TABLE datos_encuesta (
 	id_encuesta INT(8) PRIMARY KEY AUTO_INCREMENT,
-    q1 BOOL,
-    q2 VARCHAR(50),
-    q3 INT(1)
+    q1 BOOLEAN NOT NULL,
+    q2 INT(1) NOT NULL,
+    q3 INT(1) NOT NULL,
+    q4 INT(1) NOT NULL,
+    q5 VARCHAR(254)
 );
 
 

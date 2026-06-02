@@ -51,6 +51,10 @@
         <h:link outcome="gestion_pedidos.xhtml" styleClass="menu-option">
             <i class="pi pi-hammer"></i> Gestionar pedidos
         </h:link>
+
+        <h:link outcome="encuesta.xhtml" styleClass="menu-option">
+            <i class="pi pi-list-check"></i> Realizar Encuesta
+        </h:link>
     </div>
 
     <!-- Links de navegación estilo tarjetas -->
@@ -97,6 +101,15 @@
             <div class="card-content">
                 <div class="card-title">Consulta<br/>Estadísticas</div>
                 <i class="pi pi-chart-bar card-icon"></i>
+                <div class="card-btn">Entrar</div>
+            </div>
+        </h:link>
+
+        <!-- Tarjeta Encuesta -->
+        <h:link outcome="encuesta.xhtml" styleClass="card">
+            <div class="card-content">
+                <div class="card-title">Realizar<br/>Encuesta</div>
+                <i class="pi pi-list-check card-icon"></i>
                 <div class="card-btn">Entrar</div>
             </div>
         </h:link>

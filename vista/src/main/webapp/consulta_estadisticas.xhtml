@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+    <f:event type="preRenderView"
+             listener="#{loginUI.verificarSesion}"/>
+</f:metadata>
+
+<h:head>
+
+    <title>Consulta Estadísticas</title>
+    <link href="resources/style.css" rel="stylesheet"/>
+    <script src="resources/funct.js"></script>
+
+    <!-- CHART.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</h:head>
+<h:body>
+
+    <!-- HEADER -->
+    <div class="headerprin">
+
+        <!-- LOGOUT -->
+        <h:form>
+            <h:commandLink styleClass="link-btn"
+                           actionListener="#{loginUI.logout()}">
+                <i class="pi pi-sign-out"></i>
+            </h:commandLink>
+        </h:form>
+
+        <span>Cotizaciones El Letrero Signshop</span>
+
+        <!-- MENU BUTTON -->
+        <p:commandButton class="menu"
+                         icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;" />
+
+    </div>
+
+    <!-- MENU -->
+    <div id="menuPanel" class="menu-panel">
+
+        <h:link outcome="consulta_materiales.xhtml"
+                styleClass="menu-option">
+            <i class="pi pi-box"></i>
+            Consulta Materiales
+        </h:link>
+
+        <h:link outcome="consulta_usuarios.xhtml"
+                styleClass="menu-option">
+            <i class="pi pi-users"></i>
+            Consulta Usuarios
+        </h:link>
+
+        <h:link outcome="consulta_cotizaciones.xhtml"
+                styleClass="menu-option">
+            <i class="pi pi-file"></i>
+            Consulta Cotizaciones
+        </h:link>
+
+        <h:link outcome="gestion_pedidos.xhtml"
+                styleClass="menu-option">
+            <i class="pi pi-hammer"></i>
+            Gestionar pedidos
+        </h:link>
+
+        <h:link outcome="encuesta.xhtml"
+                styleClass="menu-option">
+            <i class="pi pi-list-check"></i>
+            Realizar Encuesta
+        </h:link>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container encuesta-container">
+        <div class="encuesta-header">
+            <h1 style="color:#262F8D;">
+                Estadísticas de Encuestas
+            </h1>
+            <p class="encuesta-subtitulo">
+                Resultados y métricas de satisfacción.
+            </p>
+        </div>
+
+        <!-- Q1 -->
+        <div class="encuesta-pregunta">
+            <p class="pregunta-label">
+                1. Tiempo de fabricación y entrega
+            </p>
+            <canvas id="chartQ1"></canvas>
+        </div>
+
+        <!-- Q2 -->
+        <div class="encuesta-pregunta">
+            <p class="pregunta-label">
+                2. Atención al Cliente
+            </p>
+            <canvas id="chartQ2"></canvas>
+        </div>
+
+        <!-- Q3 -->
+        <div class="encuesta-pregunta">
+            <p class="pregunta-label">
+                3. Calidad del Producto
+            </p>
+            <canvas id="chartQ3"></canvas>
+        </div>
+
+        <!-- Q4 -->
+        <div class="encuesta-pregunta">
+            <p class="pregunta-label">
+                4. Probabilidad de recomendación
+            </p>
+            <canvas id="chartQ4"></canvas>
+        </div>
+
+        <!-- Q5 -->
+        <div class="encuesta-pregunta encuesta-pregunta--last">
+            <p class="pregunta-label">
+                5. Comentarios y sugerencias
+            </p>
+            <p:dataTable value="#{estadisticasBeanUI.comentarios}"
+                         var="comentario"
+                         paginator="true"
+                         rows="5"
+                         responsiveLayout="scroll"
+                         emptyMessage="No hay comentarios registrados">
+                <p:column headerText="Comentario">
+                    <h:outputText value="#{comentario}"/>
+                </p:column>
+            </p:dataTable>
+        </div>
+    </div>
+
+    <!-- ================= CHARTS ================= -->
+
+    <h:outputScript target="body">
+
+        // ================= Q1 =================
+
+        new Chart(document.getElementById('chartQ1'), {
+        type: 'bar',
+        data: {
+        labels: JSON.parse('#{estadisticasBeanUI.q1Labels}'),
+        datasets: [{
+        label: 'Cantidad',
+        data: JSON.parse('#{estadisticasBeanUI.q1Values}'),
+        backgroundColor: ['#4CAF50', '#F44336']
+        }]},
+        options: {
+        responsive: true,
+        plugins: {
+        legend: {
+        display: false
+        }}}
+        });
+
+        // ================= Q2 =================
+
+        new Chart(document.getElementById('chartQ2'), {
+
+        type: 'bar',
+
+        data: {
+
+        labels: JSON.parse('#{estadisticasBeanUI.q2Labels}'),
+
+        datasets: [{
+
+        label: 'Clientes',
+
+        data: JSON.parse('#{estadisticasBeanUI.q2Values}'),
+
+        backgroundColor: '#262F8D'
+
+        }]
+        },
+
+        options: {
+
+        responsive: true
+
+        }
+
+        });
+
+        // ================= Q3 =================
+
+        new Chart(document.getElementById('chartQ3'), {
+
+        type: 'bar',
+
+        data: {
+
+        labels: JSON.parse('#{estadisticasBeanUI.q3Labels}'),
+
+        datasets: [{
+
+        label: 'Clientes',
+
+        data: JSON.parse('#{estadisticasBeanUI.q3Values}'),
+
+        backgroundColor: '#FFBB54'
+
+        }]
+        },
+
+        options: {
+
+        responsive: true
+
+        }
+
+        });
+
+        // ================= Q4 =================
+
+        new Chart(document.getElementById('chartQ4'), {
+
+        type: 'bar',
+
+        data: {
+
+        labels: JSON.parse('#{estadisticasBeanUI.q4Labels}'),
+
+        datasets: [{
+
+        label: 'Clientes',
+
+        data: JSON.parse('#{estadisticasBeanUI.q4Values}'),
+
+        backgroundColor: '#009688'
+
+        }]
+        },
+
+        options: {
+
+        responsive: true
+
+        }
+
+        });
+
+    </h:outputScript>
+
+</h:body>
+
+</html>

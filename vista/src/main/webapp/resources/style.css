@@ -1119,3 +1119,151 @@ body {
             align-items: center;
         }
     }
+
+    /*-------------------------ENCUESTA----------------------------------------------------*/
+
+    .encuesta-container {
+        max-width: 700px;
+    }
+
+    .encuesta-header {
+        text-align: center;
+        margin-bottom: 28px;
+        padding-bottom: 18px;
+        border-bottom: 2px solid #FFBB54;
+    }
+
+    .encuesta-icono {
+        font-size: 2.8rem !important;
+        color: #262F8D !important;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .encuesta-subtitulo {
+        color: #454545;
+        font-size: 0.92em;
+        margin: 0;
+    }
+
+    .encuesta-pregunta {
+        padding: 18px 0;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .encuesta-pregunta--last {
+        border-bottom: none;
+    }
+
+    .pregunta-label {
+        font-weight: bold;
+        color: #262F8D;
+        margin-bottom: 12px;
+        font-size: 0.97em;
+        display: block;
+    }
+
+    .pregunta-num {
+        color: #FFBB54;
+        font-size: 1.1em;
+        margin-right: 6px;
+    }
+
+    .encuesta-opcional {
+        font-weight: normal;
+        color: #888;
+        font-size: 0.88em;
+    }
+
+    /* Toggle Sí/No */
+    .encuesta-toggle .ui-button {
+        background-color: #f0f0f0 !important;
+        color: #262F8D !important;
+        border: 2px solid #262F8D !important;
+        font-weight: bold !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .encuesta-toggle .ui-button.ui-state-active {
+        background-color: #262F8D !important;
+        color: #ffffff !important;
+        border-color: #1f2575 !important;
+    }
+
+    .encuesta-toggle .ui-button:hover {
+        background-color: #FFBB54 !important;
+        color: #262F8D !important;
+        border-color: #FFBB54 !important;
+    }
+
+    /* estrellas */
+    .ui-rating {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        margin: 8px 0 !important;
+    }
+
+    .ui-rating .ui-rating-cancel,
+    .ui-rating .ui-rating-star {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 2rem !important;
+        height: 2rem !important;
+        cursor: pointer !important;
+        font-size: 1.6rem !important;
+    }
+
+    /* Estrella vacía */
+    .ui-rating .ui-rating-star .ui-icon {
+        background-image: none !important;
+        font-family: 'primeicons' !important;
+        font-size: 1.6rem !important;
+        color: #ccc !important;
+    }
+
+    .ui-rating .ui-rating-star .ui-icon::before {
+        content: '\e937' !important; /* pi-star */
+        font-family: 'primeicons' !important;
+        color: #ccc !important;
+    }
+
+    /* Estrella activa/llena */
+    .ui-rating .ui-rating-star.ui-rating-star-on .ui-icon::before {
+        content: '\e938' !important; /* pi-star-fill */
+        color: #FFBB54 !important;
+    }
+
+    /* Botón cancelar (X) */
+    .ui-rating .ui-rating-cancel .ui-icon::before {
+        content: '\e90b' !important; /* pi-times */
+        font-family: 'primeicons' !important;
+        color: #d32f2f !important;
+        font-size: 1rem !important;
+    }
+
+    /* Corregir herencia de color blanco del body en estrellas */
+    .encuesta-container .ui-rating .ui-rating-star,
+    .encuesta-container .ui-rating .ui-rating-star *,
+    .encuesta-container .ui-rating .ui-rating-cancel,
+    .encuesta-container .ui-rating .ui-rating-cancel * {
+        color: #ccc !important;
+        text-decoration: none !important;
+    }
+
+    .encuesta-container .ui-rating .ui-rating-star.ui-rating-star-on,
+    .encuesta-container .ui-rating .ui-rating-star.ui-rating-star-on * {
+        color: #FFBB54 !important;
+    }
+
+    .encuesta-container .ui-rating .ui-rating-cancel,
+    .encuesta-container .ui-rating .ui-rating-cancel * {
+        color: #d32f2f !important;
+    }
+
+    /* Separación entre botones Sí/No */
+    .encuesta-toggle.ui-selectonebutton .ui-button {
+        margin-right: 12px !important;
+        border-radius: 6px !important;
+    }

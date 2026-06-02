@@ -64,7 +64,8 @@ public class UsuarioDAO extends AbstractDAO<Usuario> {
         usuario.getUsDatosSensible().setEmail(email);
         usuario.getUsPsswd().setPsswd(psswd);
 
-        ServiceLocator.getInstanceUsuarioDAO().saveOrUpdate(usuario);
+        //ServiceLocator.getInstanceUsuarioDAO().saveOrUpdate(usuario);
+        this.save(usuario);
     }
 
 

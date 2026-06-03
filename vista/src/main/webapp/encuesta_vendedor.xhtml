@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<!-- Verificación de sesión -->
+<f:metadata>
+    <f:event type="preRenderView" listener="#{loginUI.verificarSesion}"/>
+</f:metadata>
+
+<h:head>
+    <title>Encuesta de Satisfacción </title>
+    <h:outputStylesheet name="style.css"/>
+    <script src="resources/funct.js"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</h:head>
+
+<h:body>
+
+    <!-- Encabezado con botones -->
+    <div class="header">
+        <!-- Link para regresar -->
+        <h:link outcome="indexGerente" styleClass="back">
+            <i class="pi pi-arrow-left"/>
+        </h:link>
+        <span>Encuesta de Satisfacción</span>
+
+        <!-- Botón de menú -->
+        <p:commandButton class="menu" icon="pi pi-bars"
+                         onclick="toggleMenu(); return false;"/>
+    </div>
+
+    <!-- Menú superior oculto -->
+    <div id="menuPanel" class="menu-panel">
+        <h:link outcome="consulta_materiales" styleClass="menu-option">
+            <i class="pi pi-box"/> Consulta Materiales
+        </h:link>
+        <h:link outcome="consulta_usuarios" styleClass="menu-option">
+            <i class="pi pi-users"/> Consulta Usuarios
+        </h:link>
+        <h:link outcome="consulta_cotizaciones" styleClass="menu-option">
+            <i class="pi pi-file"/> Consulta Cotizaciones
+        </h:link>
+        <h:link outcome="gestion_pedidos" styleClass="menu-option">
+            <i class="pi pi-hammer"/> Gestionar Pedidos
+        </h:link>
+        <h:link outcome="encuesta" styleClass="menu-option">
+            <i class="pi pi-list-check"/> Realizar Encuesta
+        </h:link>
+    </div>
+
+    <p:growl id="growl" life="4000" showDetail="true" sticky="false"/>
+
+    <h:form id="formEncuesta">
+        <!-- Contenedor de la encuesta -->
+        <div class="container encuesta-container">
+
+            <div class="encuesta-header">
+
+                <p class="encuesta-subtitulo">
+                    Todas las preguntas son obligatorias excepto la última.
+                </p>
+            </div>
+
+            <!-- Q1: Tiempo de entrega -->
+            <div class="encuesta-pregunta">
+                <p class="pregunta-label">
+                    <span class="pregunta-num">1.</span>
+                    ¿Consideras que el tiempo de fabricación y entrega de tu proyecto fue adecuado?
+                </p>
+                <p:selectOneButton value="#{encuestaBeanUI.respuestaTiempo}"
+                                   styleClass="encuesta-toggle"
+                                   style="gap: 12px; display: flex;">
+                    <f:selectItem itemValue="si" itemLabel=" Sí, fue rápido"/>
+                    <f:selectItem itemValue="no" itemLabel=" No, tardó demasiado"/>
+                </p:selectOneButton>
+            </div>
+
+            <!-- Q2: Atención al vendedor -->
+            <div class="encuesta-pregunta">
+                <p class="pregunta-label">
+                    <span class="pregunta-num">2.</span>
+                    ¿Cómo calificas la atención y amabilidad del vendedor que te atendió?
+                </p>
+                <p:rating id="q2" value="#{encuestaBeanUI.encuesta.q2}" stars="5">
+                    <p:ajax event="rate" listener="#{encuestaBeanUI.onRatingChange}" update="formEncuesta"/>
+                    <p:ajax event="cancel" listener="#{encuestaBeanUI.onRatingChange}" update="formEncuesta"/>
+                </p:rating>
+            </div>
+
+            <!-- Q3: Calidad del producto -->
+            <div class="encuesta-pregunta">
+                <p class="pregunta-label">
+                    <span class="pregunta-num">3.</span>
+                    ¿Qué tan satisfecho estás con la calidad de tu producto final?
+                </p>
+                <p:rating id="q3" value="#{encuestaBeanUI.encuesta.q3}" stars="5">
+                    <p:ajax event="rate" listener="#{encuestaBeanUI.onRatingChange}" update="formEncuesta"/>
+                    <p:ajax event="cancel" listener="#{encuestaBeanUI.onRatingChange}" update="formEncuesta"/>
+                </p:rating>
+            </div>
+
+            <!-- Q4: Recomendación -->
+            <div class="encuesta-pregunta">
+                <p class="pregunta-label">
+                    <span class="pregunta-num">4.</span>
+                    ¿Qué tan probable es que vuelvas a contratarnos o nos recomiendes?
+                </p>
+                <p:rating id="q4" value="#{encuestaBeanUI.encuesta.q4}" stars="5">
+                    <p:ajax event="rate" listener="#{encuestaBeanUI.onRatingChange}" update="formEncuesta"/>
+                    <p:ajax event="cancel" listener="#{encuestaBeanUI.onRatingChange}" update="formEncuesta"/>
+                </p:rating>
+            </div>
+
+            <!-- Q5: Comentario libre -->
+            <div class="encuesta-pregunta encuesta-pregunta--last">
+                <p class="pregunta-label">
+                    <span class="pregunta-num">5.</span>
+                    ¿Hay algo en lo que podamos mejorar?
+                    <span class="encuesta-opcional">(Opcional)</span>
+                </p>
+                <p:inputTextarea id="q5"
+                                 value="#{encuestaBeanUI.encuesta.q5}"
+                                 rows="4"
+                                 maxlength="254"
+                                 placeholder="Escribe aquí tus comentarios o sugerencias..."
+                                 style="width:100%;"/>
+            </div>
+
+            <!-- Botones -->
+            <div class="btn-container" style="justify-content: center; margin-top: 10px;">
+                <p:commandButton value="Enviar Encuesta"
+                                 icon="pi pi-send"
+                                 action="#{encuestaBeanUI.enviarEncuesta()}"
+                                 process="@form"
+                                 update="formEncuesta growl"
+                                 styleClass="btn-blue"
+                                 oncomplete="manejarRespuesta(args)"/>
+
+                <p:commandButton value="Limpiar"
+                                 icon="pi pi-refresh"
+                                 actionListener="#{encuestaBeanUI.limpiar()}"
+                                 update="formEncuesta"
+                                 styleClass="btn-blue"
+                                 process="@this"
+                                 immediate="true"/>
+            </div>
+
+        </div>
+    </h:form>
+
+
+    <h:outputScript>
+        function manejarRespuesta(args) {
+        if (!args.validationFailed) {
+        setTimeout(function () {
+        var growlInfo = document.querySelector('.ui-growl-message-info');
+        if (growlInfo) {
+        setTimeout(function () {
+        window.location.href = 'index.jsp';
+        }, 3000);
+        }
+        }, 500);
+        }
+        }
+    </h:outputScript>
+
+</h:body>
+</html>

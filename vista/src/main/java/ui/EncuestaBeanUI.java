@@ -40,8 +40,16 @@ public class EncuestaBeanUI implements Serializable {
         respuestaTiempo = null;
     }
 
+    public void guardarTiempo() {
+        // para guardar el valor de la primera pregunta
+    }
+
     public void enviarEncuesta() {
         FacesContext ctx = FacesContext.getCurrentInstance();
+        System.out.println("DrespuestaTiempo: '" + respuestaTiempo + "'");
+        System.out.println("q2: " + encuesta.getQ2());
+        System.out.println("q3: " + encuesta.getQ3());
+        System.out.println("q4: " + encuesta.getQ4());
 
         if (respuestaTiempo == null || respuestaTiempo.isEmpty()) {
             ctx.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,

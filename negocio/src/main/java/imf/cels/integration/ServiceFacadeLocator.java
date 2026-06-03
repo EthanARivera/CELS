@@ -21,6 +21,13 @@ public class ServiceFacadeLocator {
         }
     }
 
+    public static FacadeEncuesta getInstanceFacadeEncuesta() {
+        if (facadeEncuesta == null) {
+            facadeEncuesta = new FacadeEncuesta();
+        }
+        return facadeEncuesta;
+    }
+
     public static FacadeMaterial getInstanceFacadeMaterial() {
         if (facadeMaterial == null) {
             facadeMaterial = new FacadeMaterial();
@@ -36,12 +43,4 @@ public class ServiceFacadeLocator {
         }
         return facadeCotizacion;
     }
-
-    public static FacadeEncuesta getInstanceFacadeEncuesta() {
-        if (facadeEncuesta == null) {
-            facadeEncuesta = new FacadeEncuesta();
-        }
-        return facadeEncuesta;
-    }
-
 }

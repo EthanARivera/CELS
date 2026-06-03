@@ -38,6 +38,13 @@ public class ServiceLocator {
         }
     }
 
+    public static EncuestaDAO getInstanceEncuestaDAO() {
+        if(encuestaDAO == null){
+            encuestaDAO = new EncuestaDAO(getEntityManager());
+        }
+        return encuestaDAO;
+    }
+
     /**
      * se crea la instancia de materialDAO si esta no existe
      */
@@ -73,12 +80,5 @@ public class ServiceLocator {
             return cotizacionManoDeObraDAO;
         }
         return cotizacionManoDeObraDAO;
-    }
-
-    public static EncuestaDAO getInstanceEncuestaDAO() {
-        if(encuestaDAO == null){
-            encuestaDAO = new EncuestaDAO(getEntityManager());
-        }
-        return encuestaDAO;
     }
 }

@@ -622,6 +622,7 @@ public class AltaCotizacionBeanUI implements Serializable {
             nueva.setIdUsuario(usuarioActivo);
             nueva.setTipoProyecto(tipoProyecto);
             nueva.setPrecioFinal(precioFinal);
+            nueva.setFecha(LocalDate.now());
 
             cotizacionHelper.saveCotizacion(nueva);
 

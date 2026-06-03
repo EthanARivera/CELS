@@ -9,12 +9,13 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.io.Serializable;
 import java.util.*;
+import imf.cels.entity.PedidosTaller;
 
 @Named("pedidosUI")
 @ViewScoped
 public class PedidosBeanUI implements Serializable {
     private List<String> prioridades = Arrays.asList("Baja", "Media", "Alta", "Urgente");
-    private List<String> estados = Arrays.asList("Por iniciar", "En progreso", "Terminado", "Con impedimentos");
+    private List<String> estados = Arrays.asList("Por iniciar", "En producción", "Terminado", "Con impedimentos");
     private String prioridadSeleccionada;
     private String estadoSeleccionado;
     private String textoConfirmacion;
@@ -78,6 +79,30 @@ public class PedidosBeanUI implements Serializable {
             context.addMessage(null, new FacesMessage(
                     FacesMessage.SEVERITY_ERROR,
                     "Error al dar de alta",
+                    "El pedido ya fue dado de alta previamente."
+            ));
+        }
+    }
+
+    public void actualizarEstadoPedido(PedidosTaller pedido) {
+        FacesContext context = FacesContext.getCurrentInstance();
+
+        try {
+            pedidosHelper.actualizarEstadoPedido(
+                    pedido.getId(),
+                    pedido.getEstadoEnTaller()
+            );
+
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_INFO,
+                    "Estado actualizado",
+                    "El estado del pedido fue actualizado correctamente."
+            ));
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Error",
                     e.getMessage()
             ));
         }

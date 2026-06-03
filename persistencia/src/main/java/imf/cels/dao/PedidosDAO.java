@@ -45,4 +45,30 @@ public class PedidosDAO {
             throw e;
         }
     }
+
+    public void actualizarEstadoPedido(Integer idFolio, String nuevoEstado) {
+        EntityManager em = HibernateUtil.getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            PedidosTaller pedido = em.find(PedidosTaller.class, idFolio);
+            if (pedido == null) {
+                throw new RuntimeException("El pedido no existe.");
+            }
+            String estadoActual = pedido.getEstadoEnTaller();
+            if ("En producción".equalsIgnoreCase(estadoActual) && "Por iniciar".equalsIgnoreCase(nuevoEstado)) {
+                throw new IllegalStateException("No es posible regresar de En producción a Por iniciar");
+            }
+            pedido.setEstadoEnTaller(nuevoEstado);
+            pedido.setFechaActualizacion(Instant.now());
+            em.merge(pedido);
+            em.getTransaction().commit();
+        }
+        catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
+        }
+    }
 }

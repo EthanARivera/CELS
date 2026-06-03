@@ -10,6 +10,7 @@ import imf.cels.persistence.HibernateUtil;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import imf.cels.dao.CotizacionDAO;
 
 public class CotizacionHelper {
 
@@ -137,6 +138,12 @@ public class CotizacionHelper {
 
     public List<Cotizacion> obtenerCotizacionesContratoAprobado(Integer idUsuario) {
         return ServiceLocator.getInstanceCotizacionDAO().obtenerCotizacionesContratoAprobadoPorUsuario(idUsuario);
+    }
+
+    public List<Cotizacion> obtenerCotizacionesConPedido(Integer idUsuario) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        CotizacionDAO cotizacionDAO = new CotizacionDAO(em);
+        return cotizacionDAO.obtenerCotizacionesConPedido(idUsuario);
     }
 
     public List<Cotizacion> obtenerCotizacionesConPedido() {

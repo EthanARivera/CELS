@@ -96,12 +96,11 @@
                 </p:column>
 
                 <p:column headerText="Estado de producción" style="width:150px; text-align:center;">
-                    <p:selectOneMenu value="#{pedidosUI.estadoSeleccionado}">
+                    <p:selectOneMenu value="#{c.pedidosTaller.estadoEnTaller}">
                         <f:selectItems value="#{pedidosUI.estados}" />
                         <p:ajax event="change"
-                                listener="#{pedidosUI.validarEstado}"
-                                update="@this"
-                                oncomplete="if (args.mostrarDialogo) PF('dlgTerminado').show();" />
+                                listener="#{pedidosUI.actualizarEstadoPedido(c.pedidosTaller)}"
+                                update=":formCotizaciones:growl" />
                     </p:selectOneMenu>
                 </p:column>
             </p:dataTable>

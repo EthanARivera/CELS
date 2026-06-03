@@ -4,6 +4,7 @@ import imf.cels.entity.Cotizacion;
 import imf.cels.entity.PedidosTaller;
 import imf.cels.integration.ServiceLocator;
 import imf.cels.persistence.AbstractDAO;
+import imf.cels.persistence.HibernateUtil;
 import jakarta.activation.DataHandler;
 import jakarta.activation.FileDataSource;
 import jakarta.mail.*;
@@ -129,6 +130,18 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     public List<Integer> obtenerMesesDisponibles(Integer idUsuario) {
         return entityManager
                 .createQuery("SELECT DISTINCT MONTH(c.fechaCreacion) FROM Cotizacion c WHERE c.idUsuario.id = :idUsuario ORDER BY MONTH(c.fechaCreacion)", Integer.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    public List<Cotizacion> obtenerCotizacionesConPedido(Integer idUsuario) {
+        EntityManager em = HibernateUtil.getEntityManager();
+
+        return em.createQuery(
+                        "SELECT c FROM Cotizacion c JOIN FETCH c.pedidosTaller p " +
+                                "WHERE c.idUsuario.id = :idUsuario",
+                        Cotizacion.class
+                )
                 .setParameter("idUsuario", idUsuario)
                 .getResultList();
     }
@@ -261,15 +274,26 @@ public class CotizacionDAO extends AbstractDAO<Cotizacion>{
     }
 
     public List<Cotizacion> obtenerCotizacionesContratoAprobado() {
+        entityManager.clear();
+
         return entityManager.createQuery(
-                "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true ORDER BY c.fechaCreacion DESC",
+                "SELECT DISTINCT c FROM Cotizacion c " +
+                        "LEFT JOIN FETCH c.pedidosTaller p " +
+                        "WHERE c.is_contrato_aprobado = true " +
+                        "ORDER BY c.fechaCreacion DESC",
                 Cotizacion.class
         ).getResultList();
     }
 
     public List<Cotizacion> obtenerCotizacionesContratoAprobadoPorUsuario(Integer idUsuario) {
+        entityManager.clear();
+
         return entityManager.createQuery(
-                        "SELECT c FROM Cotizacion c WHERE c.is_contrato_aprobado = true AND c.idUsuario.id = :id ORDER BY c.fechaCreacion DESC",
+                        "SELECT DISTINCT c FROM Cotizacion c " +
+                                "LEFT JOIN FETCH c.pedidosTaller p " +
+                                "WHERE c.is_contrato_aprobado = true " +
+                                "AND c.idUsuario.id = :id " +
+                                "ORDER BY c.fechaCreacion DESC",
                         Cotizacion.class
                 )
                 .setParameter("id", idUsuario)

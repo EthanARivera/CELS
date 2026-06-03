@@ -75,6 +75,7 @@
                                    style="gap: 12px; display: flex;">
                     <f:selectItem itemValue="si" itemLabel=" Sí, fue rápido"/>
                     <f:selectItem itemValue="no" itemLabel=" No, tardó demasiado"/>
+                    <p:ajax listener="#{encuestaBeanUI.guardarTiempo}" update="@none"/>
                 </p:selectOneButton>
             </div>
 
@@ -154,16 +155,6 @@
 
     <h:outputScript>
         function manejarRespuesta(args) {
-            if (!args.validationFailed) {
-                setTimeout(function () {
-                    var growlInfo = document.querySelector('.ui-growl-message-info');
-                    if (growlInfo) {
-                        setTimeout(function () {
-                            window.location.href = 'index.jsp';
-                        }, 3000);
-                    }
-                }, 500);
-            }
         }
     </h:outputScript>
 

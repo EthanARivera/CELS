@@ -21,8 +21,8 @@
 
     <!-- Encabezado con botones -->
     <div class="header">
-        <!-- Link para regresar -->
-        <h:link outcome="indexGerente" styleClass="back">
+        <!-- Link para regresar al index del vendedor -->
+        <h:link outcome="indexVendedor.xhtml" styleClass="back">
             <i class="pi pi-arrow-left"/>
         </h:link>
         <span>Encuesta de Satisfacción</span>
@@ -32,22 +32,22 @@
                          onclick="toggleMenu(); return false;"/>
     </div>
 
-    <!-- Menú superior oculto -->
+    <!-- Menú superior oculto de vendedor -->
     <div id="menuPanel" class="menu-panel">
-        <h:link outcome="consulta_materiales" styleClass="menu-option">
-            <i class="pi pi-box"/> Consulta Materiales
+        <h:link outcome="indexVendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-home"></i> Inicio
         </h:link>
-        <h:link outcome="consulta_usuarios" styleClass="menu-option">
-            <i class="pi pi-users"/> Consulta Usuarios
+        <h:link outcome="consulta_cotizaciones_vendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-database"></i> Consulta Cotizaciones
         </h:link>
-        <h:link outcome="consulta_cotizaciones" styleClass="menu-option">
-            <i class="pi pi-file"/> Consulta Cotizaciones
+        <h:link outcome="registroCotizacionVendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-file"></i> Registrar Cotización
         </h:link>
-        <h:link outcome="gestion_pedidos" styleClass="menu-option">
-            <i class="pi pi-hammer"/> Gestionar Pedidos
+        <h:link outcome="gestion_pedidos_vendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-hammer"></i> Gestionar Pedidos
         </h:link>
-        <h:link outcome="encuesta" styleClass="menu-option">
-            <i class="pi pi-list-check"/> Realizar Encuesta
+        <h:link outcome="encuesta_vendedor.xhtml" styleClass="menu-option">
+            <i class="pi pi-list-check"></i> Realizar Encuesta
         </h:link>
     </div>
 
@@ -58,7 +58,6 @@
         <div class="container encuesta-container">
 
             <div class="encuesta-header">
-
                 <p class="encuesta-subtitulo">
                     Todas las preguntas son obligatorias excepto la última.
                 </p>
@@ -75,6 +74,7 @@
                                    style="gap: 12px; display: flex;">
                     <f:selectItem itemValue="si" itemLabel=" Sí, fue rápido"/>
                     <f:selectItem itemValue="no" itemLabel=" No, tardó demasiado"/>
+                    <p:ajax listener="#{encuestaBeanUI.guardarTiempo}" update="@none"/>
                 </p:selectOneButton>
             </div>
 
@@ -151,19 +151,8 @@
         </div>
     </h:form>
 
-
     <h:outputScript>
         function manejarRespuesta(args) {
-        if (!args.validationFailed) {
-        setTimeout(function () {
-        var growlInfo = document.querySelector('.ui-growl-message-info');
-        if (growlInfo) {
-        setTimeout(function () {
-        window.location.href = 'index.jsp';
-        }, 3000);
-        }
-        }, 500);
-        }
         }
     </h:outputScript>
 

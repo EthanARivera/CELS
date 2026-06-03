@@ -53,7 +53,7 @@
             <div class="form-row">
                 <label>Fecha de Nacimiento:</label>
                 <p:calendar styleClass="form-control" placeholder="dd/MM/yyyy"
-                            value="#{registroUI.usuario.fechaNacimiento}" pattern="dd/MM/yyyy"
+                            value="#{registroUI.usuario.fechaNacimiento}" pattern="dd/MM/yyyy" maxdate="#{registroUI.fechaMin}" yearRange="C-100:c+0"
                             required="true" requiredMessage="La fecha de nacimiento es obligatoria"/>
             </div>
 

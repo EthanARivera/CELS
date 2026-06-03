@@ -47,4 +47,5 @@ public class DatosEncuesta {
 
     public String getQ5() { return q5; }
     public void setQ5(String q5) { this.q5 = q5; }
+
 }

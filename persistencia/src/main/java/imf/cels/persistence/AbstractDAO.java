@@ -26,7 +26,8 @@ public abstract class AbstractDAO<T> {
 
     // Save or persist a new entity
     public void save(T entity) {
-        executeInsideTransaction(em -> em.persist(entity));
+        executeInsideTransaction(em -> em.merge(entity)); // NEW
+        // executeInsideTransaction(em -> em.persist(entity));
     }
 
     // Update an existing entity

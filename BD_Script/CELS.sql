@@ -114,6 +114,13 @@ CREATE TABLE datos_encuesta (
     q5 VARCHAR(254)
 );
 
+ALTER TABLE datos_encuesta
+    MODIFY COLUMN q1  BOOLEAN NOT NULL,
+    MODIFY COLUMN q2 INT(1) NOT NULL,
+    MODIFY COLUMN q3 INT(1) NOT NULL,
+    ADD COLUMN q4 INT(1) NOT NULL AFTER q3,
+    ADD COLUMN q5 VARCHAR(254) NULL AFTER q4;
+
 
 CREATE INDEX idx_nombre_usuario ON usuario(nombre);
 CREATE INDEX idx_nombre_material ON material(nombre);

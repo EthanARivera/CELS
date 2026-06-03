@@ -12,7 +12,6 @@ public class ServiceFacadeLocator {
     private static FacadeCotizacion facadeCotizacion;
     private static FacadeEncuesta facadeEncuesta;
 
-
     public static FacadeUsuario getInstanceFacadeUsuario() {
         if (facadeUsuario == null) {
             facadeUsuario = new FacadeUsuario();

@@ -52,39 +52,37 @@
         <p:panel styleClass="catalogo-panel">
             <br/>
 
-            <h:link outcome="registroUsuario.xhtml" styleClass="menu-option">
-                <i class="pi pi-box"></i> Agregar Usuario
-            </h:link>
 
-            <!-- Barras de búsqueda -->
-            <div class="searchbar">
-                <i class="pi pi-search"></i>
-                <p:inputText id="nombreBusqueda" value="#{usuarioBean.nombreBusqueda}"
-                             placeholder="Buscar por nombre" styleClass="search-input">
-                    <p:ajax event="keyup" listener="#{usuarioBean.aplicarFiltro}"
-                            update="tablaUsuarios" delay="500"/>
-                </p:inputText>
-                <i class="pi pi-search">    </i>
-                <p:inputText id="idBusqueda"
-                             value="#{usuarioBean.idBusqueda}"
-                             placeholder="Buscar por ID"
-                             styleClass="search-input"
-                             style="margin-left:10px;">
-                    <p:ajax event="keyup"
-                            process="@form"
-                            listener="#{usuarioBean.aplicarFiltro}"
-                            update="tablaUsuarios"
-                            delay="100"/>
-                </p:inputText>
+            <!-- Barra de Búsqueda -->
+            <!-- NEW -->
+            <div class="searchbar" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0;">
+                <div>
+                    <i class="pi pi-search" style="margin-right: 8px; color: #666;"></i>
+                    <p:inputText value="#{usuarioBean.filtroGlobal}"
+                                 placeholder="Buscar por ID, nombre, correo..."
+                                 style="width: 250px;">
+                        <p:ajax event="keyup" listener="#{usuarioBean.aplicarFiltroGlobal}"
+                                update="tablaUsuarios" delay="300"/>
+                    </p:inputText>
 
-                <p:commandButton value="Mostrar todos"
-                                 icon="pi pi-refresh"
-                                 actionListener="#{usuarioBean.recargarUsuarios}"
-                                 update="tablaUsuarios"
-                                 styleClass="btn-azul-iconoblanco btn-refresh"/>
+                    <p:commandButton icon="pi pi-refresh"
+                                     actionListener="#{usuarioBean.recargarUsuarios}"
+                                     update="tablaUsuarios"
+                                     styleClass="ui-button-flat"
+                                     style="margin-left: 10px;"
+                                     title="Refrescar lista"/>
+                </div>
+
+                <!-- Agregar Usuario -->
+                <h:link outcome="registroUsuario.xhtml"
+                        styleClass="ui-button ui-button-success"
+                        style="width: 40px; height: 40px; border-radius: 5px; display: flex; align-items: center; justify-content: center; text-decoration: none;"
+                        title="Agregar Nuevo Usuario">
+                    <i class="pi pi-plus" style="color: white !important; font-size: 1.5rem; display: block;"></i>
+                </h:link>
             </div>
 
-            <br/><br/>
+            <br/>
 
             <!-- Tabla de usuarios -->
             <p:dataTable id="tablaUsuarios"
@@ -132,9 +130,15 @@
                                          update=":formDialog"
                                          oncomplete="PF('dlgEditar').show()"/>
 
-                        <p:commandButton icon="pi pi-times"
+                        <!-- <p:commandButton icon="pi pi-power-off"
                                          title="Activar/Desactivar"
                                          styleClass="ui-button-flat delete-icon"
+                                         actionListener="#{usuarioBean.prepararCambioEstado(usuario)}"
+                                         update=":formConfirmar"
+                                         oncomplete="PF('dlgConfirmarEstado').show()"/> -->
+                        <p:commandButton icon="#{usuario.estado ? 'pi pi-check-circle' : 'pi pi-minus-circle'}"
+                                         title="#{usuario.estado ? 'Desactivar Usuario' : 'Activar Usuario'}"
+                                         styleClass="ui-button-flat #{usuario.estado ? 'ui-button-success' : 'ui-button-danger'}"
                                          actionListener="#{usuarioBean.prepararCambioEstado(usuario)}"
                                          update=":formConfirmar"
                                          oncomplete="PF('dlgConfirmarEstado').show()"/>

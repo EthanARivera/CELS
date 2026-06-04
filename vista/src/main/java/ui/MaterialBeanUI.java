@@ -84,6 +84,9 @@ public class MaterialBeanUI implements Serializable {
                             "Éxito:",
                             "Material guardado correctamente."));
 
+            // Recarga la lista con el nuevo material incluido
+            recargarMateriales();
+
             // Limpia el formulario
             material = new Material();
 
